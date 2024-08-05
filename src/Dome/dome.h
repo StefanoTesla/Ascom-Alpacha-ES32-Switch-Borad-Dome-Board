@@ -3,7 +3,8 @@
 
 
 
-
+unsigned long  oldCy;
+unsigned long oldMillis;
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
@@ -79,8 +80,10 @@ void LastDomeCommandExe(){
 
 
 void domeAutoClose(){
-  if (Dome.ShutterInputState == ShOnlyOpen && Config.dome.autoCloseTimeOut){
-    if (millis() - (Dome.lastCommunicationMillis * 1000 * 60) > ShMoveTimeOut) {
+
+  if (Dome.ShutterInputState == ShOnlyOpen && Config.dome.enAutoClose){
+
+    if ((millis() - (Dome.lastCommunicationMillis)) > (Config.dome.autoCloseTimeOut * 1000 * 60)) {
           Dome.ShutterCommand = CmdClose;
         }
 
@@ -130,6 +133,7 @@ void domehandlerloop() {
             if (Dome.ShutterCommand == CmdHalt) {
               Dome.Cycle = 100;
             }
+
             break;
 
     /* NO OPENING COMMAND IF ROOF IS OPEN SHULD ARRIVE, AND VICE VERSA FOR CLOSING COMMAND, BUT ARE ACCEPTED IF NO/EACH TWO INPUT IS IN (safety first) */

@@ -113,6 +113,7 @@ void setup()
   Alpserver.begin();
   ElegantOTA.begin(&server);
   server.begin();
+  Dome.lastCommunicationMillis = millis();
   Serial.println("setup done");
 }
 
