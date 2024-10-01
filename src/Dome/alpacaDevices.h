@@ -13,6 +13,7 @@ void DomeAlpacaDevices(){
 
 
 Alpserver.on("/api/v1/dome/0/shutterstatus",                                            HTTP_GET, [](AsyncWebServerRequest *request) {
+  Dome.lastCommunicationMillis  = millis();
   GetAlpArguments(request);
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   AlpacaHeaderSchema(response,AlpacaData);
@@ -37,6 +38,7 @@ Alpserver.on("/api/v1/dome/0/closeshutter",                                     
 
 Alpserver.on("/api/v1/dome/0/openshutter",                                              HTTP_PUT, [](AsyncWebServerRequest *request) {
   GetAlpArguments(request);
+  Dome.lastCommunicationMillis  = millis();
   AsyncResponseStream *response = request->beginResponseStream("application/json");
   AlpacaHeaderSchema(response,AlpacaData);
   if (Dome.ShutterCommand == Idle && Dome.ShutterState != ShOpen ){
