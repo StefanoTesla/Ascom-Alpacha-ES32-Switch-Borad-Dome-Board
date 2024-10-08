@@ -37,8 +37,9 @@ You can configure 16 Switch and they can be:
 -Analog Input
 
 A configuration page with validation is provided, so you don't need to handle the change the software by your self :D  
-<code style="color : Red">You can't use Switch Output for any other device like Dome or CoverCalibrator!</code>
-
+```diff
+- You can't use a Switch Output more for more device, ex pwm output as switch can't be the same for CoverCalibrator
+```
 ## CoverCalibration (aka Automatic Flat Panel)
 You can have a PWM signlat to handle a mofset to encrease or decrease the flat panel brightness, for a bettere experience (avoid led flickering) you can command a led power supply with the PWM or a mofset
 The CoverCalibrator is a must have to have perfect flat frame!
