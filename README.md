@@ -66,9 +66,8 @@ New dome function: Auto Close if anyone is talking with the board (browser or as
 
 
 ### ToDo List:
-
 - Make Web Pages Translatable
-- Webrowser have some bugs
+
 
 # How to use
 
