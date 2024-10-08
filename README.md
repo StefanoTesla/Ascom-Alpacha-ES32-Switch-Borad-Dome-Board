@@ -1,18 +1,20 @@
 # Ascom Alpacha Switch and Dome Board ESP32
 
 Do you have a remote observatory? This board is made for you!
-One in three Ascom copilant WiFi board is here!
+The Ascom-compatible WiFi board using the Alpaca protocol is here!
+
+Main Feature:
 
 - Dome controller (Only R.O.R)
 - Switch Controller
 - CoverCalibration (flat frame)
 
-Each devices is recognized form Ascom via aplacha protocol, no usb connectio or driver are needed to work, just WiFi!
+Each device is recognized by Ascom via the Alpaca protocol, with no need for USB connection or drivers, just WiFi!
 
-USB cable is required just for the first software download, after that a WiFi Manager will help you to connect the board on your WiFi (no way to use this board as AP).
+A USB cable is only required for the first software upload; after that, a WiFi Manager will help you connect the board to your WiFi network (this board cannot be used as an access point).
 
-Automatic WiFi reconnection in case of disconnection (hoping for a router restart)
-OTA Update, to update the firmware without any cables.
+- Automatic WiFi reconnection in case of disconnection (e.g., after a router reboot).
+- OTA updates allow firmware updates without cables.
 
 ## Dome
 Dome support only R.O.R. type. You can use a normal gate board.
@@ -24,19 +26,19 @@ And need back the shutter state:
 - Close
 
 Features:
-- Cause gate boards han no direction, if the roof goes in the wrong direction, the board recognized it and send another command.
-- Can be enable an auto close system that close the roof if there's no communication between board and ascom or pc (you can set how many minutes)
-- Automatic fault detection if moviment don't finish within XX second (you can set your timeout seconds) 
+- Since gate boards do not have directional feedback, if the roof moves in the wrong direction, the board will detect it and send a correction command.
+- You can enable an automatic closing system, which will close the roof if there is no communication between the board and Ascom or the PC (you can set the timeout duration).
+- Automatic fault detection if the movement doesn’t complete within a set time (you can configure the timeout in seconds).
 
 ## Switch
 
-You can configure 16 Switch and they can be:
+You can configure up to 16 Switch which can be:
 -Gauges
 -Switch
 -PWM signal
 -Analog Input
 
-A configuration page with validation is provided, so you don't need to handle the change the software by your self :D  
+A configuration page with validation is provided, so you don’t need to manually modify the software! :D  
 
 > [!IMPORTANT]
 > You can't use a Switch Output for more device, ex pwm output as switch can't be the same for CoverCalibrator
@@ -45,6 +47,10 @@ A configuration page with validation is provided, so you don't need to handle th
 You can have a PWM signlat to handle a mofset to encrease or decrease the flat panel brightness, for a bettere experience (avoid led flickering) you can command a led power supply with the PWM or a mofset
 The CoverCalibrator is a must have to have perfect flat frame!
 
+## Tested with
+- Voyager
+- N.I.N.A
+- Sequence Generator Pro
 
 #### Changelog
 
