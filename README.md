@@ -1,4 +1,4 @@
-# Ascom Alpacha Switch and Dome Board ESP32
+# Ascom Alpacha Switch, Dome, CoverCalibrator Board ESP32
 
 Do you have a remote observatory? This board is made for you!
 The Ascom-compatible WiFi board using the Alpaca protocol is here!
