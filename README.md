@@ -43,6 +43,9 @@ A configuration page with validation is provided, so you don’t need to manuall
 > [!IMPORTANT]
 > You can't use a Switch Output for more device, ex pwm output as switch can't be the same for CoverCalibrator
 
+> [!IMPORTANT]
+> At the state of art, this board work only with PNP relay boards or any things you want, the reason is to be sure that command will be executed when you decide, using NPN board will bring you in strange problem (ex: with NPN realy board, if ESP32 is borken, your ralay will be activated)
+
 ## CoverCalibration (aka Automatic Flat Panel)
 You can have a PWM signlat to handle a mofset to encrease or decrease the flat panel brightness, for a bettere experience (avoid led flickering) you can command a led power supply with the PWM or a mofset
 The CoverCalibrator is a must have to have perfect flat frame!
