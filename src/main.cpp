@@ -5,7 +5,7 @@
 Usually I expect to have a gate board, but in the last time I found some guys that handle the motor with two realys, open and close
 Only in this case comment the #define GATE_BOARD
 */
-#define GATE_BOARD;
+#define GATE_BOARD
 #endif
 
 #define SWITCH
