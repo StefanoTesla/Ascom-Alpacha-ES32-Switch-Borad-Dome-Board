@@ -2,7 +2,7 @@
 #define SWITCH
 #define COVERC
 
-#include <ArduinoJson.h>
+//#include <ArduinoJson.h>
 #include <WiFi.h>
 #include "AsyncJson.h"
 #include "AsyncUDP.h"
