@@ -8,7 +8,7 @@ Only in this case comment the #define GATE_BOARD
 */
 
 //add a comment the // if you need open and close output!! the Halt output will be used for closing operation!
-//#define GATE_BOARD;
+#define GATE_BOARD;
 
 
 unsigned long oldCy;
