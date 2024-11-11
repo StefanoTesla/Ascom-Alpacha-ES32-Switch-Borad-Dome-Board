@@ -1,16 +1,6 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
-
-/*
-Usually I expect to have a gate board, but in the last time I found some guys that handle the motor with two realys, open and close
-Only in this case comment the #define GATE_BOARD
-*/
-
-//add a comment the // if you need open and close output!! the Halt output will be used for closing operation!
-#define GATE_BOARD;
-
-
 unsigned long oldCy;
 unsigned long oldMillis;
 unsigned long ShMoveTimeOut;
