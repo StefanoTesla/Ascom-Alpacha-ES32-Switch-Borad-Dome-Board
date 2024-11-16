@@ -1,17 +1,10 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
-bool dome_debug = true;
 unsigned long oldCy;
 unsigned long oldMillis;
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
-
-void debug(String text){
-  if(dome_debug){
-    Serial.println(text);
-  }
-}
 
 void initDomeConfig(){
     JsonDocument doc;
