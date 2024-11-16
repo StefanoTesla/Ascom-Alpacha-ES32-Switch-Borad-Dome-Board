@@ -1,10 +1,17 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
+bool debug = true;
 unsigned long oldCy;
 unsigned long oldMillis;
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
+
+void debug(String string){
+  if(debug){
+    Serial.println(string);
+  }
+}
 
 void initDomeConfig(){
     JsonDocument doc;
@@ -53,36 +60,20 @@ void saveDomeConfig(){
 
 
 void domeInputState(){
-    int status = 0;
 
-    if(digitalRead(Config.dome.pinClose)){
-      status +=1;
-    }
-
-    if(digitalRead(Config.dome.pinOpen)){
-      status +=2;
-    }
-    
-    switch (status)
-    {
-    case 0:
-      Dome.ShutterInputState = ShInNoOne;
-      break;
-    case 1:
+    // I used enum for input state for making the cycle code more clean
+    if (digitalRead(Config.dome.pinClose) == HIGH && digitalRead(Config.dome.pinOpen) == LOW) {
       Dome.ShutterInputState = ShOnlyClose;
-      break;
-    case 2:
-        Dome.ShutterInputState = ShOnlyClose;
-        break;
-    case 3:
-        Dome.ShutterInputState = ShInAll;
-        break;
-    break;
-
-    default:
-      Serial.println("error dome input switch");
-  }
-
+    }
+    if ( digitalRead(Config.dome.pinClose) == LOW && digitalRead(Config.dome.pinOpen) == HIGH) {
+      Dome.ShutterInputState = ShOnlyOpen;
+    }
+    if ( digitalRead(Config.dome.pinOpen) == HIGH && digitalRead(Config.dome.pinClose) == HIGH) {
+      Dome.ShutterInputState = ShInAll;
+    }
+    if ( digitalRead(Config.dome.pinOpen) == LOW && digitalRead(Config.dome.pinClose) == LOW) {
+      Dome.ShutterInputState = ShInNoOne;
+    }
 }
 
 void LastDomeCommandExe(){
@@ -176,20 +167,15 @@ void domehandlerloop() {
             break;
 
     case 11:  //Take signal end to loose signal
-
-    #ifdef GATE_BOARD
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait 1second anyway
               if (Dome.ShutterInputState == ShInAll || Dome.ShutterInputState == ShInNoOne) {
-                digitalWrite(Config.dome.pinStart, LOW);
+                #ifdef GATE_BOARD
+                  digitalWrite(Config.dome.pinStart, LOW);
+                #endif
                 ShMoveTimeOutAck = millis();
                 Dome.Cycle++;
               }
             }
-    #else
-                ShMoveTimeOutAck = millis();
-                Serial.println(Dome.Cycle);
-                Dome.Cycle++;
-    #endif
             break;
 
     case 12:  //Sensor Reached
