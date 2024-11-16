@@ -122,6 +122,7 @@ void domehandlerloop() {
 
             if (Dome.ShutterCommand == CmdClose) {
               if (Dome.ShutterInputState != ShOnlyClose) {
+                 Serial.println(Dome.Cycle);
                 Dome.Cycle = 10;
                 Dome.ShutterState = ShClosing;
               } else {
