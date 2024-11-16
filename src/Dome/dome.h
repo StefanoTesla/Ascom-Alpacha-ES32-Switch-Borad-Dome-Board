@@ -1,11 +1,17 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
+bool dome_debug = true;
 unsigned long oldCy;
 unsigned long oldMillis;
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
+void debug(String text){
+  if(dome_debug){
+    Serial.println(text);
+  }
+}
 
 void initDomeConfig(){
     JsonDocument doc;
@@ -54,20 +60,36 @@ void saveDomeConfig(){
 
 
 void domeInputState(){
+    int status = 0;
 
-    // I used enum for input state for making the cycle code more clean
-    if (digitalRead(Config.dome.pinClose) == HIGH && digitalRead(Config.dome.pinOpen) == LOW) {
-      Dome.ShutterInputState = ShOnlyClose;
+    if(digitalRead(Config.dome.pinClose)){
+      status +=1;
     }
-    if ( digitalRead(Config.dome.pinClose) == LOW && digitalRead(Config.dome.pinOpen) == HIGH) {
-      Dome.ShutterInputState = ShOnlyOpen;
+
+    if(digitalRead(Config.dome.pinOpen)){
+      status +=2;
     }
-    if ( digitalRead(Config.dome.pinOpen) == HIGH && digitalRead(Config.dome.pinClose) == HIGH) {
-      Dome.ShutterInputState = ShInAll;
-    }
-    if ( digitalRead(Config.dome.pinOpen) == LOW && digitalRead(Config.dome.pinClose) == LOW) {
+    
+    switch (status)
+    {
+    case 0:
       Dome.ShutterInputState = ShInNoOne;
-    }
+      break;
+    case 1:
+      Dome.ShutterInputState = ShOnlyClose;
+      break;
+    case 2:
+        Dome.ShutterInputState = ShOnlyClose;
+        break;
+    case 3:
+        Dome.ShutterInputState = ShInAll;
+        break;
+    break;
+
+    default:
+      Serial.println("error dome input switch");
+  }
+
 }
 
 void LastDomeCommandExe(){
