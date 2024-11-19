@@ -7,12 +7,6 @@ unsigned long oldMillis;
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
-void debug(String string){
-  if(debug){
-    Serial.println(string);
-  }
-}
-
 void initDomeConfig(){
     JsonDocument doc;
     File file = SPIFFS.open("/domeconfig.txt", FILE_READ);
