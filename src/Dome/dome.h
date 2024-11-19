@@ -110,7 +110,6 @@ void domehandlerloop() {
   {
     case 0:
             Dome.MoveRetry = false;
-            Serial.print(".");
             if (Dome.ShutterInputState == ShOnlyClose) {       Dome.ShutterState = ShClose;
             } else if (Dome.ShutterInputState == ShOnlyOpen) { Dome.ShutterState = ShOpen;
             } else {                                      Dome.ShutterState = ShError; }
@@ -151,12 +150,10 @@ void domehandlerloop() {
               digitalWrite(Config.dome.pinStart, HIGH);
             #else
               if (Dome.ShutterCommand == CmdOpen) {
-                Serial.println("RELE DI APERTURA");
                 digitalWrite(Config.dome.pinStart, HIGH);
               }
             
               if (Dome.ShutterCommand == CmdClose) {
-                Serial.println("RELE DI CHIUSURA");
                 digitalWrite(Config.dome.pinHalt, HIGH);
               }
 
@@ -180,12 +177,10 @@ void domehandlerloop() {
 
     case 12:  //Sensor Reached
             // INIZIO CHECK APERTUA
-            Serial.println("ATTESA SEGNALE IN INGRESSO");
             if (Dome.ShutterCommand == CmdOpen) {
                 if (Dome.ShutterInputState == ShOnlyOpen) { //As aspected direction!
                 #ifndef GATE_BOARD
                   digitalWrite(Config.dome.pinStart, LOW);
-                  Serial.println("VOLEVO APRIRE ED HO APERTO");
                 #endif
                 Dome.ShutterState = ShOpen;
                 Dome.Cycle++;
@@ -195,7 +190,6 @@ void domehandlerloop() {
                 if (Dome.MoveRetry == false) {
                   Dome.MoveRetry = true; // just one retry
                   Dome.Cycle = 20;
-                  Serial.println("VOLEVO APRIRE MA HO CHIUSO");
                 } else {
                   Dome.Cycle = 100;  //no ping pong all day, HALT
                 }
@@ -210,7 +204,6 @@ void domehandlerloop() {
             if (Dome.ShutterCommand == CmdClose) { //OMG wrong direction!
               if (Dome.ShutterInputState == ShOnlyOpen) {
                 if (Dome.MoveRetry == false) {
-                  Serial.println("VOLEVO CHIUDERE MA HO APERTO");
                   Dome.MoveRetry = true; // just one retry
                   Dome.Cycle = 20;
                 } else {
@@ -219,7 +212,6 @@ void domehandlerloop() {
               }
               if (Dome.ShutterInputState == ShOnlyClose) { //As aspected direction!
                 #ifndef GATE_BOARD
-                Serial.println("VOLEVO CHIUDERE ED HO CHIUSO");
                   digitalWrite(Config.dome.pinHalt, LOW);
                 #endif
                 Dome.ShutterState = ShClose;
@@ -231,7 +223,6 @@ void domehandlerloop() {
             break;
 
     case 13:
-    Serial.println("FINITO");
             Dome.MoveRetry = false;
             Dome.ShutterCommand = Idle;
             Dome.Cycle = 0;
@@ -243,33 +234,22 @@ void domehandlerloop() {
             
             ShMoveTimeOutAck = millis();
             #ifdef GATE_BOARD
-              digitalWrite(Config.dome.pinHalt, HIGH);   //I need just a pulse for start roof motor
+              digitalWrite(Config.dome.pinHalt, HIGH);   //Halt
               digitalWrite(Config.dome.pinStart, LOW);
             #else
-              digitalWrite(Config.dome.pinHalt, LOW);   //I need just a pulse for start roof motor
+              digitalWrite(Config.dome.pinHalt, LOW);   //Shut Down all 
               digitalWrite(Config.dome.pinStart, LOW);
-
-              Serial.println("PING PONG");
             #endif
             Dome.Cycle++;
             break;
 
     case 21:
-
-          #ifdef GATE_BOARD
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait a second
               digitalWrite(Config.dome.pinHalt, LOW);   
               digitalWrite(Config.dome.pinStart, LOW);
               Dome.Cycle++;
               ShMoveTimeOutAck = millis();
             }      
-          #else
-            if ((millis() - ShMoveTimeOutAck) > 2000) { //Wait a second
-              Dome.Cycle = 10;
-              ShMoveTimeOutAck = millis();
-            }      
-
-          #endif
             break;
 
     case 22:
@@ -281,7 +261,6 @@ void domehandlerloop() {
 
     /* HALT CYCLE */
     case 100: //halt command for 1sec
-            Serial.println("TIME OUT O COMANDO DI HALT PREMUTO");
             ShMoveTimeOutAck = millis();
             Dome.ShutterState = ShError;
 
@@ -312,7 +291,6 @@ void domehandlerloop() {
 
 
     default:
-            Serial.println("unknown state");
             break;
   }
 
