@@ -17,7 +17,17 @@ A USB cable is only required for the first software upload; after that, a WiFi M
 - OTA updates allow firmware updates without cables.
 
 ## Dome
-Dome support only R.O.R. type. You can use a normal gate board.
+Dome support only R.O.R. type.
+
+You can use a normal gate board or two realy to provide open and close functions.
+
+If you have a **gate board**, you don't have to do nothing.
+If you have **two realy to command a motor directly**, you need to do some steps:
+- Open main.cpp
+- comment the line `#define GATE_BOARD` adding two \ before;
+
+Open the directory
+
 The board provide the signals:
 - Move (open/close)
 - Halt

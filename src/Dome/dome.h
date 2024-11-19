@@ -1,13 +1,17 @@
 #ifndef DOME_HAND
 #define DOME_HAND
 
-
-
-unsigned long  oldCy;
+bool debug = true;
+unsigned long oldCy;
 unsigned long oldMillis;
 unsigned long ShMoveTimeOut;
 unsigned long ShMoveTimeOutAck;
 
+void debug(String string){
+  if(debug){
+    Serial.println(string);
+  }
+}
 
 void initDomeConfig(){
     JsonDocument doc;
@@ -106,13 +110,13 @@ void domehandlerloop() {
   {
     case 0:
             Dome.MoveRetry = false;
-            
             if (Dome.ShutterInputState == ShOnlyClose) {       Dome.ShutterState = ShClose;
             } else if (Dome.ShutterInputState == ShOnlyOpen) { Dome.ShutterState = ShOpen;
             } else {                                      Dome.ShutterState = ShError; }
             
             if (Dome.ShutterCommand == CmdOpen) {
               if (Dome.ShutterInputState != ShOnlyOpen) {
+                Serial.println(Dome.Cycle);
                 Dome.ShutterState = ShOpening;
                 Dome.Cycle = 10;
               } else {
@@ -123,6 +127,7 @@ void domehandlerloop() {
 
             if (Dome.ShutterCommand == CmdClose) {
               if (Dome.ShutterInputState != ShOnlyClose) {
+                 Serial.println(Dome.Cycle);
                 Dome.Cycle = 10;
                 Dome.ShutterState = ShClosing;
               } else {
@@ -141,14 +146,29 @@ void domehandlerloop() {
             //Open and close cycle are identical, I just hope to reach the right
             //Pulse to start to the motor, ack millis for time out and
             ShMoveTimeOutAck = millis();
-            digitalWrite(Config.dome.pinStart, HIGH);
+            #ifdef GATE_BOARD
+              digitalWrite(Config.dome.pinStart, HIGH);
+            #else
+              if (Dome.ShutterCommand == CmdOpen) {
+                digitalWrite(Config.dome.pinStart, HIGH);
+              }
+            
+              if (Dome.ShutterCommand == CmdClose) {
+                digitalWrite(Config.dome.pinHalt, HIGH);
+              }
+
+
+            #endif
             Dome.Cycle++;
+
             break;
 
     case 11:  //Take signal end to loose signal
             if ((millis() - ShMoveTimeOutAck) > 1000) { //Wait 1second anyway
               if (Dome.ShutterInputState == ShInAll || Dome.ShutterInputState == ShInNoOne) {
-                digitalWrite(Config.dome.pinStart, LOW);
+                #ifdef GATE_BOARD
+                  digitalWrite(Config.dome.pinStart, LOW);
+                #endif
                 ShMoveTimeOutAck = millis();
                 Dome.Cycle++;
               }
@@ -159,6 +179,9 @@ void domehandlerloop() {
             // INIZIO CHECK APERTUA
             if (Dome.ShutterCommand == CmdOpen) {
                 if (Dome.ShutterInputState == ShOnlyOpen) { //As aspected direction!
+                #ifndef GATE_BOARD
+                  digitalWrite(Config.dome.pinStart, LOW);
+                #endif
                 Dome.ShutterState = ShOpen;
                 Dome.Cycle++;
                 break;
@@ -188,6 +211,9 @@ void domehandlerloop() {
                 }
               }
               if (Dome.ShutterInputState == ShOnlyClose) { //As aspected direction!
+                #ifndef GATE_BOARD
+                  digitalWrite(Config.dome.pinHalt, LOW);
+                #endif
                 Dome.ShutterState = ShClose;
                 Dome.Cycle++;
               }
@@ -204,9 +230,16 @@ void domehandlerloop() {
 
 
 //PING PONG - HALT ASPETTO E RIBADISCO LO START
-    case 20:ShMoveTimeOutAck = millis();
-            digitalWrite(Config.dome.pinHalt, HIGH);   //I need just a pulse for start roof motor
-            digitalWrite(Config.dome.pinStart, LOW);
+    case 20:
+            
+            ShMoveTimeOutAck = millis();
+            #ifdef GATE_BOARD
+              digitalWrite(Config.dome.pinHalt, HIGH);   //Halt
+              digitalWrite(Config.dome.pinStart, LOW);
+            #else
+              digitalWrite(Config.dome.pinHalt, LOW);   //Shut Down all 
+              digitalWrite(Config.dome.pinStart, LOW);
+            #endif
             Dome.Cycle++;
             break;
 
@@ -216,7 +249,7 @@ void domehandlerloop() {
               digitalWrite(Config.dome.pinStart, LOW);
               Dome.Cycle++;
               ShMoveTimeOutAck = millis();
-            }        
+            }      
             break;
 
     case 22:
@@ -230,8 +263,14 @@ void domehandlerloop() {
     case 100: //halt command for 1sec
             ShMoveTimeOutAck = millis();
             Dome.ShutterState = ShError;
-            digitalWrite(Config.dome.pinHalt, HIGH);
-            digitalWrite(Config.dome.pinStart, LOW);
+
+            #ifdef GATE_BOARD
+              digitalWrite(Config.dome.pinHalt, HIGH);
+              digitalWrite(Config.dome.pinStart, LOW);
+            #else
+                digitalWrite(Config.dome.pinStart, LOW);
+                digitalWrite(Config.dome.pinHalt, LOW);
+            #endif
             Dome.Cycle++;
             break;
 
@@ -244,6 +283,7 @@ void domehandlerloop() {
             break;
 
     case 102: 
+    Serial.println("RESET");
             Dome.ShutterCommand = Idle;
             Dome.Cycle = 0;
             Dome.MoveRetry = false;
@@ -251,7 +291,6 @@ void domehandlerloop() {
 
 
     default:
-            Serial.println("unknown state");
             break;
   }
 
