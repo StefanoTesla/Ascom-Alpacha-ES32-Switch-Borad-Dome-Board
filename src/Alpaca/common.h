@@ -1,0 +1,88 @@
+#ifndef ALPACA_COMMON_RESPONSE
+#define ALPACA_COMMON_RESPONSE
+
+/*
+Response to a Method not implemented from the board
+*/
+void alpacaMethodNotImplemented(AsyncWebServerRequest *request){
+    AsyncJsonResponse* response = new AsyncJsonResponse();
+    JsonObject doc = response->getRoot().to<JsonObject>();
+    doc["ErrorNumber"] = 1024;
+    doc["ErrorMessage"] = "Method not implemented";
+    doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+    doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+    response->setLength();
+    request->send(response);
+}
+/*
+Response to a Property not implemented from the board
+*/
+void alpacaPropertyNotImplemented(AsyncWebServerRequest *request){
+    AsyncJsonResponse* response = new AsyncJsonResponse();
+    JsonObject doc = response->getRoot().to<JsonObject>();
+    doc["ErrorNumber"] = 1024;
+    doc["ErrorMessage"] = "Property not implemented";
+    doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+    doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+    response->setLength();
+    request->send(response);
+}
+
+/*
+Response to a can do something implemented from the board
+*/
+void alpacaCan(AsyncWebServerRequest *request){
+    AsyncJsonResponse* response = new AsyncJsonResponse();
+    JsonObject doc = response->getRoot().to<JsonObject>();
+    doc["Value"] = true;
+    doc["ErrorNumber"] = 0;
+    doc["ErrorMessage"] = "";
+    doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+    doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+    response->setLength();
+    request->send(response);
+}
+
+/*
+Response to a can do something not implemented from the board
+*/
+void alpacaCant(AsyncWebServerRequest *request){
+    AsyncJsonResponse* response = new AsyncJsonResponse();
+    JsonObject doc = response->getRoot().to<JsonObject>();
+    doc["Value"] = false;
+    doc["ErrorNumber"] = 0;
+    doc["ErrorMessage"] = "";
+    doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+    doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+    response->setLength();
+    request->send(response);
+}
+
+
+/*
+Response to action list request but any actions are implemented
+*/
+void alpacaNoActions(AsyncWebServerRequest *request){
+    AsyncJsonResponse* response = new AsyncJsonResponse();
+    JsonObject doc = response->getRoot().to<JsonObject>();
+    JsonArray Value = doc["Value"].to<JsonArray>();
+    doc["ErrorNumber"] = 0;
+    doc["ErrorMessage"] = "";
+    doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+    doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+    response->setLength();
+    request->send(response);
+}
+
+void alpacaActionNotImplemented(AsyncWebServerRequest *request){
+    AsyncJsonResponse* response = new AsyncJsonResponse();
+    JsonObject doc = response->getRoot().to<JsonObject>();
+    doc["ErrorNumber"] = 1036;
+    doc["ErrorMessage"] = "Action not implemented";
+    doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+    doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+    response->setLength();
+    request->send(response);
+}
+
+#endif
