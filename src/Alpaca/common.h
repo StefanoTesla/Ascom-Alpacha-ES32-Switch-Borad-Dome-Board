@@ -85,4 +85,55 @@ void alpacaActionNotImplemented(AsyncWebServerRequest *request){
     request->send(response);
 }
 
+
+/*
+*
+* Validate Pin Number as Input
+*
+*/
+
+bool commonValidateInputPin(unsigned int pin){
+    int unusable[15] = {1, 6, 7, 8, 9, 10, 11,20,24,28,29,30,31,37,38};
+    int i =0;
+    if(
+        pin < 0 and
+        pin > 39
+    ){
+        return false;
+    }
+
+    // check if I can't use this pin
+    for(i=0;i<7;i++){
+
+        if(pin == unusable[i]){
+            Serial.println(unusable[i]);
+            return false;
+        }
+    }
+
+    return true;
+
+}
+bool commonValidateOutputPin(unsigned int pin){
+    int unusable[15] = {3,6,7,8,9,10,11,20,24,28,29,30,31,37,38};
+    int i =0;
+    if(
+        pin < 0 and
+        pin > 33
+    ){
+        return false;
+    }
+
+    // check if I can't use this pin
+    for(i=0;i<7;i++){
+
+        if(pin == unusable[i]){
+            Serial.println(unusable[i]);
+            return false;
+        }
+    }
+
+    return true;
+
+}
 #endif

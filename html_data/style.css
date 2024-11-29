@@ -1,0 +1,206 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --divbkg: #373737;
+  --divhig: #4B4B4B;
+  --green: #CBF05F;
+  --orange: #ecb94a;
+  --red: #ec4a4a;
+  --black: #212121;
+}
+
+*{
+  color: #FDFDFD;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+body{
+  background: #212121;
+}
+
+header {
+  background: var(--divbkg);
+}
+
+header{
+  @apply flex  font-bold py-4 justify-between
+}
+
+.menu{
+  @apply flex
+}
+
+.menu > * {
+  @apply pr-4
+}
+.main_grid{
+  @apply grid grid-cols-1 w-11/12 mx-auto gap-6 mt-6 max-w-5xl
+}
+
+a.active{
+  color: #CBF05F;
+}
+.single_grid{
+  background: var(--divbkg);
+  @apply rounded-xl shadow-[#2e2e33] shadow-sm
+}
+
+.single_grid > .single_header{
+  @apply grid grid-flow-col grid-cols-12 justify-around text-lg p-4  cursor-pointer
+}
+
+.single_header > .title{
+  @apply text-blue-400 font-bold col-span-8 content-center
+}
+.single_header > .status{
+  @apply col-span-3 justify-items-center content-center
+}
+
+.led {
+  @apply w-5 h-5 rounded-full mx-4
+}
+
+.open{
+  @apply rotate-180
+}
+
+.single_header > .coll_icon{
+  @apply col-span-1 items-center justify-items-center content-center
+}
+
+
+.led.active{
+  background-color: #CBF05F;
+}
+
+.led.warning{
+  background-color: #ecb94a;
+}
+
+.led.disactive{
+  background-color: #ec4a4a;
+}
+
+li.switch{
+  @apply grid grid-cols-3 justify-between
+}
+
+
+.toggle {
+  --width: 40px;
+  --height: calc(var(--width) / 2);
+  --border-radius: calc(var(--height) / 2);
+
+  display: inline-block;
+  cursor: pointer;
+}
+
+.toggle__input {
+  display: none;
+}
+
+.toggle__fill {
+  position: relative;
+  width: var(--width);
+  height: var(--height);
+  border-radius: var(--border-radius);
+  background: #dddddd;
+  transition: background 0.2s;
+}
+
+.toggle__fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: var(--height);
+  width: var(--height);
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  border-radius: var(--border-radius);
+  transition: transform 0.2s;
+}
+
+.toggle__input:checked ~ .toggle__fill {
+  background: #CBF05F;
+}
+
+.toggle__input:checked ~ .toggle__fill::after {
+  transform: translateX(var(--height));
+}
+
+.card{
+  background: var(--divhig);
+  @apply justify-items-center items-center rounded-lg p-4 mx-4 mb-4
+}
+
+.dome_input {
+  
+  @apply grid grid-cols-2 ;
+}
+
+.dome_input > div {
+  @apply self-center;
+}
+
+
+button{
+  @apply px-4 py-2 rounded-md min-w-20 font-bold uppercase
+}
+
+.green{
+  background-color: var(--green);
+  color: #212121;
+}
+.orange{
+  background-color: var(--orange);
+}
+.red{
+  background-color: var(--red);
+}
+.disactivated{
+  background-color: var(--black);
+}
+
+
+input, select{
+  background: #212121;
+  @apply px-4 py-2 m-0 h-full w-24 lg:w-32
+}
+
+select{
+  @apply min-w-40
+}
+
+.with_unit{
+  @apply rounded-r-xl
+}
+
+.unit{
+  background: #373737;
+  @apply py-2 px-4 ml-0 rounded-l-xl
+}
+
+
+.setting_input{
+  @apply grid grid-flow-col grid-cols-3 lg:grid-cols-2 mb-2 w-4/5 
+}
+
+.config_buttons{
+  @apply mr-4 mb-4 flex flex-col md:flex-row justify-end
+}
+
+.config_buttons > button{
+  @apply mx-auto md:mx-2 mb-4
+}
+
+
+.setting_table{
+  @apply grid grid-flow-row grid-cols-1 md:grid-cols-2 md:px-10 items-center w-full gap-2
+}
+
+
+.validation_error{
+  @apply border-red-600 border-2
+}

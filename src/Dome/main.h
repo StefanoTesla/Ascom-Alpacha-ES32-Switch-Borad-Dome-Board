@@ -8,8 +8,6 @@
 //
 void domeInputRead(){
     int status = 0;
-    bool inClose;
-    bool inOpen;
 
     //debounce open signal
     if (digitalRead(Dome.config.data.inOpen.pin)){
@@ -19,7 +17,7 @@ void domeInputRead(){
         Dome.config.data.inOpen.feInput = false;
       } else {
         if(Global.actualMillis - Dome.config.data.inOpen._ackOn > Dome.config.data.inOpen.delayON){
-          inOpen = true;
+          Dome.Shutter.inOpen = true;
         } 
       }
     } else {
@@ -29,7 +27,7 @@ void domeInputRead(){
         Dome.config.data.inOpen.reInput = false;
       } else {
         if(Global.actualMillis- Dome.config.data.inOpen._ackOff > Dome.config.data.inOpen.delayOFF){
-          inOpen = false;
+          Dome.Shutter.inOpen = false;
         } 
       }
     }
@@ -42,7 +40,7 @@ void domeInputRead(){
         Dome.config.data.inClose.feInput = false;
       } else {
         if(Global.actualMillis - Dome.config.data.inClose._ackOn > Dome.config.data.inClose.delayON){
-          inOpen = true;
+          Dome.Shutter.inClose = true;
         } 
       }
     } else {
@@ -52,15 +50,15 @@ void domeInputRead(){
         Dome.config.data.inClose.reInput = false;
       } else {
         if(Global.actualMillis- Dome.config.data.inClose._ackOff > Dome.config.data.inClose.delayOFF){
-          inOpen = false;
+          Dome.Shutter.inClose = false;
         } 
       }
     }
 
-    if(Dome.config.data.inOpen.type){ inOpen = !inOpen; }
-    if(Dome.config.data.inClose.type){ inClose = !inClose; }
+    if(Dome.config.data.inOpen.type){ Dome.Shutter.inOpen = !Dome.Shutter.inOpen; }
+    if(Dome.config.data.inClose.type){ Dome.Shutter.inClose = !Dome.Shutter.inClose; }
 
-    status = (inClose ? 1 : 0) + (inOpen ? 2 : 0);
+    status = (Dome.Shutter.inClose ? 1 : 0) + (Dome.Shutter.inOpen ? 2 : 0);
 
     switch (status)
     {
@@ -280,7 +278,7 @@ void lastShutterCommand(){
   }
 }
 
-void domehandlerloop() {
+void domeLoop() {
   domeInputRead();
   domeAutoClose();
   shutterCycle();
@@ -292,6 +290,11 @@ void domehandlerloop() {
       Serial.println("DOME: SHUTTER TIMEOUT");
       Dome.Shutter.command = ShCommandHalt;  //Timeout, HALT
     }
+  }
+
+  if (Dome.Shutter.command == ShCommandIdle and Dome.config.Save.execute){
+    Serial.println("DOME: Saving setting...");
+    saveDomeConfig();
   }
 
 }

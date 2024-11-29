@@ -12,6 +12,8 @@
         "regex": "cpp",
         "new": "cpp",
         "*.tcc": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "cstddef": "cpp",
+        "limits": "cpp"
     }
 }

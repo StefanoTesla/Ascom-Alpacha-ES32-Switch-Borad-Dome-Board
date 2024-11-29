@@ -1,0 +1,82 @@
+{
+	"menu":{
+		"home": "HOME",
+		"setting": "IMPOSTAZIONI"
+	},
+	"switch":{
+		"title":"switch"
+	},
+	"dome":{
+		"title":"Cupola",
+		"input":"Stato Ingressi",
+		"roofState": "Stato del Tetto: ",
+		"actualCommand": "Comando attuale:",
+		"lastCommand":"Ultimo comando:",
+		"shutterState":{
+			"open": "Aperto",
+			"closed": "Chiuso",
+			"opening": "In Apertura",
+			"closing": "In Chiusura",
+			"error": "In Errore"
+		},
+		"shutterCommand":{
+			"idle": "Nessun Comando",
+			"open": "In Apertura",
+			"close": "In Chiusura",
+			"halt": "HALT"
+		}
+	},
+	"gen":{
+		"opened":"aperto",
+		"closed":"chiuso",
+		"open" : "apri",
+		"close" : "chiudi",
+		"halt" : "ferma",
+		"pin" : "GPIO:",
+		"type": "Tipo:",
+		"outputs": "Uscite",
+		"loadFromBoard": "RIPRISTINA",
+		"downloadFile": "SCARICA FILE",
+		"save":"SALVA",
+		"enable": "Abilita:"
+	},
+	"setting":{
+		"dome":{
+			"inOpen": "Ingresso Aperto",
+			"inClose": "Ingresso Chiuso",
+			"onDelay": "Ritardo Attivazione:",
+			"offDelay": "Ritardo Disattivazione:",
+			"outStart": "GPIO Start:",
+			"outHalt": "GPIO HALT:",
+			"outOpen": "GPIO Apertura:",
+			"outClose": "GPIO Chiusura:",
+			"timeout": "Timeout",
+			"autoClose": "Chiusura Automatica",
+			"timeOutMoviment" : "Timeout Movimentazione:",
+			"autoclosewarning1": "Attenzione, leggere attentamente prima di attivarla.",
+			"autoclosewarning2": "Questa opzione chiude il tetto in automatico se il tetto è aperto E il wifi è connesso E non c'è nessuna comunicazione con la scheda (riguardante la CUPOLA)",
+			"autoclosewarning3": "Ad esempio, nel caso di blackout temporaneo, una volta che ritorna la corrente, e probabilmente il PC rimane spento o non si riavviano i software per gestire la sequenza, aspetterà i minuti impostati, dopo di che, il tetto verrà chiuso, INDIPENDENTEMENTE dallo stato dell'attrezzatura (telescopio).",
+			"autoclosewarning4": "In caso di manutenzione al tetto, sarà necessario mantenere il browser aperto sulla pagina principale, per evitare la chiusura automatica, o ancora meglio disattivare questa funzione.",
+			"autoclosewarning5": "Attivando questa funzione confermi di aver letto e compreso i rischi che questa funzione può avere per te e la tua attrezzatura.",
+			"autoCloseEn": "Abilitazione Chiusura Automatica:",
+			"autoCloseMin": "Chiudi dopo:",
+			"configSaved": "configurazione Cupola Salvata"
+		},
+		"coverC":{
+			"calibrator":{
+				"calibrator": "Flat Panel"
+			},
+			"cover":{
+				"cover": "Tappo",
+				"openDeg": "Aperto a gradi:",
+				"closeDeg": "Chiudi a gradi:",
+				"maxDeg": "Massima Rotazione:"
+			},
+			"configSaved": "configurazione Cover Calibrator Salvata"
+		}
+	},
+	"errors":{
+		"noUsableAsInput" : "non utilizzabile come ingresso",
+		"noUsableAsOutput" : "non utilizzabile come uscita"
+	}	
+}

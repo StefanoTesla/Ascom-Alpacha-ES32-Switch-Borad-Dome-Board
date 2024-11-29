@@ -32,6 +32,8 @@ struct ShutterStruct {
   unsigned int LastDomeCommand;
   unsigned long lastCommunicationMillis;
   unsigned long timeOutAck;
+  bool inOpen;
+  bool inClose;
 };
 
 struct domeHeader{

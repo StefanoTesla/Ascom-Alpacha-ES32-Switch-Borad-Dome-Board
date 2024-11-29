@@ -2,18 +2,57 @@
 #define DOME_CONFIG
 
 
+void saveDomeConfig(){
+
+    File file = LittleFS.open("/cfg/domeconfig.txt", FILE_WRITE);
+    if (!file) {
+        Serial.println("Error during open Dome config file");
+        return;
+    }
+    JsonDocument doc;
+
+    JsonObject pinOpen = doc["pinOpen"].to<JsonObject>();
+    pinOpen["pin"] = Dome.config.data.inOpen.pin;
+    pinOpen["dOn"] = Dome.config.data.inOpen.delayON;
+    pinOpen["dOff"] = Dome.config.data.inOpen.delayOFF;
+    pinOpen["type"] = Dome.config.data.inOpen.type;
+
+    JsonObject pinClose = doc["pinClose"].to<JsonObject>();
+    pinClose["pin"] = Dome.config.data.inClose.pin;
+    pinClose["dOn"] = Dome.config.data.inClose.delayON;
+    pinClose["dOff"] = Dome.config.data.inClose.delayOFF;
+    pinClose["type"] = Dome.config.data.inClose.type;
+
+    JsonObject autoclose = doc["autoclose"].to<JsonObject>();
+    autoclose["enable"] = Dome.config.data.enAutoClose;
+    autoclose["minutes"] = Dome.config.data.autoCloseTimeOut;
+
+    doc["pinStart"] = Dome.config.data.outStart_Open;
+    doc["pinHalt"] = Dome.config.data.outHalt_Close;
+    doc["movTimeOut"] = Dome.config.data.movingTimeOut;
+
+    serializeJson(doc, file);
+
+    Dome.config.Save.execute = false;
+    file.close();
+    
+}
+
+
 void initDomeConfig(){
+    Serial.println("INIT: Reading Dome config...");
     JsonDocument doc;
     File file = LittleFS.open("/cfg/domeconfig.txt", FILE_READ);
 
     if (!file) {
-        Serial.println("Reading Dome config error");
+        Serial.println("[ERR] Init: Reading Dome config error");
+        saveDomeConfig();
         return;
     }
 
     DeserializationError error = deserializeJson(doc, file);
     if(error){
-        Serial.print(F("deserializeJson() failed: "));
+        Serial.print(F("[ERR] Init: Reading Dome config deserializeJson() failed: "));
         Serial.println(error.c_str());
         file.close();
         return;
@@ -49,39 +88,5 @@ void initDomeConfig(){
 
 }
 
-void saveDomeConfig(){
-
-    File file = LittleFS.open("/cfg/domeconfig.txt", FILE_WRITE);
-    if (!file) {
-        Serial.println("Error during open Dome config file");
-        return;
-    }
-    JsonDocument doc;
-
-    JsonObject pinOpen = doc["pinOpen"].to<JsonObject>();
-    pinOpen["pin"] = Dome.config.data.inOpen.pin;
-    pinOpen["dOn"] = Dome.config.data.inOpen.delayON;
-    pinOpen["dOff"] = Dome.config.data.inOpen.delayOFF;
-    pinOpen["type"] = Dome.config.data.inOpen.type;
-
-    JsonObject pinClose = doc["pinClose"].to<JsonObject>();
-    pinClose["pin"] = Dome.config.data.inClose.pin;
-    pinClose["dOn"] = Dome.config.data.inClose.delayON;
-    pinClose["dOff"] = Dome.config.data.inClose.delayOFF;
-    pinClose["type"] = Dome.config.data.inClose.type;
-
-    JsonObject autoclose = doc["autoclose"].to<JsonObject>();
-    autoclose["enable"] = Dome.config.data.enAutoClose;
-    autoclose["minutes"] = Dome.config.data.autoCloseTimeOut;
-
-    doc["pinStart"] = Dome.config.data.outStart_Open;
-    doc["pinHalt"] = Dome.config.data.outHalt_Close;
-    doc["movTimeOut"] = Dome.config.data.movingTimeOut;
-
-    serializeJson(doc, file);
-
-    file.close();
-    
-}
 
 #endif

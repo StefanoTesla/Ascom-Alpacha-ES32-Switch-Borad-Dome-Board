@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TeslaBoard - SETUP</title>
+</head>
+
+<body x-data="Translations()">
+
+  <template x-if="loaded">
+    <header>
+      <div class="logo"></div>
+      <div class="menu">
+        <a href="index.html">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="32px" height="32px"
+          viewBox="0 0 48 48" style="enable-background:new 0 0 48 48;" xml:space="preserve">
+       <path style="fill:none;stroke:#fdfdfd;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:10;" d="M8.5,41.5h10
+         c0.552,0,1-0.448,1-1v-10c0-1.105,0.895-2,2-2h5c1.105,0,2,0.895,2,2v10c0,0.552,0.448,1,1,1h10c0.552,0,1-0.448,1-1V21.411
+         c0-1.838-0.843-3.575-2.287-4.713L24,5.5L9.787,16.698C8.343,17.836,7.5,19.573,7.5,21.411V40.5C7.5,41.052,7.948,41.5,8.5,41.5z"/>
+       </svg></a>
+        <a href="setup.html"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 32 32" width="32px" height="32px" fill="#CBF05F"><path d="M 13.1875 3 L 13.03125 3.8125 L 12.4375 6.78125 C 11.484375 7.15625 10.625 7.683594 9.84375 8.3125 L 6.9375 7.3125 L 6.15625 7.0625 L 5.75 7.78125 L 3.75 11.21875 L 3.34375 11.9375 L 3.9375 12.46875 L 6.1875 14.4375 C 6.105469 14.949219 6 15.460938 6 16 C 6 16.539063 6.105469 17.050781 6.1875 17.5625 L 3.9375 19.53125 L 3.34375 20.0625 L 3.75 20.78125 L 5.75 24.21875 L 6.15625 24.9375 L 6.9375 24.6875 L 9.84375 23.6875 C 10.625 24.316406 11.484375 24.84375 12.4375 25.21875 L 13.03125 28.1875 L 13.1875 29 L 18.8125 29 L 18.96875 28.1875 L 19.5625 25.21875 C 20.515625 24.84375 21.375 24.316406 22.15625 23.6875 L 25.0625 24.6875 L 25.84375 24.9375 L 26.25 24.21875 L 28.25 20.78125 L 28.65625 20.0625 L 28.0625 19.53125 L 25.8125 17.5625 C 25.894531 17.050781 26 16.539063 26 16 C 26 15.460938 25.894531 14.949219 25.8125 14.4375 L 28.0625 12.46875 L 28.65625 11.9375 L 28.25 11.21875 L 26.25 7.78125 L 25.84375 7.0625 L 25.0625 7.3125 L 22.15625 8.3125 C 21.375 7.683594 20.515625 7.15625 19.5625 6.78125 L 18.96875 3.8125 L 18.8125 3 Z M 14.8125 5 L 17.1875 5 L 17.6875 7.59375 L 17.8125 8.1875 L 18.375 8.375 C 19.511719 8.730469 20.542969 9.332031 21.40625 10.125 L 21.84375 10.53125 L 22.40625 10.34375 L 24.9375 9.46875 L 26.125 11.5 L 24.125 13.28125 L 23.65625 13.65625 L 23.8125 14.25 C 23.941406 14.820313 24 15.402344 24 16 C 24 16.597656 23.941406 17.179688 23.8125 17.75 L 23.6875 18.34375 L 24.125 18.71875 L 26.125 20.5 L 24.9375 22.53125 L 22.40625 21.65625 L 21.84375 21.46875 L 21.40625 21.875 C 20.542969 22.667969 19.511719 23.269531 18.375 23.625 L 17.8125 23.8125 L 17.6875 24.40625 L 17.1875 27 L 14.8125 27 L 14.3125 24.40625 L 14.1875 23.8125 L 13.625 23.625 C 12.488281 23.269531 11.457031 22.667969 10.59375 21.875 L 10.15625 21.46875 L 9.59375 21.65625 L 7.0625 22.53125 L 5.875 20.5 L 7.875 18.71875 L 8.34375 18.34375 L 8.1875 17.75 C 8.058594 17.179688 8 16.597656 8 16 C 8 15.402344 8.058594 14.820313 8.1875 14.25 L 8.34375 13.65625 L 7.875 13.28125 L 5.875 11.5 L 7.0625 9.46875 L 9.59375 10.34375 L 10.15625 10.53125 L 10.59375 10.125 C 11.457031 9.332031 12.488281 8.730469 13.625 8.375 L 14.1875 8.1875 L 14.3125 7.59375 Z M 16 11 C 13.25 11 11 13.25 11 16 C 11 18.75 13.25 21 16 21 C 18.75 21 21 18.75 21 16 C 21 13.25 18.75 11 16 11 Z M 16 13 C 17.667969 13 19 14.332031 19 16 C 19 17.667969 17.667969 19 16 19 C 14.332031 19 13 17.667969 13 16 C 13 14.332031 14.332031 13 16 13 Z"/></svg></a>
+      
+      </div>
+    </header>
+  </template>
+  <template x-if="loaded"> 
+    <template x-data="BoardSetting(text)" x-if="dataLoaded">
+      <div class="main_grid">
+      <!-- SWITCH AREA -->
+        <template x-if="exist.switch">
+          <div class="single_grid">
+            <div class="single_header" x-on:click="open.switch = ! open.switch">
+              <div class="title"><p>Switches</p></div>
+              <div class="status">
+              </div>
+              <div class="coll_icon" :class="open.switch ? 'open' : ''">
+                <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <g data-name="Layer 2"><g data-name="arrowhead-down"><rect width="24" height="24" opacity="0"/>
+                  <path d="M17.37 12.39L12 16.71l-5.36-4.48a1 1 0 1 0-1.28 1.54l6 5a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.14z"/>
+                  <path d="M11.36 11.77a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.15L12 9.71 6.64 5.23a1 1 0 0 0-1.28 1.54z"/>
+                  </g></g></svg>
+              </div>
+            </div>
+            <template x-if="open.switch">
+            <ol class="switches">
+              <li class="switch">
+                <span>
+                  Ciao
+                </span>
+                <span>
+
+                </span>
+                <label class="toggle" for="myToggle">
+                  <input class="toggle__input" name="" type="checkbox" id="myToggle">
+                  <div class="toggle__fill"></div>
+                </label>
+              </li>
+              <li>gni</li>
+              <li>gno</li>
+              <li>gnu</li>
+              <li></li>
+              <li></li>
+              <li></li>
+            </ol>
+            </template>  
+          </div>
+        </template>
+
+        <!-- DOME AREA -->
+        <template x-if="exist.dome">
+          <div class="single_grid">
+            <div class="single_header" x-on:click="open.dome = ! open.dome">
+              <div class="title">
+                <p x-text="text.dome.title">Dome</p>
+              </div>
+              <div class="status">
+              </div>
+              <div class="coll_icon" :class="open.dome ? 'open' : ''">
+                <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <g data-name="Layer 2"><g data-name="arrowhead-down"><rect width="24" height="24" opacity="0"/>
+                  <path d="M17.37 12.39L12 16.71l-5.36-4.48a1 1 0 1 0-1.28 1.54l6 5a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.14z"/>
+                  <path d="M11.36 11.77a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.15L12 9.71 6.64 5.23a1 1 0 0 0-1.28 1.54z"/>
+                  </g></g>
+                </svg>
+              </div>
+            </div>
+            <template x-if="open.dome">
+              <div @change="validateDome($event)">
+                <!--Input Open -->
+                <div class="card" >
+                  <div>
+                    <p class="text-center font-bold mb-4" x-text="text.setting.dome.inOpen">Input Aperto</p></div>
+                  <div class="setting_table">
+                    <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
+                    <div>
+                      <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="dome.pinOpen.pin" min=1 max=39/>
+                    </div>
+                    <p x-text="text.setting.dome.onDelay">{onDelay}</p>
+                    <div>
+                      <span class="unit">ms</span><input class="with_unit" type="number" id="dome_in_open_don" x-model="dome.pinOpen.dOn" min=1 max=39/>
+                    </div>
+                    <p x-text="text.setting.dome.offDelay">{offDelay}</p>
+                    <div>
+                      <span class="unit">ms</span><input class="with_unit" type="number" id="dome_in_open_doff" x-model="dome.pinOpen.dOff" min=1 max=39/>
+                    </div>
+                    <p x-text="text.gen.type">{type}</p>
+                    <div>
+                      <select name="type" id="dome_in_open_type" x-model="dome.pinOpen.type">
+                        <option value=0>N.O.</option>
+                        <option value=1>N.C.</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <!--Input Close -->
+                <div class="card">
+                  <div>
+                    <p class="text-center font-bold mb-4" x-text="text.setting.dome.inClose">Input Chiuso</p></div>
+                    <div class="setting_table">
+                      <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
+                      <div>
+                        <span class="unit">n</span><input id="dome_in_close" class="with_unit" type="number" x-model="dome.pinClose.pin" min=0 max=39/>
+                      </div>
+                      <p x-text="text.setting.dome.onDelay">{onDelay}</p>
+                      <div>
+                        <span class="unit">ms</span><input class="with_unit" id="dome_in_close_don" type="number" x-model="dome.pinClose.dOn" min=0/>
+                      </div>
+                      <p x-text="text.setting.dome.offDelay">{offDelay}</p>
+                      <div>
+                        <span class="unit">ms</span><input class="with_unit" id="dome_in_close_doff" type="number" x-model="dome.pinClose.dOff" min=0/>
+                      </div>
+                      <p x-text="text.gen.type">{type}</p>
+                      <div>
+                        <select name="type" id="dome_in_close_type" x-model="dome.pinClose.type">
+                          <option value=0>N.O.</option>
+                          <option value=1>N.C.</option>
+                        </select>
+                      </div>
+                    </div>
+                </div>
+                <!--Output -->
+                <div class="card">
+                  <div>
+                    <p class="text-center font-bold mb-4" x-text="text.gen.outputs">{output}</p></div>
+                    <div class="setting_table">
+                      <p x-show="dome.driverType == 0" x-text="text.setting.dome.outStart">{GPIO}</p>
+                      <p x-show="dome.driverType == 1" x-text="text.setting.dome.outOpen">{GPIO}</p>
+                      <div>
+                        <span class="unit">n</span><input class="with_unit" id="dome_out_start" type="number" x-model="dome.pinStart" min=1 max=39/>
+                      </div>
+                      <p x-show="dome.driverType == 0" x-text="text.setting.dome.outHalt">{GPIO}</p>
+                      <p x-show="dome.driverType == 1" x-text="text.setting.dome.outClose">{GPIO}</p>
+                      <div>
+                        <span class="unit">n</span><input class="with_unit" id="dome_out_halt" type="number" x-model="dome.pinHalt" min=1 max=39/>
+                      </div>
+                    </div>
+                </div>
+
+                <!--Timeout -->
+                <div class="card">
+                  <div>
+                    <p class="text-center font-bold mb-4" x-text="text.setting.dome.timeout">{timeouts}</p>
+                  </div>
+                  <div class="setting_table">
+                      <p x-text="text.setting.dome.timeOutMoviment">{GPIO}</p>
+                      <div>
+                        <span class="unit">sec.</span><input class="with_unit" id="dome_timeout" type="number" x-model="dome.movTimeOut" min=1/>
+                      </div>
+                    </div>
+                  </div>
+                <!--Chiusura Automatica -->
+                <div class="card">
+                  <p class="text-center font-bold mb-4" x-text="text.setting.dome.autoClose">{autoClose}</p>
+                  <p class="pt-4 font-bold" x-text="text.setting.dome.autoclosewarning1">{warning1}</p>
+                  <p class="text-left" x-text="text.setting.dome.autoclosewarning2">{warning2}</p>
+                  <p class="text-left" x-text="text.setting.dome.autoclosewarning3">{warning3}</p>
+                  <p class="text-left" x-text="text.setting.dome.autoclosewarning4">{warning4}</p>
+                  <p class="text-left font-bold mb-4" x-text="text.setting.dome.autoclosewarning5">{warning5}</p>
+                  <div class="setting_table">
+                    <p x-text="text.setting.dome.autoCloseEn">{autoCloseEnable}</p>
+                    <div>
+                      <label class="toggle" for="dome_autoclose">
+                        <input class="toggle__input" name="" type="checkbox" id="dome_autoclose" x-model="dome.autoclose.enable">
+                        <div class="toggle__fill"></div>
+                      </label>
+                    </div>
+                    <p x-text="text.setting.dome.timeOutMoviment">{GPIO}</p>
+                    <div>
+                      <span class="unit">min.</span><input class="with_unit" type="number" id="dome_autoclose_time" x-model="dome.autoclose.minutes" min=1/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="config_buttons">
+                  <button class="green" x-text="text.gen.loadFromBoard" @click="getOriginalDomeConfig()">{loadFromBoard}</button>
+                  <a href="./dome/domeconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
+                  <button class="red" x-text="text.gen.save" @click="saveDomeSetting()">{save}</button>
+                </div>
+
+              </div>
+            </template>
+          </div> 
+        </template>
+
+        <!-- COVER AREA -->
+        <template x-if="exist.coverc">
+          <div class="single_grid">
+            <div class="single_header" x-on:click="open.cover = ! open.cover">
+              <div class="title"><p>CoverCalibrator</p></div>
+              <div class="status">
+              </div>
+              <div class="coll_icon" :class="open.cover ? 'open' : ''">
+                <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <g data-name="Layer 2"><g data-name="arrowhead-down"><rect width="24" height="24" opacity="0"/>
+                  <path d="M17.37 12.39L12 16.71l-5.36-4.48a1 1 0 1 0-1.28 1.54l6 5a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.14z"/>
+                  <path d="M11.36 11.77a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.15L12 9.71 6.64 5.23a1 1 0 0 0-1.28 1.54z"/>
+                  </g></g></svg>
+              </div>
+            </div>
+            <template x-if="open.cover">
+            <div @change="validateCoverC($event)">
+              <div class="card">
+                <div>
+                  <p class="text-center font-bold mb-4" x-text="text.setting.coverC.calibrator.calibrator">{calibrator}</p></div>
+                  <div class="setting_table">
+                    <p x-text="text.gen.enable">{type}</p>
+                    <div>
+                      <label class="toggle" for="coverc_calib_present">
+                        <input class="toggle__input" name="" type="checkbox" id="coverc_calib_present" x-model="coverC.calibrator.present">
+                        <div class="toggle__fill"></div>
+                      </label>
+                    </div>
+                    <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
+                    <div>
+                      <span class="unit">n</span><input id="coverc_calibrator_out" class="with_unit" type="number" x-model="coverC.calibrator.out" min=0 max=39/>
+                    </div>
+
+                  </div>
+              </div>
+              <div class="card">
+                <div>
+                  <p class="text-center font-bold mb-4" x-text="text.setting.coverC.cover.cover">{cover}</p></div>
+                  <div class="setting_table">
+                    <p x-text="text.gen.enable">{enable}</p>
+                    <div>
+                      <label class="toggle" for="coverc_cover_present">
+                        <input class="toggle__input" name="" type="checkbox" id="coverc_cover_present" x-model="coverC.cover.present">
+                        <div class="toggle__fill"></div>
+                      </label>
+                    </div>
+                    <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
+                    <div>
+                      <span class="unit">n</span><input id="coverc_cover_out" class="with_unit" type="number" x-model="coverC.cover.out" min=0 max=39/>
+                    </div>
+                    <div class="content-center"><p x-text="text.setting.coverC.cover.maxDeg">{maxDeg}</p></div>
+                    <div>
+                      <span class="unit">deg</span><input id="coverc_cover_max_deg" class="with_unit" type="number" x-model="coverC.cover.maxDeg" min=0 max=360/>
+                    </div>
+                    <div class="content-center"><p x-text="text.setting.coverC.cover.closeDeg">{closeDeg}</p></div>
+                    <div>
+                      <span class="unit">deg</span><input id="coverc_cover_close_deg" class="with_unit" type="number" x-model="coverC.cover.closeDeg" min=0 max=39/>
+                    </div>
+                    <div class="content-center"><p x-text="text.setting.coverC.cover.openDeg">{openDeg}</p></div>
+                    <div>
+                      <span class="unit">deg</span><input id="coverc_cover_open_deg" class="with_unit" type="number" x-model="coverC.cover.openDeg" min=0 max=39/>
+                    </div>
+
+                  </div>
+              </div>
+              <div class="config_buttons">
+                <button class="green" x-text="text.gen.loadFromBoard" @click="getOriginalCoverCConfig()">{loadFromBoard}</button>
+                <a href="./dome/covercconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
+                <button class="red" x-text="text.gen.save" @click="saveCoverCSetting()">{save}</button>
+              </div>
+            </div>
+
+            </div>
+            
+          </template>
+          </div>
+        </template>
+
+       
+        <!-- STATISTICS AREA -->
+        <div class="single_grid">
+          <div class="single_header" x-on:click="open.statistics = ! open.statistics">
+            <div class="title"><p>Statistiche</p></div>
+            <div class="status">
+              <div class="led active"></div>
+            </div>
+            <div class="coll_icon" :class="open.statistics ? 'open' : ''">
+              <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <g data-name="Layer 2"><g data-name="arrowhead-down"><rect width="24" height="24" opacity="0"/>
+                <path d="M17.37 12.39L12 16.71l-5.36-4.48a1 1 0 1 0-1.28 1.54l6 5a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.14z"/>
+                <path d="M11.36 11.77a1 1 0 0 0 1.27 0l6-4.83a1 1 0 0 0 .15-1.41 1 1 0 0 0-1.41-.15L12 9.71 6.64 5.23a1 1 0 0 0-1.28 1.54z"/>
+                </g></g></svg>
+            </div>
+          </div>
+          <template x-if="open.statistics">
+            <div>
+              <div>
+                Stato Coperchio:
+                <div><button>APRI</button>
+                  <button>CHIUDI</button></div>
+              </div>
+              <div>
+                Stato Pannello:
+                <div><button>APRI</button>
+                  <button>CHIUDI</button></div>             
+              </div>
+            </div>
+          </template>
+        </div>
+        <div
+        class="fixed inset-0 flex flex-col-reverse items-end justify-start h-screen w-screen"
+        @notice.window="addToast($event.detail)"
+        style="pointer-events:none">
+        <template x-for="notice of notices" :key="notice.id">
+          <div
+            x-show="visible.includes(notice)"
+            x-transition:enter="transition ease-in duration-200"
+            x-transition:enter-start="transform opacity-0 translate-y-2"
+            x-transition:enter-end="transform opacity-100"
+            x-transition:leave="transition ease-out duration-500"
+            x-transition:leave-start="transform translate-x-0 opacity-100"
+            x-transition:leave-end="transform translate-x-full opacity-0"
+            @click="removeToast(notice.id)"
+            class="rounded mb-4 mr-6 w-60 pl-4 flex items-center justify-center text-white shadow-lg font-bold text-lg cursor-pointer"
+            :class="{
+              'bg-green-500': notice.type === 'success',
+              'bg-blue-500': notice.type === 'info',
+              'bg-orange-500': notice.type === 'warning',
+              'bg-red-500': notice.type === 'error',
+             }"
+            style="pointer-events:all"
+            x-text="notice.text">
+          </div>
+        </template>
+      </div>
+      </div>
+
+    </template>
+    </div>
+
+    
+  </template>
+
+
+</div>
+
+  <script type="module" src="/main.js"></script>
+
+
+
+</body>
+
+</html>
