@@ -86,7 +86,7 @@ void setup() {
     domeRequestHandler();
   #endif
   #ifdef COVER_CALIBRATOR
-  coverCalibratorRequestHandler();
+    coverCalibratorRequestHandler();
   #endif
 
   boardWebServer();

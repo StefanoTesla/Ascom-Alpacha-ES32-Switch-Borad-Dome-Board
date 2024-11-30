@@ -20,7 +20,7 @@ export default function BoardSetting(text) {
     init(){
 
         // get the defined boards
-        fetch('http://192.168.222.235/api/cfg')
+        fetch('http://192.168.1.158/api/cfg')
         .then(response => response.json())
         .then(data => {
             this.exist = data.define;
@@ -46,7 +46,7 @@ export default function BoardSetting(text) {
 
 
     getCoverCConfig(){
-        fetch('http://192.168.222.235/api/coverc/cfg')
+        fetch('http://192.168.1.158/api/coverc/cfg')
         .then(response => response.json())
         .then(data => {
 
@@ -58,7 +58,6 @@ export default function BoardSetting(text) {
     },
 
     validateCoverC(){
-        console.log("reactivity is my name...")
         let valid = true
         this.parseObjectToInt(this.coverC)
 
@@ -84,17 +83,39 @@ export default function BoardSetting(text) {
 
     saveCoverCSetting(){
         if(this.validateCoverC()){
-            fetch('http://192.168.222.235/api/coverc/cfg', {
+            fetch('http://192.168.1.158/api/coverc/cfg', {
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json, text/plain, */*',
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(this.dome)
-              }).then(res => res.json())
-                .then(res => {
-                    this.addToast({ type:"success", text: this.text.setting.coverc.configSaved })
-                });
+                body: JSON.stringify(this.coverC)
+              }).then(res => {
+                // Controllo dello stato HTTP
+                if (!res.ok) {
+                    // Analizzo la risposta JSON anche per errori 500
+                    return res.json().then(errorResponse => {
+                        throw { status: res.status, ...errorResponse };
+                    });
+                }
+                return res.json();
+            })
+            .then(res => {
+                this.addToast({ type: "success", text: this.text.setting.coverC.configSaved });
+            })
+            .catch(err => {
+                if (err.errors) {
+                    err.errors.forEach((error, index) => {
+                        setTimeout(() => {
+                            console.log(`Errore ${index + 1}: ${error}`);
+                            this.addToast({ type: "error", text: `Errore: ${error}` });
+                        }, 1 * index);  // put a delay to avoid toat crash
+                    });
+                } else {
+                    console.log("Errore sconosciuto:", err);
+                    this.addToast({ type: "error", text: "Errore sconosciuto." });
+                }
+            });
         }
     },
 
@@ -107,7 +128,7 @@ export default function BoardSetting(text) {
     },
 
     getDomeConfig(){
-        fetch('http://192.168.222.235/api/dome/cfg')
+        fetch('http://192.168.1.158/api/dome/cfg')
         .then(response => response.json())
         .then(data => {
 
@@ -131,6 +152,16 @@ export default function BoardSetting(text) {
               }).then(res => res.json())
                 .then(res => {
                     this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
+                })
+                .catch(err => {
+                    try {
+                        const errorData = JSON.parse(err.message);
+                        console.log("Errors:", errorData.errors);
+                        this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
+                    } catch (parseError) {
+                        console.log("Errore sconosciuto:", err);
+                        this.addToast({ type: "error", text: "Errore sconosciuto." });
+                    }
                 });
         }
     },

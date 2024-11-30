@@ -24,7 +24,7 @@ struct coverConfig{
   unsigned int openDeg;
   unsigned int closeDeg = 0;
   unsigned int maxDeg = 0;
-  unsigned int movingTime = 20000;
+  unsigned int movingTime = 2000;
 };
 
 struct structCoverCalibratorConfig{
@@ -33,6 +33,23 @@ struct structCoverCalibratorConfig{
   coverCSaveConfigStruct save;
   coverCLoadConfigStruct load;
 };
+
+/* COMMANDS */
+struct calibratorCommand{
+  bool change;
+  unsigned int brightness; 
+};
+
+struct coverCommand{
+  bool move;
+  unsigned int angle; 
+};
+
+struct coverCalibratorsCommand{
+  calibratorCommand calibrator;
+  coverCommand cover;
+};
+
 
 /* STATUS*/
 enum calirbatorStatusEnum{
@@ -56,6 +73,12 @@ enum coverStatusEnum{
 struct coverStatus{
   coverStatusEnum status;
   unsigned int cycle;
+  unsigned int angle;
+};
+
+struct coverStruct {
+  coverStatus status;
+  coverCommand command;
 };
 
 struct coverCalibratorStatus{
@@ -73,6 +96,7 @@ struct alpacaCalibratorParameters{
 
 struct coverCalibrator{
   coverCalibratorStatus status;
+  coverCalibratorsCommand command;
   structCoverCalibratorConfig config;
   alpacaCalibratorParameters alpaca;
 };

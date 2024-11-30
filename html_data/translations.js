@@ -24,7 +24,7 @@ export default function Translations() {
       //      this.setLanguageCookie(this.locale);
       //      this.fetchTexts();
             //override temporaneo
-            fetch('http://localhost:3000/api/cfg')
+            fetch('/api/cfg')
                 .then(response => response.json())
                 .then(data => {
                     this.locale = data.locale;

@@ -20,9 +20,9 @@ void saveCoverCConfig(){
     cover["maxDeg"] = CoverC.config.cover.maxDeg;
 
     JsonObject calibrator = doc["Calibrator"].to<JsonObject>();
-    cover["present"] = CoverC.config.calibrator.present;
-    cover["pin"] = CoverC.config.calibrator.outPWM;
-    Serial.println(file);
+    calibrator["present"] = CoverC.config.calibrator.present;
+    calibrator["pin"] = CoverC.config.calibrator.outPWM;
+
     serializeJson(doc, file);
     file.close();
 
