@@ -117,7 +117,7 @@ void domeWebServer(){
         }
 
         /* outputs */
-        if( json["pinStart"].is<unsigned int>() and commonValidateInputPin(json["pinStart"])){
+        if( json["pinStart"].is<unsigned int>() and commonValidateOutputPin(json["pinStart"])){
             if (json["pinStart"] != Dome.config.data.outStart_Open){
                 reboot = true;
             }
@@ -126,7 +126,7 @@ void domeWebServer(){
             err.add("GPIO Start Output");
         }
 
-        if( json["pinHalt"].is<unsigned int>() and commonValidateInputPin(json["pinHalt"])){
+        if( json["pinHalt"].is<unsigned int>() and commonValidateOutputPin(json["pinHalt"])){
             if (json["pinHalt"] != Dome.config.data.outHalt_Close){
                 reboot = true;
             }

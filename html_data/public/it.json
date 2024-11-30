@@ -70,7 +70,8 @@
 				"cover": "Tappo",
 				"openDeg": "Aperto a gradi:",
 				"closeDeg": "Chiudi a gradi:",
-				"maxDeg": "Massima Rotazione:"
+				"maxDeg": "Massima Rotazione:",
+				"movingTime": "Tempo di movimento:"
 			},
 			"configSaved": "configurazione Cover Calibrator Salvata"
 		}
