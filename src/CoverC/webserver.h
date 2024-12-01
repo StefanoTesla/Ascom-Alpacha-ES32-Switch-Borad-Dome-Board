@@ -50,7 +50,7 @@ void coverWebServer(){
 
         doc["execute"] = true;
         CoverC.command.cover.move = true;
-        CoverC.command.cover.angle = CoverC.config.cover.closeDeg;
+        CoverC.command.cover.angle = CoverC.config.cover.openDeg;
 
         response->setLength();
         request->send(response);
@@ -61,7 +61,7 @@ void coverWebServer(){
 
         doc["execute"] = true;
         CoverC.command.cover.move = true;
-        CoverC.command.cover.angle = CoverC.config.cover.openDeg;
+        CoverC.command.cover.angle = CoverC.config.cover.closeDeg;
 
         response->setLength();
         request->send(response);
