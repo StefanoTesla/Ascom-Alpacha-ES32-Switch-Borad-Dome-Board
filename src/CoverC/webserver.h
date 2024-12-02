@@ -1,6 +1,9 @@
 #ifndef CC_WEBSERVER
 #define CC_WEBSERVER
 
+
+;
+
 void coverWebServer(){
 
     server.on("/api/coverc/cfg", HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -29,9 +32,9 @@ void coverWebServer(){
         JsonObject doc = response->getRoot().to<JsonObject>();
 
         JsonObject calibrator = doc["calibrator"].to<JsonObject>();
-        calibrator["status"] = CoverC.status.calibrator;
+        calibrator["status"] = CoverC.status.calibrator.status;
         if(CoverC.config.calibrator.present){
-            calibrator["brightness"] = ledcRead(0);
+            calibrator["brightness"] = CoverC.status.calibrator.actualBrightness;
         }
 
         JsonObject cover = doc["cover"].to<JsonObject>();

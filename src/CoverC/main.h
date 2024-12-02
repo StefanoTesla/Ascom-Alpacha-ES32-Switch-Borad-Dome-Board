@@ -6,13 +6,13 @@
 void calibratorhandlerloop() {
 
     if(!CoverC.config.calibrator.present){
-      CoverC.status.calibrator = CalibStatusNoPresent; 
+      CoverC.status.calibrator.status = CalibStatusNoPresent; 
     } else {
-      CoverC.status.actualBrightness = ledcRead(0);
+      CoverC.status.calibrator.actualBrightness = ledcRead(0);
       if(ledcRead(0) == 0){
-        CoverC.status.calibrator = CalibStatusOff;
+        CoverC.status.calibrator.status = CalibStatusOff;
       } else {
-        CoverC.status.calibrator = CalibStatusReady;
+        CoverC.status.calibrator.status = CalibStatusReady;
       }
     }
 

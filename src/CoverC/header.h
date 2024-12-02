@@ -53,6 +53,7 @@ struct coverCalibratorsCommand{
 
 
 /* STATUS*/
+/* CALIBRATOR */
 enum calirbatorStatusEnum{
   CalibStatusNoPresent,
   CalibStatusOff,
@@ -62,6 +63,12 @@ enum calirbatorStatusEnum{
   CalibStatusError
 };
 
+struct calibratorStatus{
+  calirbatorStatusEnum status;
+  unsigned int actualBrightness;
+};
+
+/* COVER */
 enum coverStatusEnum{
   CoverStatusNoPresent,
   CoverStatusClose,
@@ -83,7 +90,7 @@ struct coverStruct {
 };
 
 struct coverCalibratorStatus{
-  calirbatorStatusEnum calibrator;
+  calibratorStatus calibrator;
   coverStatus cover;
   unsigned int actualBrightness;
 };
@@ -100,6 +107,7 @@ struct coverCalibrator{
   coverCalibratorsCommand command;
   structCoverCalibratorConfig config;
   alpacaCalibratorParameters alpaca;
+  
 };
 
 coverCalibrator CoverC;

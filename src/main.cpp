@@ -18,7 +18,6 @@
 #include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include "LittleFS.h"
-#include <ESP32Servo.h>
 
 AsyncWebServer server(80);
 AsyncWebServer alpaca(ALPACA_PORT);
