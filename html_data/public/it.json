@@ -26,6 +26,19 @@
 			"halt": "HALT"
 		}
 	},
+	"coverC":{
+		"calibrator" :"Flat Panel",
+		"cover": "Coperchio",
+		"coverState": "Stato del coperchio: ",
+		"coverEnum":{
+			"notPresent": "Non presente",
+			"close": "Chiuso",
+			"moving": "In Movimento",
+			"open": "Aperto",
+			"unknow": "Sconosciuto",
+			"error" : "Errore"
+		}
+	},
 	"gen":{
 		"opened":"aperto",
 		"closed":"chiuso",
@@ -38,8 +51,12 @@
 		"loadFromBoard": "RIPRISTINA",
 		"downloadFile": "SCARICA FILE",
 		"save":"SALVA",
-		"enable": "Abilita:"
+		"enable": "Abilita:",
+		"powerOn": "accendi",
+		"powerOff": "spegni",
+		"actualPos": "Posizione attuale:"
 	},
+
 	"setting":{
 		"dome":{
 			"inOpen": "Ingresso Aperto",

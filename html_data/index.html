@@ -163,7 +163,11 @@
             <div class="single_header" x-on:click="open.cover = ! open.cover">
               <div class="title"><p>CoverCalibrator</p></div>
               <div class="status">
-                <div class="led active"></div>
+                <div class="led" :class="{
+                  'green' : coverC.cover.status == 1 || coverC.cover.status == 3,
+                  'orange' :coverC.cover.status == 2,
+                  'red' : coverC.cover.status >= 4 
+                }"></div>
               </div>
               <div class="coll_icon" :class="open.cover ? 'open' : ''">
                 <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -175,19 +179,53 @@
             </div>
             <template x-if="open.cover">
             <div>
-              <div>
-                Stato Coperchio:
-                <div><button>APRI</button>
-                  <button>CHIUDI</button></div>
-    
+              <div x-show="coverC.calibrator.status > 0" class="card">
+                <p x-text="text.coverC.calibrator" class="font-semibold pb-4">{calibrator}</p>
+                <div class="range">
+                  <input type="range" min='0' max='4096' step='1' x-model="coverC.calibrator.brightness" @change="calibratorBrightness(coverC.calibrator.brightness)" />
+                </div>
+                <p>Valore Attuale: <span x-text="coverC.calibrator.brightness"></span> / 4096</p>
+                <div class="flex justify-around w-full">
+                  <button @click="calibratorOff()" :class="{
+                    'disactivated' : coverC.calibrator.brightness == 0,
+                    'green' : coverC.calibrator.brightness > 0
+                   }" x-text="text.gen.powerOff">{SPEGNI}</button>
+                  <button @click="calibratorOn()" :class="{
+                    'disactivated' : coverC.calibrator.brightness == 4096,
+                    'green' : coverC.calibrator.brightness < 4096
+                   }"  x-text="text.gen.powerOn">{ACCENDI}</button>
+                </div>
+              </div>
+
+              <div x-show="coverC.cover.status > 0" class="card">
+                <div class="content">
+                  <p x-text="text.coverC.cover" class="font-semibold pb-4">{cover}</p>
+                  <p x-text="text.coverC.coverState">{actualState}</p>
+                  <span x-show="coverC.cover.status === 0" x-text="text.coverC.coverEnum.notPresent">{notPresent}</span>
+                  <span x-show="coverC.cover.status === 1" x-text="text.coverC.coverEnum.close">{close}</span>
+                  <span x-show="coverC.cover.status === 2" x-text="text.coverC.coverEnum.moving">{moving}</span>
+                  <span x-show="coverC.cover.status === 3" x-text="text.coverC.coverEnum.open">{open}</span>
+                  <span x-show="coverC.cover.status === 4" x-text="text.coverC.coverEnum.unknow">{unknow}</span>
+                  <span x-show="coverC.cover.status === 5" x-text="text.coverC.coverEnum.error">{error}</span>
+
+                  <div class="flex justify-around w-full">
+                    <button @click="coverClose()" :class="{
+                      'disactivated' : coverC.cover.status == 1 || coverC.cover.status == 2,
+                      'green': coverC.cover.status != 1 
+                     }" x-text="text.gen.close" >{CHIUDI}</button>
+                    <button @click="coverOpen()" :class="{
+                      'disactivated' : coverC.cover.status == 3 || coverC.cover.status == 2,
+                      'green' : coverC.cover.status != 3
+                     }" x-text="text.gen.open">{APRI}</button>
+                  </div>
+                  <div class="flex" x-show="coverC.cover.status > 0 && coverC.cover.status < 4">
+                    <p x-text="text.gen.actualPos">{Posizione Attuale:}</p><span x-text="coverC.cover.angle"></span><span>°</span>
+                  </div>
+
+
+                </div>
               </div>
     
-              <div>
-                Stato Pannello:
-                <div><button>APRI</button>
-                  <button>CHIUDI</button></div>
-                  
-              </div>
             </div>
           </template>
           </div>

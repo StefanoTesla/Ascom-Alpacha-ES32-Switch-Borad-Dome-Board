@@ -44,7 +44,7 @@ void coverWebServer(){
         response->setLength();
         request->send(response);
     });
-    server.on("/api/coverc/open", HTTP_GET, [](AsyncWebServerRequest * request) {
+    server.on("/api/coverc/open", HTTP_POST, [](AsyncWebServerRequest * request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
@@ -55,13 +55,77 @@ void coverWebServer(){
         response->setLength();
         request->send(response);
     });
-    server.on("/api/coverc/close", HTTP_GET, [](AsyncWebServerRequest * request) {
+
+    server.on("/api/coverc/close", HTTP_POST, [](AsyncWebServerRequest * request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
         doc["execute"] = true;
         CoverC.command.cover.move = true;
         CoverC.command.cover.angle = CoverC.config.cover.closeDeg;
+
+        response->setLength();
+        request->send(response);
+    });
+
+    server.on("/api/coverc/brightness", HTTP_POST, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+        String parameter;
+        doc["execute"] = false;
+        bool present = false;
+        bool inRange = false;
+        int value = 0;
+        int paramsNr = request->params();
+        
+        for (int i = 0; i < paramsNr; i++) {
+            const AsyncWebParameter* p = request->getParam(i);
+            parameter = p->name();
+            if (parameter == "brightness") {
+                present = true;
+                value = p->value().toInt();
+                if(value >=0 || value <=4096){
+                    CoverC.command.calibrator.change = true;
+                    CoverC.command.calibrator.brightness = value;
+                    inRange = true;
+                    doc["execute"] = true;
+                }
+                else{
+                    inRange = false;
+                }
+            }  
+        }
+        if(!inRange){
+            doc["error"] = "brightness parameter not in range";
+        }
+
+        if(!present){
+            doc["error"] = "brightness parameter not found";
+        }
+
+
+        response->setLength();
+        request->send(response);
+    });
+
+    server.on("/api/coverc/on", HTTP_POST, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+
+        CoverC.command.calibrator.change = true;
+        CoverC.command.calibrator.brightness = 4096;
+        doc["execute"] = true;
+
+        response->setLength();
+        request->send(response);
+    });
+
+    server.on("/api/coverc/off", HTTP_POST, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+        CoverC.command.calibrator.change = true;
+        CoverC.command.calibrator.brightness = 0;
+        doc["execute"] = true;
 
         response->setLength();
         request->send(response);

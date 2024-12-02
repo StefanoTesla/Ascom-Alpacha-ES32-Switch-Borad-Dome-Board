@@ -36,8 +36,7 @@ void domeWebServer(){
         request->send(response);
     });
 
-
-        server.on("/api/dome/status", HTTP_GET, [](AsyncWebServerRequest * request) {
+    server.on("/api/dome/status", HTTP_GET, [](AsyncWebServerRequest * request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
@@ -47,8 +46,8 @@ void domeWebServer(){
         status["lastCommand"] = Dome.Shutter.LastDomeCommand;
 
         JsonObject input = doc["input"].to<JsonObject>();
-        input["open"] = Dome.config.data.inClose.pin;
-        input["close"] = Dome.config.data.inClose.delayON;
+        input["open"] = Dome.Shutter.inOpen;
+        input["close"] = Dome.Shutter.inClose;
 
         response->setLength();
         request->send(response);

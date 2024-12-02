@@ -135,6 +135,10 @@ li.switch{
   @apply justify-items-center items-center rounded-lg p-4 mx-4 mb-4
 }
 
+.card > .content{
+  @apply w-full px-4
+}
+
 .dome_input {
   
   @apply grid grid-cols-2 ;
@@ -161,6 +165,8 @@ button{
 }
 .disactivated{
   background-color: var(--black);
+  color: #FDFDFD;
+  @apply cursor-not-allowed
 }
 
 
@@ -203,4 +209,50 @@ select{
 
 .validation_error{
   @apply border-red-600 border-2
+}
+
+input[type="range"] {
+  @apply px-0
+}
+
+
+.range{
+  @apply w-full px-4
+}
+.range input{
+	-webkit-appearance:none;
+	width:100%;
+	height:4px;
+	border-radius:5px;
+	background-color:#212121;
+	outline:none;
+}
+.range input::-webkit-slider-thumb{
+	-webkit-appearance:none;
+	width:40px;
+	height:20px;
+	border-radius:10%;
+	background-color:#CBF05F;
+  track-color: #CBF05F;
+}
+.range span{
+	position:absolute;
+	margin-left:14px;
+	width:50px;
+	height:30px;
+	background-color:#222;
+	color:#fff;
+	border-radius:3px;
+	text-align:center;
+	line-height:30px;
+}
+.range span:before{
+	content:'';
+	position:absolute;
+	border-right:9px solid transparent;
+	border-left:9px solid transparent;
+	border-bottom:12px solid #222;
+	left:-10px;
+	top:50%;
+	transform:translateY(-50%) rotate(-90deg);
 }

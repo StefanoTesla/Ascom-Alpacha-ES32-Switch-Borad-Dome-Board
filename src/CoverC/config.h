@@ -37,14 +37,13 @@ void initCoverCConfig(){
         return;
     }
     DeserializationError error = deserializeJson(doc, file);
-    file.close();
+    
     if(error){
-        saveCoverCConfig();
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.c_str());
         return;
     }
-
+    file.close();
     JsonObject calibrator = doc["Calibrator"];
     CoverC.config.calibrator.present = calibrator["present"];
     CoverC.config.calibrator.outPWM = calibrator["pin"];
@@ -58,7 +57,7 @@ void initCoverCConfig(){
     CoverC.config.cover.maxDeg = cover["maxDeg"];
     
     if(CoverC.config.calibrator.present){ 
-        ledcSetup(0, 20000, 10);
+        ledcSetup(0, 19531, 12);
         ledcAttachPin(CoverC.config.calibrator.outPWM, 0);
     }
 

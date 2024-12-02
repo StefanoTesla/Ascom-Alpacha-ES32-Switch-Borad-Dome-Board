@@ -7,9 +7,7 @@ export default function Translations() {
 
         // get translations
         init() {
-            //check if cookie with locale is stored
-            //if is it, load the file (should be cached)
-            //otherwise read the locale from the board and load the file
+
             if(this.getLanguageCookie()){
                 this.fetchTexts();
             } else {
@@ -19,12 +17,8 @@ export default function Translations() {
         },
 
         getLocale(){
-            //override temporaneo
-    //        this.locale = "it";
-      //      this.setLanguageCookie(this.locale);
-      //      this.fetchTexts();
-            //override temporaneo
-            fetch('/api/cfg')
+            const ip = import.meta.env.VITE_BOARD_IP
+            fetch(ip+'/api/cfg')
                 .then(response => response.json())
                 .then(data => {
                     this.locale = data.locale;
@@ -59,7 +53,8 @@ export default function Translations() {
 
         // Carica i dati dal file lang.json
         fetchTexts() {
-            fetch('./'+this.locale+'.json')
+            const ip = import.meta.env.VITE_BOARD_IP
+            fetch( this.locale + '.json')
                 .then(response => response.json())
                 .then(data => {
                     this.text = data;

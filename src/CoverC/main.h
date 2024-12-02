@@ -15,19 +15,24 @@ void calibratorhandlerloop() {
         CoverC.status.calibrator = CalibStatusReady;
       }
     }
+
+    if(CoverC.command.calibrator.change){
+        CoverC.command.calibrator.change = false;
+        Serial.println(CoverC.command.calibrator.brightness);
+        ledcWrite(0,CoverC.command.calibrator.brightness);
+    }
 }
 
 void setServoAngle(int angle) {
-  // Map l'angolo in microsecondi (tempo duty cycle)
   int dutyMicros = map(angle, 0, CoverC.config.cover.maxDeg, 544, 2500);
   int dutyValue = map(dutyMicros, 0, 20000, 0, 4095); 
   ledcWrite(8, dutyValue);
 }
 
-// Funzione per convertire duty cycle -> gradi
+
 int dutyToAngle(int duty) {
   float angle = ((float)(duty - 111) / (511 - 111)) * CoverC.config.cover.maxDeg;
-  return round(angle);  // Arrotonda il valore
+  return round(angle);  
 }
 
 
