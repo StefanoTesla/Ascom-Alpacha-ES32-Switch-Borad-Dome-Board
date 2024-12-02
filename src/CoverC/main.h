@@ -19,9 +19,53 @@ void calibratorhandlerloop() {
 
 void setServoAngle(int angle) {
   // Map l'angolo in microsecondi (tempo duty cycle)
-  int dutyMicros = map(angle, CoverC.config.cover.closeDeg, CoverC.config.cover.openDeg, 544, 2500);
-  int dutyValue = map(dutyMicros, 0, 20000, 0, 255); // 20000µs = periodo 50Hz
+  int dutyMicros = map(angle, 0, CoverC.config.cover.maxDeg, 544, 2500);
+  int dutyValue = map(dutyMicros, 0, 20000, 0, 4095); 
   ledcWrite(8, dutyValue);
+}
+
+// Funzione per convertire duty cycle -> gradi
+int dutyToAngle(int duty) {
+  float angle = ((float)(duty - 111) / (511 - 111)) * CoverC.config.cover.maxDeg;
+  return round(angle);  // Arrotonda il valore
+}
+
+
+
+void coverCycle(){
+  CoverC.status.cover.angle = dutyToAngle(ledcRead(8));
+    
+  switch (CoverC.status.cover.cycle){
+    case 0:
+        if (CoverC.status.cover.angle == CoverC.config.cover.closeDeg){
+          CoverC.status.cover.status = CoverStatusClose;
+        } else if (CoverC.status.cover.angle == CoverC.config.cover.openDeg){
+          CoverC.status.cover.status = CoverStatusOpen;
+        }
+        if( CoverC.status.cover.angle < 0 or CoverC.status.cover.angle > CoverC.config.cover.maxDeg){
+          CoverC.status.cover.status = CoverStatusUnknow;
+        }
+        
+        if (CoverC.command.cover.move){
+          CoverC.command.cover.ackMillis = Global.actualMillis;
+          setServoAngle(CoverC.command.cover.angle);
+          CoverC.status.cover.cycle = 10;
+        }
+        break;
+    
+    case 10:
+      CoverC.status.cover.status = CoverStatusMoving;
+      if((Global.actualMillis - CoverC.command.cover.ackMillis) > CoverC.config.cover.movingTime){
+        CoverC.command.cover.move = false;
+        CoverC.status.cover.cycle = 0;
+      }
+      break;
+
+    default:
+      Serial.println("COVER: CYCLE OVERFLOW");
+
+  }
+
 }
 
 void coverHandlerloop() {
@@ -29,21 +73,10 @@ void coverHandlerloop() {
     if(!CoverC.config.cover.present){
       CoverC.status.cover.status = CoverStatusNoPresent;
       return;
-    } else {
-      CoverC.status.actualBrightness = ledcRead(0);
-      if(ledcRead(8) == 544){
-        CoverC.status.cover.status = CoverStatusClose;
-      } else {
-        CoverC.status.cover.status = CoverStatusOpen;
-      }
     }
-
-    if(CoverC.command.cover.move){
-      Serial.print("vado a: ");
-      Serial.print(CoverC.command.cover.angle);
-      setServoAngle(CoverC.command.cover.angle);
-      CoverC.command.cover.move = false;
-    }
+    
+    coverCycle();
+    
 }
 
 

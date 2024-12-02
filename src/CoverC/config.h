@@ -63,7 +63,7 @@ void initCoverCConfig(){
     }
 
     if(CoverC.config.cover.present){
-        ledcSetup(8, 50, 8);
+        ledcSetup(8, 50, 12);
         ledcAttachPin(CoverC.config.cover.outServoPin, 8);  
     }
 

@@ -1,3 +1,4 @@
+
 export default function BoardSetting(text) {
     return {
         text: text,
@@ -16,11 +17,9 @@ export default function BoardSetting(text) {
         warningPin:[0,3,5,12],
     
 
-
     init(){
-
-        // get the defined boards
-        fetch('http://192.168.1.158/api/cfg')
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/cfg')
         .then(response => response.json())
         .then(data => {
             this.exist = data.define;
@@ -46,7 +45,8 @@ export default function BoardSetting(text) {
 
 
     getCoverCConfig(){
-        fetch('http://192.168.1.158/api/coverc/cfg')
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip +'/api/coverc/cfg')
         .then(response => response.json())
         .then(data => {
 
@@ -83,7 +83,8 @@ export default function BoardSetting(text) {
 
     saveCoverCSetting(){
         if(this.validateCoverC()){
-            fetch('http://192.168.1.158/api/coverc/cfg', {
+            const ip = import.meta.env.VITE_BOARD_IP
+            fetch(ip + '/api/coverc/cfg', {
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json, text/plain, */*',
@@ -128,7 +129,8 @@ export default function BoardSetting(text) {
     },
 
     getDomeConfig(){
-        fetch('http://192.168.1.158/api/dome/cfg')
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/dome/cfg')
         .then(response => response.json())
         .then(data => {
 
@@ -142,7 +144,8 @@ export default function BoardSetting(text) {
 
     saveDomeSetting(){
         if(this.validateDome()){
-            fetch('http://192.168.222.235/api/dome/cfg', {
+            const ip = import.meta.env.VITE_BOARD_IP
+            fetch(ip + '/api/dome/cfg', {
                 method: 'POST',
                 headers: {
                   'Accept': 'application/json, text/plain, */*',
