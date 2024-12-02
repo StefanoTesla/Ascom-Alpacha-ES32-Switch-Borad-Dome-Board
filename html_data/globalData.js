@@ -1,4 +1,4 @@
-export default function GlobalData(text) {
+export default function GlobalData(text,toast) {
     return {
         text: text,
         exist: {},
@@ -10,8 +10,8 @@ export default function GlobalData(text) {
             brightness:0,
         },
         dataLoaded :false,
-    
-
+        notices: [],
+        visible: [],
 
     init(){
         const ip = import.meta.env.VITE_BOARD_IP
@@ -181,9 +181,29 @@ export default function GlobalData(text) {
                     this.addToast({ type: "error", text: "Errore sconosciuto." });
                 }
             });
-    }
+    },
 
+    gna(){
+        this.addToast({type:"error", text:"PIN "})
+    },
 
+    addToast(notice) {
+        notice.id = Date.now()
+        this.notices.push(notice)
+        this.fireToast(notice.id)
+      },
+    fireToast(id) {
+        this.visible.push(this.notices.find(notice => notice.id == id))
+        const timeShown = 3000 * this.visible.length
+        setTimeout(() => {
+          this.removeToast(id)
+        }, timeShown)
+      },
+    removeToast(id) {
+        const notice = this.visible.find(notice => notice.id == id)
+        const index = this.visible.indexOf(notice)
+        this.visible.splice(index, 1)
+      }
 
 
     };
