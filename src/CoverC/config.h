@@ -41,6 +41,7 @@ void initCoverCConfig(){
     if(error){
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.c_str());
+        CoverC.config.load.isValid = false;
         return;
     }
     file.close();
@@ -57,16 +58,17 @@ void initCoverCConfig(){
     CoverC.config.cover.maxDeg = cover["maxDeg"];
     
     if(CoverC.config.calibrator.present){ 
-        ledcSetup(0, 19531, 12);
+        assignLedChannel(0,pwm);
         ledcAttachPin(CoverC.config.calibrator.outPWM, 0);
     }
 
     if(CoverC.config.cover.present){
-        ledcSetup(8, 50, 12);
-        ledcAttachPin(CoverC.config.cover.outServoPin, 8);  
+        assignLedChannel(2,servo);
+        ledcAttachPin(CoverC.config.cover.outServoPin, 2);  
     }
 
     CoverC.config.load.isValid = true;
+
 }
 
 

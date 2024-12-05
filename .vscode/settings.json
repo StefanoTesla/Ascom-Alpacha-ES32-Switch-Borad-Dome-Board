@@ -17,6 +17,20 @@
         "limits": "cpp",
         "optional": "cpp",
         "system_error": "cpp",
-        "typeinfo": "cpp"
-    }
+        "typeinfo": "cpp",
+        "*.h": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "ratio": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp"
+    },
+    "C_Cpp.default.includePath": [
+    "${workspaceFolder}/.pio/libdeps/**",
+    "${workspaceFolder}/include",
+    "${workspaceFolder}/src"
+    ],
+    "C_Cpp.intelliSenseMode": "gcc-x64"
 }

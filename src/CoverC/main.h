@@ -26,7 +26,7 @@ void calibratorhandlerloop() {
 void setServoAngle(int angle) {
   int dutyMicros = map(angle, 0, CoverC.config.cover.maxDeg, 544, 2500);
   int dutyValue = map(dutyMicros, 0, 20000, 0, 4095); 
-  ledcWrite(8, dutyValue);
+  ledcWrite(2, dutyValue);
 }
 
 
@@ -38,7 +38,7 @@ int dutyToAngle(int duty) {
 
 
 void coverCycle(){
-  CoverC.status.cover.angle = dutyToAngle(ledcRead(8));
+  CoverC.status.cover.angle = dutyToAngle(ledcRead(2));
     
   switch (CoverC.status.cover.cycle){
     case 0:

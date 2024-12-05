@@ -13,11 +13,11 @@ void startupTask(){
     #endif
 
     #ifdef SWITCH
-
+        initSwitchConfig();
     #endif
 
 
-
+    printLEDChannelStatus();
 
 }
 

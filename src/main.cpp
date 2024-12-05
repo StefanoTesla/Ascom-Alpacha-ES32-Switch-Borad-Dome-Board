@@ -1,23 +1,16 @@
 #define ALPACA_PORT 4567
 
 #define DOME
-#define GATE_BOARD
+#ifdef DOME
+	#define GATE_BOARD
+#endif
 
 #define SWITCH
 #define COVER_CALIBRATOR
 
 #define BROWSER_LANG "it"
 
-#include <Arduino.h>
-#include <stdint.h>
-#include <WiFi.h>
-#include <ESPAsyncWebServer.h>
-#include <ElegantOTA.h>
-#include <ESPAsyncWiFiManager.h>  
-#include "AsyncUDP.h"
-#include <AsyncJson.h>
-#include <ArduinoJson.h>
-#include "LittleFS.h"
+#include "libraries.h"
 
 AsyncWebServer server(80);
 AsyncWebServer alpaca(ALPACA_PORT);
@@ -46,6 +39,9 @@ AsyncWebServer alpaca(ALPACA_PORT);
 #ifdef COVER_CALIBRATOR
 #include "CoverC/main.h"
 #endif
+#ifdef SWITCH
+#include "Switch/main.h"
+#endif
 
 #include "Board/configuration.h"
 #include "Board/webserver.h"
@@ -57,7 +53,7 @@ AsyncUDP udp;
 
 void setup() {
   Serial.begin(115200);
-
+  
   if(!LittleFS.begin()){
     Serial.println("An Error has occurred while mounting LittleFS");
     return;
@@ -110,4 +106,5 @@ void loop() {
   // put your main code here, to run repeatedly:
   domeLoop();
   coverCalibratorLoop();
+  SwitchLoop();
 }

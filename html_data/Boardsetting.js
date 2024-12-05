@@ -68,9 +68,12 @@ export default function BoardSetting(text) {
         }
         if(this.coverC.cover.present){
             if(this.invalidOutputPin( this.coverC.cover.out,"coverc_cover_out")){ valid = false }
-            if(this.negativeValue(this.coverC.cover.maxDeg) || this.coverC.cover.maxDeg>360){ this.addValidationErrorClass("coverc_cover_max_deg");  valid = false } else { this.removeValidationErrorClass("coverc_cover_max_deg") }
-            if(this.negativeValue(this.coverC.cover.closeDeg) || this.coverC.cover.closeDeg > this.coverC.cover.maxDeg){ this.addValidationErrorClass("coverc_cover_close_deg");  valid = false } else { this.removeValidationErrorClass("coverc_cover_close_deg") }
-            if(this.negativeValue(this.coverC.cover.openDeg) || this.coverC.cover.openDeg > this.coverC.cover.maxDeg){ this.addValidationErrorClass("coverc_cover_open_deg");  valid = false } else { this.removeValidationErrorClass("coverc_cover_open_deg") }
+            if(this.negativeValue(this.coverC.cover.maxDeg)){ valid = false }
+            if(this.negativeValue(this.coverC.cover.closeDeg)){ valid = false }
+            if(this.negativeValue(this.coverC.cover.openDeg) ){ valid = false }
+            if(this.coverC.cover.maxDeg>360) { this.addValidationErrorClass("coverc_cover_max_deg");  valid = false } else { this.removeValidationErrorClass("coverc_cover_max_deg") }
+            if(this.coverC.cover.closeDeg > this.coverC.cover.maxDeg){ this.addValidationErrorClass("coverc_cover_close_deg");  valid = false } else { this.removeValidationErrorClass("coverc_cover_close_deg") }
+            if( this.coverC.cover.openDeg > this.coverC.cover.maxDeg){ this.addValidationErrorClass("coverc_cover_open_deg");  valid = false } else { this.removeValidationErrorClass("coverc_cover_open_deg") }
         } else {
             this.removeValidationErrorClass("coverc_cover_out")
             this.removeValidationErrorClass("coverc_cover_max_deg")
@@ -192,9 +195,6 @@ export default function BoardSetting(text) {
     },
 
     /* end dome */ 
-
-
-
 
     invalidOutputPin(pin,divclass){
         const noUsablePin = [6,7,8,9,10,11,20,24,28,29,30,31,37,38]
