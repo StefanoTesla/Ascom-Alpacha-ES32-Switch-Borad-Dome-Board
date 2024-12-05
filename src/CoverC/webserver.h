@@ -2,8 +2,6 @@
 #define CC_WEBSERVER
 
 
-;
-
 void coverWebServer(){
 
     server.on("/api/coverc/cfg", HTTP_GET, [](AsyncWebServerRequest * request) {

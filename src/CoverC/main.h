@@ -25,7 +25,11 @@ void calibratorhandlerloop() {
 
 void setServoAngle(int angle) {
   int dutyMicros = map(angle, 0, CoverC.config.cover.maxDeg, 544, 2500);
-  int dutyValue = map(dutyMicros, 0, 20000, 0, 4095); 
+  int dutyValue = map(dutyMicros, 0, 20000, 0, 4095);
+  Serial.print("Cover is moving to: ");
+  Serial.println(dutyMicros);
+  Serial.println(dutyValue);
+  Serial.println(angle);
   ledcWrite(2, dutyValue);
 }
 

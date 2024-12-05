@@ -126,14 +126,14 @@ void setupLedCTimer(unsigned int channel, ledcType type){
   switch (type)
   {
   case pwm:
-    if(ledcSetup(timer, 19531, 12) > 0){
+    if(ledcSetup(channel, 19531, 12) > 0){
       Global.timer[timer].type = pwm;
     };
     break;
   case servo:
-    if(ledcSetup(timer, 50, 12) > 0){
+    if(ledcSetup(channel, 50, 12) > 0){
       Global.timer[timer].type = servo;
-    };
+    }
     break;
   
   default:

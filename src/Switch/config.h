@@ -18,7 +18,16 @@ void saveSwitchConfig(){
         jsonSwitch["name"] = Switch.data[i].Name;
         jsonSwitch["description"] = Switch.data[i].Description;
         jsonSwitch["type"] = Switch.data[i].property.type;
-
+        switch (Switch.data[i].property.type)
+        {
+        case SwTypeDInput:
+        case SwTypeDOutput:
+            jsonSwitch["pin"] = Switch.data[i].property.pin;
+            break;
+        
+        default:
+            break;
+        }
     }
 
     serializeJson(doc, file);
