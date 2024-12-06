@@ -21,7 +21,7 @@ export default function Translations() {
             fetch(ip+'/api/cfg')
                 .then(response => response.json())
                 .then(data => {
-                    this.locale = data.locale;
+                    this.locale = data.board.locale;
                     this.setLanguageCookie(this.locale);
                     this.fetchTexts();
                 })

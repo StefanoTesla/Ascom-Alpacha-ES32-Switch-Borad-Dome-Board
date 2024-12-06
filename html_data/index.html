@@ -184,7 +184,7 @@
                 <div class="range">
                   <input type="range" min='0' max='4096' step='1' x-model="coverC.calibrator.brightness" @change="calibratorBrightness(coverC.calibrator.brightness)" />
                 </div>
-                <p>Valore Attuale: <span x-text="coverC.calibrator.brightness"></span> / 4096</p>
+                <p x-text="text.gen.actualValue">{Valore Attuale:}</p> <span x-text="coverC.calibrator.brightness"></span> / 4096
                 <div class="flex justify-around w-full">
                   <button @click="calibratorOff()" :class="{
                     'disactivated' : coverC.calibrator.brightness == 0,

@@ -2,7 +2,7 @@
 #define CC_CONFIG
 
 void saveCoverCConfig(){
-    
+
     File file = LittleFS.open("/cfg/ccconfig.txt", FILE_WRITE);
 
     if (!file) {

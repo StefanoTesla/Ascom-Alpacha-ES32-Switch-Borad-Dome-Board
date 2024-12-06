@@ -4,6 +4,7 @@ export default function GlobalData(text,toast) {
         exist: {},
         dome:{},
         coverC:{},
+        board:{},
         open:  {switch:false,dome:false,cover:false,statistics:false},
         manual:{
             cover:0,
@@ -19,6 +20,8 @@ export default function GlobalData(text,toast) {
         fetch(ip+'/api/cfg')
         .then(response => response.json())
         .then(data => {
+            console.log = data
+            this.board = data.board
             this.exist = data.define;
                 this.updateData()
                 this.dataLoaded = true;

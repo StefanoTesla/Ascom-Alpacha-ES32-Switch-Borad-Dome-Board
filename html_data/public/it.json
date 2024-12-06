@@ -55,6 +55,8 @@
 		"powerOn": "accendi",
 		"powerOff": "spegni",
 		"actualPos": "Posizione attuale:",
+		"actualValue": "Valore Attuale:",
+		"locale": "Lingua",
 		"cmdAck": "Comando ricevuto"
 	},
 

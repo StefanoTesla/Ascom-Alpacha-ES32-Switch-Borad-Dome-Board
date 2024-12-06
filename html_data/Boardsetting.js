@@ -7,6 +7,7 @@ export default function BoardSetting(text) {
         domeOrig:{},
         coverC:{},
         coverCOrig:{},
+        board:{},
         open:  {switch:false,dome:false,cover:false,statistics:false},
         dataLoaded :false,
         notices: [],
@@ -22,6 +23,7 @@ export default function BoardSetting(text) {
         fetch(ip + '/api/cfg')
         .then(response => response.json())
         .then(data => {
+            this.board = data.board
             this.exist = data.define;
             if(this.exist.dome){
                 this.getDomeConfig()
@@ -195,6 +197,45 @@ export default function BoardSetting(text) {
     },
 
     /* end dome */ 
+
+
+    /* board config */
+
+    saveBoardConfig(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/board/cfg', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.board)
+        }).then(res => res.json())
+        .then(res => {
+            this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
+        })
+        .catch(err => {
+                try {
+                    const errorData = JSON.parse(err.message);
+                    console.log("Errors:", errorData.errors);
+                    this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
+                } catch (parseError) {
+                    console.log("Errore sconosciuto:", err);
+                    this.addToast({ type: "error", text: "Errore sconosciuto." });
+                }
+        })
+        .finally(() => {
+            this.deleteCookie();
+        });
+
+    },
+
+
+    deleteCookie() {
+        const expires = new Date();
+        expires.setTime(expires.getTime() - 1); // Imposta la scadenza nel passato
+        document.cookie = `language=;expires=${expires.toUTCString()};path=/`;
+    },
 
     invalidOutputPin(pin,divclass){
         const noUsablePin = [6,7,8,9,10,11,20,24,28,29,30,31,37,38]

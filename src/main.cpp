@@ -8,8 +8,6 @@
 #define SWITCH
 #define COVER_CALIBRATOR
 
-#define BROWSER_LANG "it"
-
 #include "libraries.h"
 
 AsyncWebServer server(80);
@@ -33,6 +31,8 @@ AsyncWebServer alpaca(ALPACA_PORT);
 #include "Alpaca/common.h"
 #include "Alpaca/apiManage.h"
 
+
+
 #ifdef DOME
 #include "Dome/main.h"
 #endif
@@ -43,8 +43,8 @@ AsyncWebServer alpaca(ALPACA_PORT);
 #include "Switch/main.h"
 #endif
 
-#include "Board/configuration.h"
 #include "Board/webserver.h"
+#include "Board/main.h"
 
 DNSServer dns;
 AsyncUDP udp;
@@ -103,7 +103,8 @@ void setup() {
 
 void loop() {
   Global.actualMillis = millis();
-  // put your main code here, to run repeatedly:
+  
+  boardLoop();
   domeLoop();
   coverCalibratorLoop();
   SwitchLoop();

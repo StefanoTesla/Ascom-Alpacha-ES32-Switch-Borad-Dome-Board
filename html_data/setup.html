@@ -276,7 +276,7 @@
               </div>
               <div class="config_buttons">
                 <button class="green" x-text="text.gen.loadFromBoard" @click="getOriginalCoverCConfig()">{loadFromBoard}</button>
-                <a href="./dome/covercconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
+                <a href="./cover/ccconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
                 <button class="red" x-text="text.gen.save" @click="saveCoverCSetting()">{save}</button>
               </div>
             </div>
@@ -291,7 +291,7 @@
         <!-- STATISTICS AREA -->
         <div class="single_grid">
           <div class="single_header" x-on:click="open.statistics = ! open.statistics">
-            <div class="title"><p>Statistiche</p></div>
+            <div class="title"><p>TeslaBoard</p></div>
             <div class="status">
             </div>
             <div class="coll_icon" :class="open.statistics ? 'open' : ''">
@@ -304,15 +304,22 @@
           </div>
           <template x-if="open.statistics">
             <div>
-              <div>
-                Stato Coperchio:
-                <div><button>APRI</button>
-                  <button>CHIUDI</button></div>
+              <div class="card">
+                <div class="setting_table">
+                  <p x-text="text.gen.locale">{type}</p>
+                  <div>
+                    <select name="type" id="dome_in_close_type" x-model="board.locale">
+                      <option value="it">Italiano</option>
+                      <option value="en">English</option>
+                    </select>
+                  </div>
+
+                </div>
+
               </div>
-              <div>
-                Stato Pannello:
-                <div><button>APRI</button>
-                  <button>CHIUDI</button></div>             
+              <div class="config_buttons">
+                <a href="./board/boarcfg.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
+                <button class="red" x-text="text.gen.save" @click="saveBoardConfig()">{save}</button>
               </div>
             </div>
           </template>

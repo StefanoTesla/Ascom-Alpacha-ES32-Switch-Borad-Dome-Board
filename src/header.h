@@ -32,8 +32,6 @@ struct boardSaveConfigStruct{
 
 /* END OF CONFIG */
 
-
-
 /* GLOBAL VARIABLES */
 struct upTimeStruct{
   unsigned long previousMillis = 0;
@@ -46,13 +44,32 @@ struct wifiReconntectionStruct{
   bool waitToReconnect = false;
 };
 
+struct wifiIpStruct{
+  bool enable = false;
+  unsigned int ip[4];
+  unsigned int sub[4];
+};
+
 struct wifiStruct{
   wifiReconntectionStruct reconnection;
   upTimeStruct upTime;
+  wifiIpStruct ip;
 };
 
 struct esp32Struct{
   upTimeStruct upTime;
+};
+
+struct localeStruct{
+  String locale = "en";
+};
+
+
+struct boarcConfigStruct{
+  wifiStruct wifi;
+  esp32Struct esp32;
+  localeStruct language;
+  boardSaveConfigStruct save;
 };
 
 enum ledcType{
@@ -64,15 +81,12 @@ enum ledcType{
 struct PWMChannelStruct{
   ledcType type;
 };
-struct TimerStruct{
-  ledcType type;
-};
+
 
 struct globalVariable{
   unsigned long actualMillis;
   unsigned long upTimeInterval = 60000;
-  esp32Struct esp32;
-  wifiStruct wifi;
+  boarcConfigStruct config;
   PWMChannelStruct pwm[16];
 };
 
@@ -187,7 +201,6 @@ unsigned int assignLedChannel(ledcType type){
 
 
 }
-
 
 void printLEDChannelStatus(){
 
