@@ -61,8 +61,6 @@ void initCoverCConfig(){
     if(CoverC.config.calibrator.present){ 
         tmpCh = assignLedChannel(pwm);
         if(tmpCh < 16){
-            Serial.println("canale assegnato al flat:");
-            Serial.println(tmpCh);
             CoverC.config.calibrator.pwmChannel = tmpCh;
             ledcAttachPin(CoverC.config.calibrator.outPWM, tmpCh);
         } 
@@ -75,7 +73,6 @@ void initCoverCConfig(){
         if(tmpCh < 16){
             CoverC.config.cover.pwmChannel = tmpCh;
             ledcAttachPin(CoverC.config.cover.outServoPin, tmpCh);
-            Serial.println("aloha");
         }
     }
 

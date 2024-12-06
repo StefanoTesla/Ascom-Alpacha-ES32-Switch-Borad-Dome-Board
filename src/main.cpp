@@ -75,7 +75,10 @@ void setup() {
   #ifdef COVER_CALIBRATOR
     coverCalibratorRequestHandler();
   #endif
-
+  #ifdef SWITCH
+  switchRequestHandler();
+  #endif
+  
   boardWebServer();
 
 

@@ -4,7 +4,19 @@
 		"setting": "IMPOSTAZIONI"
 	},
 	"switch":{
-		"title":"switch"
+		"title":"switch",
+		"name":"Nome:",
+		"description":"Descrizione:",
+		"typeEnum":{
+			"0": "Non utilizzato",
+			"1": "Ingresso Digitale",
+			"2": "Ingresso Analogico",
+			"3": "Uscita Digitale",
+			"4": "Uscita PWM",
+			"5": "Uscita Servo",
+			"6": "Uscita Analogica"
+		}
+
 	},
 	"dome":{
 		"title":"Cupola",
@@ -99,5 +111,5 @@
 	"errors":{
 		"noUsableAsInput" : "non utilizzabile come ingresso",
 		"noUsableAsOutput" : "non utilizzabile come uscita"
-	}	
+	}
 }

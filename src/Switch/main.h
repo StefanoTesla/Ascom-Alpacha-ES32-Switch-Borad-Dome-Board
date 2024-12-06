@@ -1,3 +1,6 @@
+#ifndef SWITCH_MAIN
+#define SWITCH_MAIN
+
 #include "config.h"
 
 void updateSwitchState(){
@@ -42,3 +45,11 @@ void updateSwitchState(){
 void SwitchLoop(){
     updateSwitchState();
 }
+
+
+#include "webserver.h"
+
+void switchRequestHandler(){
+  switchWebServer();
+}
+#endif

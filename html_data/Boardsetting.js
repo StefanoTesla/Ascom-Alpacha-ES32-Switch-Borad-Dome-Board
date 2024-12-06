@@ -7,6 +7,8 @@ export default function BoardSetting(text) {
         domeOrig:{},
         coverC:{},
         coverCOrig:{},
+        swi:{},
+        switchOrig:{},
         board:{},
         open:  {switch:false,dome:false,cover:false,statistics:false},
         dataLoaded :false,
@@ -31,12 +33,28 @@ export default function BoardSetting(text) {
             if(this.exist.coverc){
                 this.getCoverCConfig()
             }
+            if(this.exist.switch){
+                this.getSwitchConfig()
+            }
             this.dataLoaded = true;
             
         })
         .catch(error => console.error('Error fetching board data:', error));
     },
 
+    /* switch config */
+    getSwitchConfig(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip +'/api/switch/cfg')
+        .then(response => response.json())
+        .then(data => {
+
+            this.switchCOrig = this.copy(data);
+            this.swi = data;
+            this.dataLoaded = true;
+        })
+        .catch(error => console.error('Error fetching board data:', error));
+    },
 
     /* coverC config */
 

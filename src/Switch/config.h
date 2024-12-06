@@ -44,7 +44,7 @@ void saveSwitchConfig(){
 
 
 void initSwitchConfig(){
-
+    Serial.println("INIT: switch config reading..");
     if (!LittleFS.exists("/cfg/switchconfig.txt")) {
         Serial.println("[ERR] Switch: unable to find switchconfig file, I'm creating a new one..");
 
@@ -54,8 +54,6 @@ void initSwitchConfig(){
         return;
     }
 
-    saveSwitchConfig();
-    return;
     File file = LittleFS.open("/cfg/switchconfig.txt", FILE_READ);
     JsonDocument doc;
 
@@ -72,8 +70,5 @@ void initSwitchConfig(){
     
 
 }
-
-
-
 
 #endif

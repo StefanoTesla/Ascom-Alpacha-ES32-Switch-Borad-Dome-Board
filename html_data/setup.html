@@ -45,26 +45,33 @@
               </div>
             </div>
             <template x-if="open.switch">
-            <ol class="switches">
-              <li class="switch">
-                <span>
-                  Ciao
-                </span>
-                <span>
+              <div>
+                <template x-for="(sw,index) in swi.Switches">
+                  <div :id="'sw_' + index" class="card">
+                    <div class="setting_table">
+                      <p x-text="text.switch.name">{name}</p>
+                      <input :id="'sw_'+ index + '_name'" class="in_text" type="text" x-model="sw.name" maxlength=15/>
+                      <p x-text="text.switch.description">{description}</p>
+                      <input :id="'sw_'+ index + '_desc'" class="in_text" type="text" x-model="sw.description" maxlength=15/>
+                      <p x-text="text.gen.type">{Type}</p>
+                        <select name="type" :id="'sw_' + index + '_type'" x-model="sw.type">
+                          <template x-for="[key, value] in Object.entries(text.switch.typeEnum)" :key="key">
+                            <option :value="parseInt(key)" x-text="value"></option>
+                          </template>
+                        </select>
+                    </div>
+                    <div class="setting_table" x-show="sw.type > 0">
+                      <p>Pin:</p>
+                      <div>
+                        <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="dome.pinOpen.pin" min=1 max=39/>
+                      </div>
+                      
+                    </div>
 
-                </span>
-                <label class="toggle" for="myToggle">
-                  <input class="toggle__input" name="" type="checkbox" id="myToggle">
-                  <div class="toggle__fill"></div>
-                </label>
-              </li>
-              <li>gni</li>
-              <li>gno</li>
-              <li>gnu</li>
-              <li></li>
-              <li></li>
-              <li></li>
-            </ol>
+                  </div>
+
+                </template>
+              </div>
             </template>  
           </div>
         </template>

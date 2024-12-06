@@ -179,6 +179,10 @@ select{
   @apply min-w-40
 }
 
+.in_text{
+  @apply w-auto;
+}
+
 .with_unit{
   @apply rounded-r-xl
 }
