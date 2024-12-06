@@ -16,6 +16,7 @@ struct coverCLoadConfigStruct{
 struct calibratorConfig{
   bool present;
   unsigned int outPWM;
+  int pwmChannel;
 };
 
 struct coverConfig{
@@ -25,6 +26,7 @@ struct coverConfig{
   unsigned int closeDeg = 0;
   unsigned int maxDeg = 0;
   unsigned int movingTime = 2000;
+  int pwmChannel;
 };
 
 struct structCoverCalibratorConfig{

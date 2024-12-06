@@ -67,8 +67,10 @@ export default function GlobalData(text,toast) {
             },
           }).then(res => res.json())
             .then(res => {
-                //this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
-                console.log(res)
+                if(res.execute){
+                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
+                    this.coverC.cover.status = 2;
+                }
             })
             .catch(err => {
                 try {
@@ -90,8 +92,11 @@ export default function GlobalData(text,toast) {
             },
           }).then(res => res.json())
             .then(res => {
-                //this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
-                console.log(res)
+                if(res.execute){
+                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
+                    this.coverC.cover.status = 2;
+                }
+
             })
             .catch(err => {
                 try {
@@ -117,8 +122,9 @@ export default function GlobalData(text,toast) {
             body:"brightness="+value
           }).then(res => res.json())
             .then(res => {
-                //this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
-                console.log(res)
+                if(res.execute){
+                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
+                }
             })
             .catch(err => {
                 try {
@@ -142,6 +148,7 @@ export default function GlobalData(text,toast) {
           }).then(res => res.json())
             .then(res => {
                 if (res.execute){
+                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
                     this.coverC.calibrator.brightness = 0;
                 }
             })
@@ -166,8 +173,8 @@ export default function GlobalData(text,toast) {
             },
           }).then(res => res.json())
             .then(res => {
-                //this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
                 if (res.execute){
+                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
                     this.coverC.calibrator.brightness = 4096;
                 }
             })

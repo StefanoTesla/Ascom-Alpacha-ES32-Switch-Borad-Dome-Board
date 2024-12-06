@@ -8,8 +8,8 @@ void calibratorhandlerloop() {
     if(!CoverC.config.calibrator.present){
       CoverC.status.calibrator.status = CalibStatusNoPresent; 
     } else {
-      CoverC.status.calibrator.actualBrightness = ledcRead(0);
-      if(ledcRead(0) == 0){
+      CoverC.status.calibrator.actualBrightness = ledcRead(CoverC.config.calibrator.pwmChannel);
+      if(ledcRead(CoverC.config.calibrator.pwmChannel) == 0){
         CoverC.status.calibrator.status = CalibStatusOff;
       } else {
         CoverC.status.calibrator.status = CalibStatusReady;
@@ -19,14 +19,14 @@ void calibratorhandlerloop() {
     if(CoverC.command.calibrator.change){
         CoverC.command.calibrator.change = false;
         Serial.println(CoverC.command.calibrator.brightness);
-        ledcWrite(0,CoverC.command.calibrator.brightness);
+        ledcWrite(CoverC.config.calibrator.pwmChannel,CoverC.command.calibrator.brightness);
     }
 }
 
 void setServoAngle(int angle) {
   int dutyMicros = map(angle, 0, CoverC.config.cover.maxDeg, 544, 2500);
   int dutyValue = map(dutyMicros, 0, 20000, 0, 4095); 
-  ledcWrite(2, dutyValue);
+  ledcWrite(CoverC.config.cover.pwmChannel, dutyValue);
 }
 
 
@@ -38,7 +38,7 @@ int dutyToAngle(int duty) {
 
 
 void coverCycle(){
-  CoverC.status.cover.angle = dutyToAngle(ledcRead(2));
+  CoverC.status.cover.angle = dutyToAngle(ledcRead(CoverC.config.cover.pwmChannel));
     
   switch (CoverC.status.cover.cycle){
     case 0:

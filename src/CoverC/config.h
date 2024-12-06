@@ -57,14 +57,26 @@ void initCoverCConfig(){
     CoverC.config.cover.closeDeg = cover["closeDeg"];
     CoverC.config.cover.maxDeg = cover["maxDeg"];
     
+    unsigned int tmpCh = 666;
     if(CoverC.config.calibrator.present){ 
-        assignLedChannel(0,pwm);
-        ledcAttachPin(CoverC.config.calibrator.outPWM, 0);
+        tmpCh = assignLedChannel(pwm);
+        if(tmpCh < 16){
+            Serial.println("canale assegnato al flat:");
+            Serial.println(tmpCh);
+            CoverC.config.calibrator.pwmChannel = tmpCh;
+            ledcAttachPin(CoverC.config.calibrator.outPWM, tmpCh);
+        } 
     }
 
+    tmpCh = 666;
+
     if(CoverC.config.cover.present){
-        assignLedChannel(2,servo);
-        ledcAttachPin(CoverC.config.cover.outServoPin, 2);  
+    tmpCh = assignLedChannel(servo);
+        if(tmpCh < 16){
+            CoverC.config.cover.pwmChannel = tmpCh;
+            ledcAttachPin(CoverC.config.cover.outServoPin, tmpCh);
+            Serial.println("aloha");
+        }
     }
 
     CoverC.config.load.isValid = true;

@@ -74,7 +74,6 @@ struct globalVariable{
   esp32Struct esp32;
   wifiStruct wifi;
   PWMChannelStruct pwm[16];
-  TimerStruct timer[8];
 };
 
 globalVariable Global;
@@ -117,59 +116,84 @@ bool usableLedChannel(unsigned int channel,ledcType type){
 
 }
 
-void setupLedCTimer(unsigned int channel, ledcType type){
-
-  unsigned int timer;
-  float ch = channel / 2;
-  timer = ch;
+unsigned int setupLedcChannel(unsigned int channel, ledcType type){
 
   switch (type)
   {
   case pwm:
-    if(ledcSetup(timer, 19531, 12) > 0){
-      Global.timer[timer].type = pwm;
-    };
+    if(ledcSetup(channel, 19531, 12) > 0){
+      return channel;
+    } else {
+      Serial.println("[ERR] INIT: Error during pwm cahnnel setup");
+    }
     break;
   case servo:
-    if(ledcSetup(timer, 50, 12) > 0){
-      Global.timer[timer].type = servo;
-    };
+    if(ledcSetup(channel, 50, 12) > 0){
+      return channel;
+    } else {
+      Serial.println("[ERR] INIT: Error during pwm cahnnel setup");
+    }
     break;
   
   default:
+      return -1;
     break;
-  }
-}
-
-bool assignLedChannel(unsigned int channel,ledcType type){
-
-  if(usableLedChannel(channel,type)){
-    Global.pwm[channel].type = type;
-    setupLedCTimer(channel,type);
-    return true;
-  }
-    Serial.println("[ERR] LEDC: you can't use this channel, or is already assigned or a different Type is been set.");
-  return false;
-
-
-}
-
-int checkForFreeLedChannel(ledcType type){
-  for (int i = 0; i < 16; i++)
-  {
-    if(usableLedChannel(i,type)){ return i;}
   }
 
   return -1;
-  
+}
+
+unsigned int checkForFreeLedChannel(ledcType type){
+
+  if (type == notAssigned){
+    return -1;
+  }
+
+  if(type == pwm){
+    for (int i = 0; i < 16; i++)
+    {
+      if(usableLedChannel(i,type)){ return i;}
+    }
+  } else if (type == servo) {
+
+    //since servo are at 50hz we give the precedence to low speed timer
+    for (int i = 8; i < 16; i++)
+    {
+      if(usableLedChannel(i,type)){ return i;}
+    }
+
+    for (int i = 0; i < 8; i++)
+    {
+      if(usableLedChannel(i,type)){ return i;}
+    }
+
+  }
+  return -1;
+}
+
+unsigned int assignLedChannel(ledcType type){
+  unsigned int channel = checkForFreeLedChannel(type);
+  Serial.println(channel);
+  if (channel < 0 ){
+    Serial.println("[ERR] LEDC: error during the search of a free channel.");
+    return -1;
+  }
+  Global.pwm[channel].type = type;
+  setupLedcChannel(channel,type);
+  return channel;
+
+    
+  return -1;
+
+
 }
 
 
 void printLEDChannelStatus(){
 
 
-  Serial.println("ch | type       | timer");
-  Serial.println("------------------------");
+  Serial.println("ch | type       |");
+  Serial.println("------------------");
   for (int i = 0; i < 16; i++)
   {
     if(i<10){
@@ -177,23 +201,6 @@ void printLEDChannelStatus(){
       Serial.print("  |");
       Serial.print(" ");
       switch (Global.pwm[i].type)
-      {
-      case notAssigned:
-        Serial.print("unassigned | ");
-        break;
-      case pwm:
-        Serial.print("pwm        | ");
-        break;
-      case servo:
-        Serial.print("servo      | ");
-        break;
-      
-      default:
-        break;
-      }
-
-      int timer = i / 2;
-      switch (Global.timer[timer].type)
       {
       case notAssigned:
         Serial.println("unassigned | ");
@@ -217,35 +224,19 @@ void printLEDChannelStatus(){
       switch (Global.pwm[i].type)
       {
       case notAssigned:
-        Serial.print("unassigned |");
+        Serial.println("unassigned |");
         break;
       case pwm:
-        Serial.print("pwm |");
+        Serial.println("pwm |");
         break;
       case servo:
-        Serial.print("servo |");
+        Serial.println("servo |");
         break;
       
       default:
         break;
       }
 
-      int timer = i / 2;
-      switch (Global.timer[timer].type)
-      {
-      case notAssigned:
-        Serial.println(" unassigned | ");
-        break;
-      case pwm:
-        Serial.println(" pwm        | ");
-        break;
-      case servo:
-        Serial.println(" servo      | ");
-        break;
-      
-      default:
-        break;
-      }
     }
   }
   

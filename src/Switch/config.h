@@ -19,6 +19,22 @@ void saveSwitchConfig(){
         jsonSwitch["description"] = Switch.data[i].Description;
         jsonSwitch["type"] = Switch.data[i].property.type;
 
+        switch(Switch.data[i].property.type){
+
+            case SwTypePWM:
+            case SwTypeServo:
+            case SwTypeAInput:
+            case SwTypeAOutput:
+                jsonSwitch["min"] = Switch.data[i].property.minValue;
+                jsonSwitch["max"] = Switch.data[i].property.maxValue;
+
+            case SwTypeDInput:
+            case SwTypeDOutput:
+                jsonSwitch["pin"] = Switch.data[i].property.pin;
+                break;
+            default:
+                break;
+        }
     }
 
     serializeJson(doc, file);

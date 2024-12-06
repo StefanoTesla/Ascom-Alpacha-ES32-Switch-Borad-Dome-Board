@@ -54,7 +54,8 @@
 		"enable": "Abilita:",
 		"powerOn": "accendi",
 		"powerOff": "spegni",
-		"actualPos": "Posizione attuale:"
+		"actualPos": "Posizione attuale:",
+		"cmdAck": "Comando ricevuto"
 	},
 
 	"setting":{
