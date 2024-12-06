@@ -117,7 +117,7 @@ void coverAlpacaDevice(){
     doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
     response->setLength();
     request->send(response);
-}).addMiddlewares({&getAlpacaID,&upLastCom});
+}).addMiddleware(&getAlpacaID);
 
   alpaca.on("/api/v1/covercalibrator/0/calibratoroff", HTTP_PUT, [](AsyncWebServerRequest *request){
       AsyncJsonResponse* response = new AsyncJsonResponse();

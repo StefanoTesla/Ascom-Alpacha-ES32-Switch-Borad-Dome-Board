@@ -4,9 +4,8 @@
 #ifdef DOME
 	#define GATE_BOARD
 #endif
-
-#define SWITCH
 #define COVER_CALIBRATOR
+#define SWITCH
 
 #include "libraries.h"
 
@@ -67,14 +66,7 @@ void setup() {
 
   //start alpaca discovery
   alpacaDiscovery(udp);
-
-  server.serveStatic("/index", LittleFS, "/index.html");
   
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
-      Serial.println(request->getAttribute("primo"));
-      Serial.println(request->getAttribute("secondo"));
-      request->send(200, "application/json", "{\"hello\": \"world\"}");
-  }).addMiddleware(&getAlpacaID);
 
   AlpacaManager();
   #ifdef DOME
@@ -85,6 +77,10 @@ void setup() {
   #endif
 
   boardWebServer();
+
+
+  server.serveStatic("/", LittleFS, "/www/").setDefaultFile("index.html");
+  server.serveStatic("/assets/", LittleFS, "/www/assets/").setCacheControl("max-age=604800");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, POST, PUT");
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -105,7 +101,13 @@ void loop() {
   Global.actualMillis = millis();
   
   boardLoop();
+  #ifdef DOME
   domeLoop();
+  #endif
+  #ifdef COVER_CALIBRATOR
   coverCalibratorLoop();
+  #endif
+  #ifdef SWITCH
   SwitchLoop();
+  #endif
 }

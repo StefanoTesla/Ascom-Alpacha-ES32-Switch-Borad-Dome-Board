@@ -28,12 +28,18 @@ void boardWebServer(){
         JsonObject define = doc["define"].to<JsonObject>();
         #ifdef DOME
         define["dome"] = true;
+        #else
+        define["dome"] = false;
         #endif
         #ifdef SWITCH
         define["switch"] = true;
+        #else
+        define["switch"] = false;
         #endif
         #ifdef COVER_CALIBRATOR
         define["coverc"] = true;
+        #else
+        define["coverc"] = false;
         #endif
 
         response->setLength();
