@@ -20,11 +20,10 @@ export default function GlobalData(text,toast) {
         fetch(ip+'/api/cfg')
         .then(response => response.json())
         .then(data => {
-            console.log = data
-            this.board = data.board
             this.exist = data.define;
-                this.updateData()
-                this.dataLoaded = true;
+            this.updateData()
+            this.updateBoard()
+            
         })
         .catch(error => console.error('Error fetching board data:', error))
     },
@@ -36,8 +35,22 @@ export default function GlobalData(text,toast) {
         if (this.exist.coverc){
             this.getCoverCStatus()
         }
+        this.dataLoaded = true;
         setTimeout(() => {this.updateData()}, 3000)
       },
+
+    updateBoard(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip+'/api/board/status')
+        .then(response => response.json())
+        .then(data => {
+            this.board = data;
+            
+        })
+        .catch(error => console.error('Error fetching board data:', error));
+
+        setTimeout(() => {this.updateBoard()}, 30000)
+    },
 
 
     getDomeStatus(){

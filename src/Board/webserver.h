@@ -47,6 +47,33 @@ void boardWebServer(){
     });
 
 
+    server.on("/api/board/status", HTTP_GET, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+
+        JsonObject wifi = doc["wifi"].to<JsonObject>();
+        wifi["uptime"] = Global.config.wifi.upTime.minutes;
+        wifi["ssid"] = WiFi.SSID();
+        wifi["db"] = WiFi.RSSI();
+        wifi["ip"] = WiFi.localIP();
+
+        JsonObject memo = doc["memory"].to<JsonObject>();
+        memo["heapSize"] = ESP.getHeapSize();
+        memo["freeHeap"] = ESP.getFreeHeap();
+        memo["minHeap"] = ESP.getMinFreeHeap();
+
+        JsonObject board = doc["board"].to<JsonObject>();
+        board["uptime"] = Global.config.esp32.upTime.minutes;
+        board["cpu"] = ESP.getChipModel();
+        board["cores"] = ESP.getChipCores();
+        board["rev"] = ESP.getChipRevision();
+        board["freq"] = ESP.getCpuFreqMHz();
+
+        response->setLength();
+        request->send(response);
+    });
+
+
     AsyncCallbackJsonWebHandler* boardConfigHandler = new AsyncCallbackJsonWebHandler("/api/board/cfg");
 
     boardConfigHandler->setMethod(HTTP_POST | HTTP_PUT);

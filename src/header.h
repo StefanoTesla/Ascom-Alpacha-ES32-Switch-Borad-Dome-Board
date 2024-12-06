@@ -34,13 +34,12 @@ struct boardSaveConfigStruct{
 
 /* GLOBAL VARIABLES */
 struct upTimeStruct{
-  unsigned long previousMillis = 0;
   unsigned long minutes = 0;
 };
 
 struct wifiReconntectionStruct{
-  unsigned long intervall = 30000;
-  unsigned long lastMillis = 0;
+  unsigned long intervall = 10;
+  unsigned long delaySeconds = 0;
   bool waitToReconnect = false;
 };
 
@@ -82,10 +81,26 @@ struct PWMChannelStruct{
   ledcType type;
 };
 
+struct oneMinutePulse{
+  unsigned long oldMillis;
+  bool pulse;
+};
+
+struct oneSecondPulse{
+  unsigned long oldMillis;
+  bool pulse;
+};
+
+struct pulseStruct{
+  oneSecondPulse second;
+  oneMinutePulse minute;
+};
+
 
 struct globalVariable{
   unsigned long actualMillis;
-  unsigned long upTimeInterval = 60000;
+  unsigned long upTimeInterval = 60000; //one minute, don't change
+  pulseStruct pulse;
   boarcConfigStruct config;
   PWMChannelStruct pwm[16];
 };

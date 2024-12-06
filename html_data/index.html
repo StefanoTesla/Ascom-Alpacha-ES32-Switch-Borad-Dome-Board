@@ -248,19 +248,43 @@
               </div>
               <template x-if="open.statistics">
               <div>
-                <div>
-                  Stato Coperchio:
-                  <div>
-                    <button @click="gna()">APRI</button>
-                    <button>CHIUDI</button></div>
-        
+                <div class="card">
+                  <p class="text-center font-bold mb-4">WiFi</p>
+                  <div class="setting_table">
+                    <p>SSID:</p>
+                    <p x-text="board.wifi.ssid"></p>
+                    <p>db:</p>
+                    <p x-text="board.wifi.db"></p>
+                    <p>IP:</p>
+                    <p x-text="board.wifi.ip"></p>
+                    <p>Uptime:</p>
+                    <p x-text="board.wifi.uptime"></p>
+                  </div>
                 </div>
-        
-                <div>
-                  Stato Pannello:
-                  <div><button>APRI</button>
-                    <button>CHIUDI</button></div>
-                    
+                <div class="card">
+                  <p class="text-center font-bold mb-4">CPU</p>
+                  <div class="setting_table">
+                    <p>CPU:</p>
+                    <p>
+                      <span x-text="board.board.cpu"></span>
+                      <span> REV:</span>
+                      <span x-text="board.board.rev"></span>
+                    </p>
+                    <p>cores:</p>
+                    <p x-text="board.board.cores"></p>
+                    <p>Speed:</p>
+                    <p>
+                      <span x-text="board.board.freq"></span>
+                      <span> MHz</span>
+                    </p>
+                    <p>Heap size:</p>
+                    <p x-text="board.memory.heapSize"></p>
+                    <p>Free Heap:</p>
+                    <p x-text="board.memory.freeHeap"></p>
+                    <p>Min Free Heap:</p>
+                    <p x-text="board.memory.minHeap"></p>
+
+                  </div>
                 </div>
               </div>
             </template>
