@@ -1,8 +1,9 @@
 
 export default function BoardSetting(text) {
     return {
+        Switch: Switches,
         text: text,
-        exist: {},
+        exist: {switch:true},
         dome:{},
         domeOrig:{},
         coverC:{},
@@ -10,7 +11,8 @@ export default function BoardSetting(text) {
         swi:{},
         switchOrig:{},
         board:{},
-        open:  {switch:false,dome:false,cover:false,statistics:false},
+        open:{switch:false,dome:false,cover:false,statistics:false},
+        load:{switch:false,dome:false,cover:false,statistics:false},
         dataLoaded :false,
         notices: [],
         visible: [],
@@ -51,7 +53,7 @@ export default function BoardSetting(text) {
 
             this.switchCOrig = this.copy(data);
             this.swi = data;
-            this.dataLoaded = true;
+            this.load.switch = true;
         })
         .catch(error => console.error('Error fetching board data:', error));
     },

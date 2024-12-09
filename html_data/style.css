@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 :root {
   --divbkg: #373737;
   --divhig: #4B4B4B;
@@ -176,8 +187,9 @@ input, select{
 }
 
 select{
-  @apply min-w-40
+  @apply w-fit
 }
+
 
 .in_text{
   @apply w-auto;
@@ -189,7 +201,7 @@ select{
 
 .unit{
   background: #373737;
-  @apply py-2 px-4 ml-0 rounded-l-xl
+  @apply h-full block px-4 ml-0 rounded-l-xl content-center min-w-16 text-center
 }
 
 
@@ -207,7 +219,18 @@ select{
 
 
 .setting_table{
-  @apply grid grid-flow-row grid-cols-1 md:grid-cols-2 md:px-10 items-center w-full gap-2
+  @apply grid grid-flow-row grid-cols-1 lg:grid-cols-2 md:px-10 items-center w-full gap-2
+}
+.st_title{
+  @apply col-span-1 lg:col-span-2 text-center font-bold
+}
+
+.row{
+  @apply flex flex-col lg:flex-row items-center
+}
+
+.row > p{
+  @apply mr-2 
 }
 
 
@@ -259,4 +282,18 @@ input[type="range"] {
 	left:-10px;
 	top:50%;
 	transform:translateY(-50%) rotate(-90deg);
+}
+
+
+
+.input_with_unit{
+  @apply flex h-10
+}
+
+.text_with_input{
+  @apply flex items-center
+}
+
+.text_with_input > p{
+  @apply mr-2
 }

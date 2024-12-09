@@ -17,6 +17,7 @@ export default function Translations() {
         },
 
         getLocale(){
+            this.setLanguageCookie("it")
             const ip = import.meta.env.VITE_BOARD_IP
             fetch(ip+'/api/cfg')
                 .then(response => response.json())

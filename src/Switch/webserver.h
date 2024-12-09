@@ -20,7 +20,6 @@ void switchWebServer(){
             }
         }
         
-
         response->setLength();
         request->send(response);
     });
@@ -46,9 +45,6 @@ void switchWebServer(){
             bool error = false;
             bool reboot = false;
             
-
-
-
             if(!error){
 
             } else {

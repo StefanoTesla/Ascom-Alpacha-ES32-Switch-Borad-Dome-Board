@@ -30,7 +30,7 @@
     <template x-data="BoardSetting(text)" x-if="dataLoaded">
       <div class="main_grid">
       <!-- SWITCH AREA -->
-        <template x-if="exist.switch">
+        <template x-if="exist.switch && load.switch">
           <div class="single_grid">
             <div class="single_header" x-on:click="open.switch = ! open.switch">
               <div class="title"><p>Switches</p></div>
@@ -45,29 +45,59 @@
               </div>
             </div>
             <template x-if="open.switch">
-              <div>
+              <div><!-- onchange-->
                 <template x-for="(sw,index) in swi.Switches">
                   <div :id="'sw_' + index" class="card">
                     <div class="setting_table">
-                      <p x-text="text.switch.name">{name}</p>
-                      <input :id="'sw_'+ index + '_name'" class="in_text" type="text" x-model="sw.name" maxlength=15/>
-                      <p x-text="text.switch.description">{description}</p>
-                      <input :id="'sw_'+ index + '_desc'" class="in_text" type="text" x-model="sw.description" maxlength=15/>
-                      <p x-text="text.gen.type">{Type}</p>
-                        <select name="type" :id="'sw_' + index + '_type'" x-model="sw.type">
+                      <div class="row">
+                        <p x-text="text.switch.name">{name}</p>
+                        <input :id="'sw_'+ index + '_name'" class="in_text" type="text" x-model="sw.name" maxlength=15/>
+                      </div>
+                      <div class="row">
+                        <p x-text="text.switch.description">{description}</p>
+                        <input :id="'sw_'+ index + '_desc'" class="in_text" type="text" x-model="sw.description" maxlength=15/>
+                      </div>
+                      <div class="row">
+                        <p x-text="text.gen.type">{Type}</p>
+                        <select 
+                          name="type" 
+                          :id="'sw_' + index + '_type'" 
+                          x-model.defer="sw.type"
+                          x-init="$nextTick(() => { $el.value = sw.type })"
+                          >
                           <template x-for="[key, value] in Object.entries(text.switch.typeEnum)" :key="key">
                             <option :value="parseInt(key)" x-text="value"></option>
                           </template>
                         </select>
-                    </div>
-                    <div class="setting_table" x-show="sw.type > 0">
-                      <p>Pin:</p>
-                      <div>
-                        <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="dome.pinOpen.pin" min=1 max=39/>
                       </div>
-                      
+                      <div class="row"  x-show="sw.type > 0">
+                        <p>Pin:</p>
+                        <div class="input_with_unit">
+                          <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="sw.pin" min=1 max=39/>
+                        </div>
+                      </div>
+                      <div class="row" x-show="sw.type == 2 || sw.type > 3">
+                        <p>Min:</p>
+                        <div class="input_with_unit">
+                          <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="sw.min"/>
+                        </div>
+                      </div>
+                      <div class="row" x-show="sw.type == 2 || sw.type > 3">
+                        <p>Max:</p>
+                        <div class="input_with_unit">
+                          <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="sw.max"/>
+                        </div>
+                      </div>
                     </div>
+                    <div class="setting_table">
+                      <div class="text_with_input">
+                        
+                      </div>
+                      <div class="text_with_input">
+                        
+                      </div>
 
+                    </div>
                   </div>
 
                 </template>
@@ -98,86 +128,117 @@
               <div @change="validateDome($event)">
                 <!--Input Open -->
                 <div class="card" >
-                  <div>
-                    <p class="text-center font-bold mb-4" x-text="text.setting.dome.inOpen">Input Aperto</p></div>
+
                   <div class="setting_table">
-                    <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
-                    <div>
-                      <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="dome.pinOpen.pin" min=1 max=39/>
+                    <div class="st_title">
+                      <p class="text-center font-bold mb-4" x-text="text.setting.dome.inOpen">Input Aperto</p>
                     </div>
-                    <p x-text="text.setting.dome.onDelay">{onDelay}</p>
-                    <div>
-                      <span class="unit">ms</span><input class="with_unit" type="number" id="dome_in_open_don" x-model="dome.pinOpen.dOn" min=1 max=39/>
-                    </div>
-                    <p x-text="text.setting.dome.offDelay">{offDelay}</p>
-                    <div>
-                      <span class="unit">ms</span><input class="with_unit" type="number" id="dome_in_open_doff" x-model="dome.pinOpen.dOff" min=1 max=39/>
-                    </div>
-                    <p x-text="text.gen.type">{type}</p>
-                    <div>
-                      <select name="type" id="dome_in_open_type" x-model="dome.pinOpen.type">
-                        <option value=0>N.O.</option>
-                        <option value=1>N.C.</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <!--Input Close -->
-                <div class="card">
-                  <div>
-                    <p class="text-center font-bold mb-4" x-text="text.setting.dome.inClose">Input Chiuso</p></div>
-                    <div class="setting_table">
-                      <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
-                      <div>
-                        <span class="unit">n</span><input id="dome_in_close" class="with_unit" type="number" x-model="dome.pinClose.pin" min=0 max=39/>
+                    <div class="row lg:order-1">
+                      <p x-text="text.gen.pin">{GPIO}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">n</span><input id="dome_in_open" class="with_unit" type="number" x-model="dome.pinOpen.pin" min=1 max=39/>
                       </div>
+                    </div>
+
+                    <div class="row order-3 lg:order-2">
                       <p x-text="text.setting.dome.onDelay">{onDelay}</p>
-                      <div>
-                        <span class="unit">ms</span><input class="with_unit" id="dome_in_close_don" type="number" x-model="dome.pinClose.dOn" min=0/>
+                      <div class="input_with_unit">
+                        <span class="unit">ms</span><input class="with_unit" type="number" id="dome_in_open_don" x-model="dome.pinOpen.dOn" min=1 max=39/>
                       </div>
+                    </div>
+
+                    <div class="row order-4 lg:order-4">
                       <p x-text="text.setting.dome.offDelay">{offDelay}</p>
-                      <div>
-                        <span class="unit">ms</span><input class="with_unit" id="dome_in_close_doff" type="number" x-model="dome.pinClose.dOff" min=0/>
+                      <div class="input_with_unit">
+                        <span class="unit">ms</span><input class="with_unit" type="number" id="dome_in_open_doff" x-model="dome.pinOpen.dOff" min=1 max=39/>
                       </div>
+                    </div>
+
+                    <div class="row order-2 lg:order-3">
                       <p x-text="text.gen.type">{type}</p>
                       <div>
-                        <select name="type" id="dome_in_close_type" x-model="dome.pinClose.type">
+                        <select name="type" id="dome_in_open_type" x-model="dome.pinOpen.type">
                           <option value=0>N.O.</option>
                           <option value=1>N.C.</option>
                         </select>
                       </div>
                     </div>
+
+                  </div>
+                </div>
+                <!--Input Close -->
+                <div class="card">
+                    <div class="setting_table">
+                      <div class="st_title">
+                        <p class="text-center font-bold mb-4" x-text="text.setting.dome.inClose">Input Chiuso</p>
+                      </div>
+                      <div class="row order-1">
+                          <p x-text="text.gen.pin">{GPIO}</p>
+                          <div class="input_with_unit">
+                            <span class="unit">n</span><input id="dome_in_close" class="with_unit" type="number" x-model="dome.pinClose.pin" min=0 max=39/>
+                          </div>
+                      </div>
+                      <div class="row order-2 lg:order-3">
+                        <p x-text="text.gen.type">{type}</p>
+                        <div class="row">
+                          <select name="type" id="dome_in_close_type" x-model="dome.pinClose.type">
+                            <option value=0>N.O.</option>
+                            <option value=1>N.C.</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row order-3 lg:order-2">
+                        <p x-text="text.setting.dome.onDelay">{onDelay}</p>
+                        <div class="input_with_unit">
+                          <span class="unit">ms</span><input class="with_unit" id="dome_in_close_don" type="number" x-model="dome.pinClose.dOn" min=0/>
+                        </div>
+                      </div>
+                      <div class="row order-4">
+                        <p x-text="text.setting.dome.offDelay">{offDelay}</p>
+                        <div class="input_with_unit">
+                          <span class="unit">ms</span><input class="with_unit" id="dome_in_close_doff" type="number" x-model="dome.pinClose.dOff" min=0/>
+                        </div>
+                      </div>
+                    </div>
                 </div>
                 <!--Output -->
                 <div class="card">
-                  <div>
-                    <p class="text-center font-bold mb-4" x-text="text.gen.outputs">{output}</p></div>
+                  <div class="st_title">
+                    <p x-text="text.gen.outputs">{output}</p>
+                  </div>
+
                     <div class="setting_table">
-                      <p x-show="dome.driverType == 0" x-text="text.setting.dome.outStart">{GPIO}</p>
-                      <p x-show="dome.driverType == 1" x-text="text.setting.dome.outOpen">{GPIO}</p>
-                      <div>
-                        <span class="unit">n</span><input class="with_unit" id="dome_out_start" type="number" x-model="dome.pinStart" min=1 max=39/>
+                      <div class="row">
+                        <p x-show="dome.driverType == 0" x-text="text.setting.dome.outStart">{GPIO}</p>
+                        <p x-show="dome.driverType == 1" x-text="text.setting.dome.outOpen">{GPIO}</p>
+                        <div class="input_with_unit">
+                          <span class="unit">n</span><input class="with_unit" id="dome_out_start" type="number" x-model="dome.pinStart" min=1 max=39/>
+                        </div>
                       </div>
-                      <p x-show="dome.driverType == 0" x-text="text.setting.dome.outHalt">{GPIO}</p>
-                      <p x-show="dome.driverType == 1" x-text="text.setting.dome.outClose">{GPIO}</p>
-                      <div>
-                        <span class="unit">n</span><input class="with_unit" id="dome_out_halt" type="number" x-model="dome.pinHalt" min=1 max=39/>
+                      <div class="row">
+                        <p x-show="dome.driverType == 0" x-text="text.setting.dome.outHalt">{GPIO}</p>
+                        <p x-show="dome.driverType == 1" x-text="text.setting.dome.outClose">{GPIO}</p>
+                        <div class="input_with_unit">
+                          <span class="unit">n</span><input class="with_unit" id="dome_out_halt" type="number" x-model="dome.pinHalt" min=1 max=39/>
+                        </div>
                       </div>
                     </div>
                 </div>
 
                 <!--Timeout -->
                 <div class="card">
-                  <div>
+                  <div class="input_with_unit">
                     <p class="text-center font-bold mb-4" x-text="text.setting.dome.timeout">{timeouts}</p>
                   </div>
                   <div class="setting_table">
+                    <div class="row">
                       <p x-text="text.setting.dome.timeOutMoviment">{GPIO}</p>
-                      <div>
+                      <div class="input_with_unit">
                         <span class="unit">sec.</span><input class="with_unit" id="dome_timeout" type="number" x-model="dome.movTimeOut" min=1/>
                       </div>
                     </div>
                   </div>
+                </div>
                 <!--Chiusura Automatica -->
                 <div class="card">
                   <p class="text-center font-bold mb-4" x-text="text.setting.dome.autoClose">{autoClose}</p>
@@ -187,17 +248,25 @@
                   <p class="text-left" x-text="text.setting.dome.autoclosewarning4">{warning4}</p>
                   <p class="text-left font-bold mb-4" x-text="text.setting.dome.autoclosewarning5">{warning5}</p>
                   <div class="setting_table">
-                    <p x-text="text.setting.dome.autoCloseEn">{autoCloseEnable}</p>
-                    <div>
+                    <div class="row">
+                      <p x-text="text.setting.dome.autoCloseEn">{autoCloseEnable}</p>
                       <label class="toggle" for="dome_autoclose">
                         <input class="toggle__input" name="" type="checkbox" id="dome_autoclose" x-model="dome.autoclose.enable">
                         <div class="toggle__fill"></div>
                       </label>
                     </div>
-                    <p x-text="text.setting.dome.timeOutMoviment">{GPIO}</p>
-                    <div>
-                      <span class="unit">min.</span><input class="with_unit" type="number" id="dome_autoclose_time" x-model="dome.autoclose.minutes" min=1/>
+                    <div class="row">
+                      <p x-text="text.setting.dome.timeOutMoviment">{timeoutautoclose}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">min.</span>
+                        <input class="with_unit" type="number" id="dome_autoclose_time" x-model="dome.autoclose.minutes" min=1/>
+                      </div>
                     </div>
+ 
+                    <div>
+
+                  </div>
+
                   </div>
                 </div>
 
@@ -228,74 +297,84 @@
               </div>
             </div>
             <template x-if="open.cover">
-            <div @change="validateCoverC($event)">
-              <div class="card">
-                <div>
-                  <p class="text-center font-bold mb-4" x-text="text.setting.coverC.calibrator.calibrator">{calibrator}</p></div>
-                  <div class="setting_table">
-                    <p x-text="text.gen.enable">{type}</p>
-                    <div>
-                      <label class="toggle" for="coverc_calib_present">
-                        <input class="toggle__input" name="" type="checkbox" id="coverc_calib_present" x-model="coverC.calibrator.present">
-                        <div class="toggle__fill"></div>
-                      </label>
+              <div @change="validateCoverC($event)">
+                <div class="card">                  
+                    <div class="setting_table">
+                      <div class="st_title">
+                        <p x-text="text.setting.coverC.calibrator.calibrator">{calibrator}</p>
+                      </div>
+                      <div class="row">
+                        <p x-text="text.gen.enable">{type}</p>
+                          <label class="toggle" for="coverc_calib_present">
+                            <input class="toggle__input" name="" type="checkbox" id="coverc_calib_present" x-model="coverC.calibrator.present">
+                            <div class="toggle__fill"></div>
+                          </label>
+                      </div>
+                      <div class="row">
+                        <p x-text="text.gen.pin">{GPIO}</p>
+                        <div class="input_with_unit">
+                          <span class="unit">n</span>
+                          <input id="coverc_calibrator_out" class="with_unit" type="number" x-model="coverC.calibrator.pin" min=0 max=39/>
+                        </div>
+                      </div>
                     </div>
-                    <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
-                    <div>
-                      <span class="unit">n</span><input id="coverc_calibrator_out" class="with_unit" type="number" x-model="coverC.calibrator.pin" min=0 max=39/>
-                    </div>
-
-                  </div>
-              </div>
-              <div class="card">
-                <div>
-                  <p class="text-center font-bold mb-4" x-text="text.setting.coverC.cover.cover">{cover}</p></div>
+                </div>
+                <div class="card">
                   <div class="setting_table">
-                    <p x-text="text.gen.enable">{enable}</p>
-                    <div>
+                    <div class="st_title">
+                      <p x-text="text.setting.coverC.cover.cover">{cover}</p>
+                    </div>
+                    <div class="row">
+                      <p x-text="text.gen.enable">{enable}</p>
                       <label class="toggle" for="coverc_cover_present">
                         <input class="toggle__input" name="" type="checkbox" id="coverc_cover_present" x-model="coverC.cover.present">
                         <div class="toggle__fill"></div>
                       </label>
                     </div>
-                    <div class="content-center"><p x-text="text.gen.pin">{GPIO}</p></div>
-                    <div>
-                      <span class="unit">n</span><input id="coverc_cover_out" class="with_unit" type="number" x-model="coverC.cover.pin" min=0 max=39/>
+                    <div class="row">
+                      <p x-text="text.gen.pin">{GPIO}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">n</span><input id="coverc_cover_out" class="with_unit" type="number" x-model="coverC.cover.pin" min=0 max=39/>
+                      </div>
                     </div>
-                    <div class="content-center"><p x-text="text.setting.coverC.cover.maxDeg">{maxDeg}</p></div>
-                    <div>
-                      <span class="unit">deg</span><input id="coverc_cover_max_deg" class="with_unit" type="number" x-model="coverC.cover.maxDeg" min=0 max=360/>
+                    <div class="row">
+                      <p x-text="text.setting.coverC.cover.maxDeg">{maxDeg}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">deg</span><input id="coverc_cover_max_deg" class="with_unit" type="number" x-model="coverC.cover.maxDeg" min=0 max=360/>
+                      </div>
                     </div>
-                    <div class="content-center"><p x-text="text.setting.coverC.cover.closeDeg">{closeDeg}</p></div>
-                    <div>
-                      <span class="unit">deg</span><input id="coverc_cover_close_deg" class="with_unit" type="number" x-model="coverC.cover.closeDeg" min=0 max=39/>
+                    <div class="row">
+                      <p x-text="text.setting.coverC.cover.movingTime">{movingtime}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">ms</span><input id="coverc_cover_mov_time" class="with_unit" type="number" x-model="coverC.cover.movTime" min=0/>
+                      </div>
                     </div>
-                    <div class="content-center"><p x-text="text.setting.coverC.cover.openDeg">{openDeg}</p></div>
-                    <div>
-                      <span class="unit">deg</span><input id="coverc_cover_open_deg" class="with_unit" type="number" x-model="coverC.cover.openDeg" min=0 max=39/>
+                    <div class="row">
+                      <p x-text="text.setting.coverC.cover.openDeg">{openDeg}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">deg</span><input id="coverc_cover_open_deg" class="with_unit" type="number" x-model="coverC.cover.openDeg" min=0 max=39/>
+                      </div>
                     </div>
-                    <div class="content-center"><p x-text="text.setting.coverC.cover.movingTime">{movingtime}</p></div>
-                    <div>
-                      <span class="unit">deg</span><input id="coverc_cover_open_deg" class="with_unit" type="number" x-model="coverC.cover.movTime" min=0/>
+                    <div class="row">
+                      <p x-text="text.setting.coverC.cover.closeDeg">{closeDeg}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">deg</span><input id="coverc_cover_close_deg" class="with_unit" type="number" x-model="coverC.cover.closeDeg" min=0 max=39/>
+                      </div>
                     </div>
-
                   </div>
+                </div>
+                <div class="config_buttons">
+                  <button class="green" x-text="text.gen.loadFromBoard" @click="getOriginalCoverCConfig()">{loadFromBoard}</button>
+                  <a href="./cover/ccconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
+                  <button class="red" x-text="text.gen.save" @click="saveCoverCSetting()">{save}</button>
+                </div>
               </div>
-              <div class="config_buttons">
-                <button class="green" x-text="text.gen.loadFromBoard" @click="getOriginalCoverCConfig()">{loadFromBoard}</button>
-                <a href="./cover/ccconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
-                <button class="red" x-text="text.gen.save" @click="saveCoverCSetting()">{save}</button>
-              </div>
-            </div>
-
-            </div>
-            
-          </template>
+            </template>
           </div>
         </template>
 
        
-        <!-- STATISTICS AREA -->
+        <!-- SETTING AREA -->
         <div class="single_grid">
           <div class="single_header" x-on:click="open.statistics = ! open.statistics">
             <div class="title"><p>TeslaBoard</p></div>
@@ -315,7 +394,7 @@
                 <div class="setting_table">
                   <p x-text="text.gen.locale">{type}</p>
                   <div>
-                    <select name="type" id="dome_in_close_type" x-model="board.locale">
+                    <select name="type" id="board_locale" x-model="board.locale">
                       <option value="it">Italiano</option>
                       <option value="en">English</option>
                     </select>
@@ -360,6 +439,8 @@
         </template>
       </div>
       </div>
+
+
 
     </template>
     </div>
