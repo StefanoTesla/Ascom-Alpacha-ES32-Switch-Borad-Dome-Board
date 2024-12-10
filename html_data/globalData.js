@@ -13,6 +13,7 @@ export default function GlobalData() {
         coverC:{},
         board:{},
         open:  {switch:false,dome:false,cover:false,statistics:false},
+        load:{switch:false,dome:false,cover:false,statistics:false},
         manual:{
             cover:0,
             brightness:0,
@@ -60,17 +61,6 @@ export default function GlobalData() {
         setTimeout(() => {this.updateBoard()}, 30000)
     },
 
-
-    getDomeStatus(){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip+'/api/dome/status')
-        .then(response => response.json())
-        .then(data => {
-            this.dome = data;
-            
-        })
-        .catch(error => console.error('Error fetching board data:', error));
-    },
 
 
 

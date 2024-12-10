@@ -313,3 +313,11 @@ input[type="range"] {
 .sw_delete > button {
   @apply min-w-0 py-0 px-1 ml-4 h-8
 }
+
+.input_address{
+  @apply min-w-0 w-10 px-1 py-1
+}
+
+.full_row{
+  @apply flex lg:col-span-2 items-center
+}

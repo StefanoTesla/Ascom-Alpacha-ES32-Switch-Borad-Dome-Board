@@ -4,6 +4,7 @@ import { translations } from './utils/translations.js'
 import { dome } from './utils/dome.js'
 import { coverc } from './utils/coverc.js'
 import { switches } from './utils/swtiches.js'
+import { board} from './utils/board.js'
 
 export default function BoardSetting() {
     return {
@@ -17,7 +18,7 @@ export default function BoardSetting() {
         switchOrig:{},
         board:{},
         open:{switch:false,dome:false,cover:false,statistics:false},
-        load:{switch:false,dome:false,cover:false,statistics:false},
+        load:{switch:false,dome:false,cover:false,board:false},
         notices: [],
         visible: [],
 
@@ -27,8 +28,9 @@ export default function BoardSetting() {
         .then(response => response.json())
         .then(data => {
             this.fetchTexts(data.locale);
-            this.board = data.board
             this.exist = data.define;
+
+            this.getBoardConfig()
 
             if(this.exist.dome){
                 this.getDomeConfig()
@@ -46,37 +48,6 @@ export default function BoardSetting() {
 
 
 
-    /* board config */
-
-    saveBoardConfig(){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip + '/api/board/cfg', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.board)
-        }).then(res => res.json())
-        .then(res => {
-            this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
-        })
-        .catch(err => {
-                try {
-                    const errorData = JSON.parse(err.message);
-                    console.log("Errors:", errorData.errors);
-                    this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                } catch (parseError) {
-                    console.log("Errore sconosciuto:", err);
-                    this.addToast({ type: "error", text: "Errore sconosciuto." });
-                }
-        })
-        .finally(() => {
-            this.deleteCookie();
-        });
-
-    },
-
     /* used to store loaded configuration*/
     copy(object){
         return JSON.parse(JSON.stringify(object));
@@ -88,7 +59,8 @@ export default function BoardSetting() {
     ...toast(),
     ...dome(),
     ...coverc(),
-    ...switches()
+    ...switches(),
+    ...board()
 
     };
 }

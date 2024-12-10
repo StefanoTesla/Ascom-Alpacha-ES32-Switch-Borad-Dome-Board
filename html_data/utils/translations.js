@@ -11,7 +11,6 @@ export function translations() {
                 })
                 .catch(error => {
                     console.error('Error fetching translations: only en and it is supported at the moment');
-                    this.deleteCookie();
                 });
         },
 

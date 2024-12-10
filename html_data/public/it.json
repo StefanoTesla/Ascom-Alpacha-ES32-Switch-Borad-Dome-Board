@@ -69,7 +69,13 @@
 		"actualPos": "Posizione attuale:",
 		"actualValue": "Valore Attuale:",
 		"locale": "Lingua",
-		"cmdAck": "Comando ricevuto"
+		"cmdAck": "Comando ricevuto",
+		"wifi": "WiFi",
+		"ipAddress": "Indirizzo IP:",
+		"subnet": "Sotto Rete:",
+		"staticIp": "Indirizzo Ip statico:",
+		"waitToReconnect": "Attesa per riconnessione:",
+		"warningIP": "Attenzione, viene effettuata una validazione semplice, in caso di errore sarà impossibile raggiungere la scheda."
 	},
 
 	"setting":{
@@ -106,10 +112,18 @@
 				"movingTime": "Tempo di movimento:"
 			},
 			"configSaved": "configurazione Cover Calibrator Salvata"
+		},
+		"board":{
+			"configSaved": "configurazione Scheda Salvata"
 		}
 	},
 	"errors":{
 		"noUsableAsInput" : "non utilizzabile come ingresso",
 		"noUsableAsOutput" : "non utilizzabile come uscita"
+	},
+	"pwm":{
+		"0": "Non inizializzato",
+		"1": "PWM",
+		"2": "Servo"
 	}
 }

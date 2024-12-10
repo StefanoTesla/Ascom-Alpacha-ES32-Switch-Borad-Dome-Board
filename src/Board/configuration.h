@@ -2,24 +2,25 @@
 #define BOARD_CONFIG
 
 void saveBoardConfig(){
-
+    Serial.println("BOARD: save config request");
     JsonDocument doc;
 
     doc["locale"] = Global.config.language.locale;
     
     JsonObject wifi = doc["wifi"].to<JsonObject>();
-    wifi["reconTime"] = 2000;
-    wifi["enStaticIP"] = false;
+    wifi["reconTime"] = Global.config.wifi.reconnection.intervall;
+    wifi["enStaticIP"] = Global.config.wifi.ip.enable;
+
     JsonArray ip = wifi["ip"].to<JsonArray>();
-    ip[0] = 192;
-    ip[1] = 168;
-    ip[2] = 0;
-    ip[3] = 192;
+    ip[0] = Global.config.wifi.ip.ip[0];
+    ip[1] = Global.config.wifi.ip.ip[1];
+    ip[2] = Global.config.wifi.ip.ip[2];
+    ip[3] = Global.config.wifi.ip.ip[3];
     JsonArray sub = wifi["sub"].to<JsonArray>();
-    sub[0] = 192;
-    sub[1] = 168;
-    sub[2] = 0;
-    sub[3] = 192;
+    sub[0] = Global.config.wifi.ip.sub[0];
+    sub[1] = Global.config.wifi.ip.sub[1];
+    sub[2] = Global.config.wifi.ip.sub[2];
+    sub[3] = Global.config.wifi.ip.sub[3];
 
     File file = LittleFS.open("/cfg/boarcfg.txt",FILE_WRITE);
 
@@ -37,7 +38,7 @@ void saveBoardConfig(){
 
 
 void initBoardConfig(){
-
+    Serial.println("INIT: Reading Board config...");
     File file = LittleFS.open("/cfg/boarcfg.txt",FILE_READ);
 
     if (!file) {
@@ -54,14 +55,53 @@ void initBoardConfig(){
         return;
     }
 
-    Global.config.language.locale = doc["locale"].as<String>();  
-    Serial.print("Language:");
+    Global.config.language.locale = doc["locale"].as<String>(); 
+    Serial.print("INIT: Board Locale: ");
     Serial.println(Global.config.language.locale);
+    JsonObject wifi = doc["wifi"];
+
+    Global.config.wifi.reconnection.intervall = wifi["reconTime"].as<unsigned int>();
+    Serial.print("INIT: Board wifi reconnection time: ");
+    Serial.println(Global.config.wifi.reconnection.intervall);
+
+    Global.config.wifi.ip.enable = wifi["enStaticIP"].as<bool>();
+
+    Serial.print("INIT: Board wifi static ip address enable: ");
+    if(Global.config.wifi.ip.enable){
+        Serial.println("true");
+    } else {
+        Serial.println("false");
+    }
+    
+    if(Global.config.wifi.ip.enable){
+        JsonArray ip = wifi["ip"];
+        Global.config.wifi.ip.ip[0] = ip[0].as<unsigned int>();
+        Global.config.wifi.ip.ip[1] = ip[1].as<unsigned int>();
+        Global.config.wifi.ip.ip[2] = ip[2].as<unsigned int>();
+        Global.config.wifi.ip.ip[3] = ip[3].as<unsigned int>();
+        Serial.print("INIT: Board required ip: ");
+        Serial.print(Global.config.wifi.ip.ip[0]);
+        Serial.print(".");
+        Serial.print(Global.config.wifi.ip.ip[1]);
+        Serial.print(".");
+        Serial.print(Global.config.wifi.ip.ip[2]);
+        Serial.print(".");
+        Serial.println(Global.config.wifi.ip.ip[3]);
+        JsonArray sub = wifi["sub"];
+        Global.config.wifi.ip.sub[0] = sub[0].as<unsigned int>();
+        Global.config.wifi.ip.sub[1] = sub[1].as<unsigned int>();
+        Global.config.wifi.ip.sub[2] = sub[2].as<unsigned int>();
+        Global.config.wifi.ip.sub[3] = sub[3].as<unsigned int>();
+        Serial.print("INIT: Board subnet ip: ");
+        Serial.print(Global.config.wifi.ip.sub[0]);
+        Serial.print(".");
+        Serial.print(Global.config.wifi.ip.sub[1]);
+        Serial.print(".");
+        Serial.print(Global.config.wifi.ip.sub[2]);
+        Serial.print(".");
+        Serial.println(Global.config.wifi.ip.sub[3]);
+    }
+
 }
-
-
-
-
-
 
 #endif

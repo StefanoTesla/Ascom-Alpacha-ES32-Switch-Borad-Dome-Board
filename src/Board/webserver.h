@@ -8,39 +8,55 @@ void boardWebServer(){
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
-        JsonObject board = doc["board"].to<JsonObject>();
-        board["locale"] = Global.config.language.locale;
-
-        JsonObject wifi = board["wifi"].to<JsonObject>();
-        wifi["reconTime"] = 2000;
-        wifi["enStaticIP"] = false;
-        JsonArray ip = wifi["ip"].to<JsonArray>();
-        ip[0] = 192;
-        ip[1] = 168;
-        ip[2] = 0;
-        ip[3] = 192;
-        JsonArray sub = wifi["sub"].to<JsonArray>();
-        sub[0] = 192;
-        sub[1] = 168;
-        sub[2] = 0;
-        sub[3] = 192;
+        doc["locale"] = Global.config.language.locale;
 
         JsonObject define = doc["define"].to<JsonObject>();
         #ifdef DOME
-        define["dome"] = true;
+            define["dome"] = true;
         #else
-        define["dome"] = false;
+            define["dome"] = false;
         #endif
         #ifdef SWITCH
-        define["switch"] = true;
+            define["switch"] = true;
         #else
-        define["switch"] = false;
+            define["switch"] = false;
         #endif
         #ifdef COVER_CALIBRATOR
-        define["coverc"] = true;
+            define["coverc"] = true;
         #else
-        define["coverc"] = false;
+            define["coverc"] = false;
         #endif
+
+        response->setLength();
+        request->send(response);
+    });
+
+
+    server.on("/api/board/cfg", HTTP_GET, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+
+        doc["locale"] = Global.config.language.locale;
+
+        JsonObject wifi = doc["wifi"].to<JsonObject>();
+        wifi["reconTime"] = Global.config.wifi.reconnection.intervall;
+
+
+        JsonObject address = doc["address"].to<JsonObject>();
+        address["enStaticIP"] = Global.config.wifi.ip.enable;
+
+        JsonObject ip = address["staticIp"].to<JsonObject>();
+        ip["0"]= Global.config.wifi.ip.ip[0];
+        ip["1"]= Global.config.wifi.ip.ip[1];
+        ip["2"]= Global.config.wifi.ip.ip[2];
+        ip["3"]= Global.config.wifi.ip.ip[3];
+
+        JsonObject sub = address["staticSubnet"].to<JsonObject>();
+        sub["0"]= Global.config.wifi.ip.sub[0];
+        sub["1"]= Global.config.wifi.ip.sub[1];
+        sub["2"]= Global.config.wifi.ip.sub[2];
+        sub["3"]= Global.config.wifi.ip.sub[3];
+
 
         response->setLength();
         request->send(response);
@@ -56,6 +72,7 @@ void boardWebServer(){
         wifi["ssid"] = WiFi.SSID();
         wifi["db"] = WiFi.RSSI();
         wifi["ip"] = WiFi.localIP();
+        wifi["sub"] = WiFi.subnetMask();
 
         JsonObject memo = doc["memory"].to<JsonObject>();
         memo["heapSize"] = ESP.getHeapSize();
@@ -68,7 +85,14 @@ void boardWebServer(){
         board["cores"] = ESP.getChipCores();
         board["rev"] = ESP.getChipRevision();
         board["freq"] = ESP.getCpuFreqMHz();
+        
 
+        JsonArray pwm = doc["pwm"].to<JsonArray>();
+        for (size_t i = 0; i < 16; i++)
+        {
+            pwm.add(Global.pwm[i].type);
+        }
+        
         response->setLength();
         request->send(response);
     });
@@ -83,9 +107,86 @@ void boardWebServer(){
             JsonArray err = doc["errors"].to<JsonArray>();
             bool error = false;
             bool reboot = false;
+            bool enable = false;
             
+            serializeJson(json, Serial);
+
+            if(!json["locale"].is<String>()){
+                error = true;
+                doc["errors"].add("Wrong Locale");
+            }
+            if(!json["wifi"]["reconTime"].is<unsigned int>()){
+                error = true;
+                doc["errors"].add("Wrong reconnection time");
+            }
+            JsonObject address = json["address"];
+            if(!address["enStaticIP"].is<bool>()){
+                doc["errors"].add("Wrong Static IP enable");
+                error = true;
+            } else {
+                enable = address["enStaticIP"];
+            }
+
+            JsonObject address_staticIp = address["staticIp"];
+            JsonObject address_staticSubnet = address["staticSubnet"];
+            if(enable){
+                
+                if(!address_staticIp["0"].is<unsigned int>() || address_staticIp["0"] > 255){
+                    error = true;
+                    doc["errors"].add("Wrong IP [0]");
+                }
+                if(!address_staticIp["1"].is<unsigned int>() || address_staticIp["1"] > 255){
+                    error = true;
+                    doc["errors"].add("Wrong IP [1]");
+                }
+                if(!address_staticIp["2"].is<unsigned int>() || address_staticIp["2"] > 255 ){
+                    error = true;
+                    doc["errors"].add("Wrong IP [2]");
+                }
+                if(!address_staticIp["3"].is<unsigned int>() || address_staticIp["3"] > 255){
+                    error = true;
+                    doc["errors"].add("Wrong IP [3]");
+                }
+                
+                if(!address_staticSubnet["0"].is<unsigned int>() || address_staticSubnet["0"] > 255 ){
+                    error = true;
+                    doc["errors"].add("Wrong subnet [0]");
+                }
+                if(!address_staticSubnet["1"].is<unsigned int>() || address_staticSubnet["1"] > 255 ){
+                    error = true;
+                    doc["errors"].add("Wrong subnet [1]");
+                }
+                if(!address_staticSubnet["2"].is<unsigned int>() || address_staticSubnet["2"] > 255 ){
+                    error = true;
+                    doc["errors"].add("Wrong subnet [2]");
+                }
+                if(!address_staticSubnet["3"].is<unsigned int>() || address_staticSubnet["3"] > 255 ){
+                    error = true;
+                    doc["errors"].add("Wrong subnet [3]");
+                }
+            }
+
+
+            if(!error){
             Global.config.language.locale = json["locale"].as<String>();
+            Global.config.wifi.reconnection.intervall = json["wifi"]["reconTime"];
+            Global.config.wifi.ip.enable = address["enStaticIP"];
+                if(Global.config.wifi.ip.enable){
+                    Global.config.wifi.ip.ip[0] = address_staticIp["0"].as<unsigned int>();
+                    Global.config.wifi.ip.ip[1] = address_staticIp["1"].as<unsigned int>();
+                    Global.config.wifi.ip.ip[2] = address_staticIp["2"].as<unsigned int>();
+                    Global.config.wifi.ip.ip[3] = address_staticIp["3"].as<unsigned int>();
+                    Global.config.wifi.ip.sub[0] = address_staticSubnet["0"].as<unsigned int>();
+                    Global.config.wifi.ip.sub[1] = address_staticSubnet["1"].as<unsigned int>();
+                    Global.config.wifi.ip.sub[2] = address_staticSubnet["2"].as<unsigned int>();
+                    Global.config.wifi.ip.sub[3] = address_staticSubnet["3"].as<unsigned int>();
+                }
             Global.config.save.execute = true;
+            }
+
+            if(error){
+                response->setCode(500);
+            }
             response->setLength();
             request->send(response);
         });

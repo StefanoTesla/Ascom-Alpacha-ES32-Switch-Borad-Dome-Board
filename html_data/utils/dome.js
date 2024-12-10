@@ -65,8 +65,20 @@ export function dome(){
         if(this.negativeValue( this.dome.movTimeOut,"dome_timeout")){ this.addValidationErrorClass();  valid = false }
         if(this.negativeValue( this.dome.autoclose.minutes,"dome_autoclose_time")){ this.addValidationErrorClass();  valid = false }
         return valid
-    
     },
+
+    
+    getDomeStatus(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip+'/api/dome/status')
+        .then(response => response.json())
+        .then(data => {
+            this.dome = data;
+            this.load.dome = true;
+        })
+        .catch(error => console.error('Error fetching board data:', error));
+    },
+
 
 
     }

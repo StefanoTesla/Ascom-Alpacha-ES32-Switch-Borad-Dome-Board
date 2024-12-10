@@ -22,7 +22,7 @@ export function switches(){
 
     addNewSwitch(){
         if(this.swi.Switches.length <= 14){
-            this.swi.Switches.push({"name":"","description":"","type":0,"pin":0,"min":0,"max":0})
+            this.swi.Switches.push({"name":"","desc":"","type":0,"pin":0,"min":0,"max":0})
         } else {
             this.addToast({type:"error", text:"Limite Raggiunto" })
         }
@@ -43,7 +43,7 @@ export function switches(){
 
     validateSwitch(index){
         this.swi.Switches[index].name = this.swi.Switches[index].name.replace(/[@#$*<>:;!]/g, '')
-        this.swi.Switches[index].description = this.swi.Switches[index].description.replace(/[@#$*<>:;!]/g, '')
+        this.swi.Switches[index].desc = this.swi.Switches[index].desc.replace(/[@#$*<>:;!]/g, '')
         this.swi.Switches[index].type = parseInt(this.swi.Switches[index].type)
         this.swi.Switches[index].pin = parseInt(this.swi.Switches[index].pin)
         this.swi.Switches[index].min = parseInt(this.swi.Switches[index].min)

@@ -43,7 +43,7 @@
               </div>
             </div>
             <template x-if="open.switch">
-              <div><!-- onchange-->
+              <div>
                 <div class="sw_tools">
                   <button class="ml-4 sw_add green" @click="addNewSwitch()"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 72 72" width="40px" height="40px"><path d="M36,12c13.255,0,24,10.745,24,24c0,13.255-10.745,24-24,24S12,49.255,12,36C12,22.745,22.745,12,36,12z M44,39	c1.657,0,3-1.343,3-3c0-1.657-1.343-3-3-3c-0.329,0-2.426,0-5,0c0-2.574,0-4.672,0-5c0-1.657-1.343-3-3-3c-1.657,0-3,1.343-3,3	c0,0.328,0,2.426,0,5c-2.574,0-4.671,0-5,0c-1.657,0-3,1.343-3,3c0,1.657,1.343,3,3,3c0.329,0,2.426,0,5,0c0,2.574,0,4.672,0,5	c0,1.657,1.343,3,3,3c1.657,0,3-1.343,3-3c0-0.328,0-2.426,0-5C41.574,39,43.671,39,44,39z"/></svg></button>
                 </div>
@@ -58,7 +58,7 @@
                           </div>
                           <div class="row">
                             <p x-text="text.switch.description">{description}</p>
-                            <input :id="'sw_'+ index + '_desc'" class="in_text" type="text" x-model="sw.description" maxlength=15/>
+                            <input :id="'sw_'+ index + '_desc'" class="in_text" type="text" x-model="sw.desc" maxlength=15/>
                           </div>
                           <div class="row">
                             <p x-text="text.gen.type">{Type}</p>
@@ -399,13 +399,64 @@
             <div>
               <div class="card">
                 <div class="setting_table">
-                  <p x-text="text.gen.locale">{type}</p>
-                  <div>
-                    <select name="type" id="board_locale" x-model="board.locale">
-                      <option value="it">Italiano</option>
-                      <option value="en">English</option>
-                    </select>
+                  <div class="st_title"><p x-text="text.gen.locale">{language}</p></div>
+                  <div class="row">
+                    <p x-text="text.gen.locale">{language}</p>
+                    <div>
+                      <select name="type" id="board_locale" x-model="board.locale">
+                        <option value="it">Italiano</option>
+                        <option value="en">English</option>
+                      </select>
+                    </div>
                   </div>
+                </div>
+              </div>
+
+
+              <div class="card">
+                <div class="setting_table">
+                  <div class="st_title">
+                    <p x-text="text.gen.wifi">{wifi}</p>
+                  </div>
+                  <div class="row">
+                    <p x-text="text.gen.waitToReconnect">{waitToReconnect}</p>
+                    <div class="input_with_unit">
+                      <span class="unit">sec</span><input id="coverc_cover_close_deg" class="with_unit" type="number" x-model="board.wifi.reconTime" min=0/>
+                    </div>
+                  </div>
+                  <div class="full_row">
+                    <p x-text="text.gen.staticIp">{enStaticIP}</p>
+                    <label class="toggle" for="board_wifi_staticip">
+                      <input class="toggle__input" name="" type="checkbox" id="board_wifi_staticip" x-model="board.address.enStaticIP">
+                      <div class="toggle__fill"></div>
+                    </label>
+                  </div>
+                  <p x-text="text.gen.warningIP" x-show="board.address.enStaticIP"></p>
+                  <div class="full_row" x-show="board.address.enStaticIP">
+                    <p x-text="text.gen.ipAddress">{ipAddress}</p>
+                    <div @change="checkIPField()">
+                      <input id="board_wifi_staticIP_0" class="input_address" type="number" x-model="board.address.staticIp[0]" min="0" max="999" />
+                      <span>.</span>
+                      <input id="board_wifi_staticIP_1" class="input_address" type="number" x-model="board.address.staticIp[1]" min="0" max="999" />
+                      <span>.</span>
+                      <input id="board_wifi_staticIP_2" class="input_address" type="number" x-model="board.address.staticIp[2]" min="0" max="999" />
+                      <span>.</span>
+                      <input id="board_wifi_staticIP_3" class="input_address" type="number" x-model="board.address.staticIp[3]" min="0" max="999" />
+                    </div>
+                  </div>
+                  <div class="full_row" x-show="board.address.enStaticIP">
+                    <p x-text="text.gen.subnet">{subnet}</p>
+                    <div @change="checkIPField()"> 
+                      <input id="board_wifi_staticSub_0" class="input_address" type="number" x-model="board.address.staticSubnet[0]" min="0" max="999" />
+                      <span>.</span>
+                      <input id="board_wifi_staticSub_1" class="input_address" type="number" x-model="board.address.staticSubnet[1]" min="0" max="999" />
+                      <span>.</span>
+                      <input id="board_wifi_staticSub_2" class="input_address" type="number" x-model="board.address.staticSubnet[2]" min="0" max="999" />
+                      <span>.</span>
+                      <input id="board_wifi_staticSub_3" class="input_address" type="number" x-model="board.address.staticSubnet[3]" min="0" max="999" />
+                    </div>
+                  </div>
+                  
 
                 </div>
 

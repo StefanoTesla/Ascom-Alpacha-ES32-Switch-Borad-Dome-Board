@@ -99,5 +99,10 @@
 	"errors":{
 		"noUsableAsInput" : "not usable as input",
 		"noUsableAsOutput" : "not usable as output"
+	},
+	"pwm":{
+		"0": "Not initialized",
+		"1": "PWM",
+		"2": "Servo"
 	}	
 }

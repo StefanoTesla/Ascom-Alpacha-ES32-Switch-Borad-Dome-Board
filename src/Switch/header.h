@@ -42,7 +42,7 @@ struct SwitchConfiStruct{
 enum SwitchType{
   SwTypeNull,
   SwTypeDInput,
-  SwTypeAInput,
+  SwTypeAInput ,
   SwTypeDOutput,
   SwTypePWM,
   SwTypeServo,

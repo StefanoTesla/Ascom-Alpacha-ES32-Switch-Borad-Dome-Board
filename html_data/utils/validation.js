@@ -72,6 +72,18 @@ export function validation() {
             const el = document.getElementById(id);
             if (el) el.classList.remove('validation_error');
         },
+
+
+        ipAddress(value,divclass){
+            value = parseInt(value)
+            if(value<0 || value>255 || value == null || isNaN(value)){
+                this.addValidationErrorClass(divclass)
+                return true
+                ;
+            }
+            this.removeValidationErrorClass(divclass);
+            return false
+        },
     
     
     }

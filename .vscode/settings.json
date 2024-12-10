@@ -18,7 +18,7 @@
         "optional": "cpp",
         "system_error": "cpp",
         "typeinfo": "cpp",
-        "*.h": "cpp",
+        "*.h": "c",
         "istream": "cpp",
         "ostream": "cpp",
         "ratio": "cpp",
@@ -29,9 +29,11 @@
         "chrono": "cpp"
     },
     "C_Cpp.default.includePath": [
+
     "${workspaceFolder}/.pio/libdeps/**",
     "${workspaceFolder}/include",
-    "${workspaceFolder}/src"
+    "${workspaceFolder}/src",
+    "${workspaceFolder}/src/**"
     ],
     "C_Cpp.intelliSenseMode": "gcc-x64"
 }

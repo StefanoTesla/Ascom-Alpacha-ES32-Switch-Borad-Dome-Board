@@ -7,6 +7,7 @@ export function coverc(){
             .then(response => response.json())
             .then(data => {
                 this.coverC = data;
+                this.load.cover = true
             })
             .catch(error => console.error('Error fetching board data:', error));
         },
