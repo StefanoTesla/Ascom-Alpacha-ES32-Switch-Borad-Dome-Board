@@ -88,17 +88,14 @@ export function switches(){
 
 
     saveSwitchesSetting(){
-        console.log("ceso'è bono")   
+  
     let error = false;
         this.swi.Switches.forEach((element,index) => {
             if(!this.validateSwitch(index)){
                 error = true;
-                console.log(error,index)
             }
         });
-        console.log("boh 'è bono")   
     if(error){
-        console.error("Can't save bad data")
         return;
     }
 

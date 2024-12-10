@@ -310,14 +310,14 @@
                       <div class="st_title">
                         <p x-text="text.setting.coverC.calibrator.calibrator">{calibrator}</p>
                       </div>
-                      <div class="row">
-                        <p x-text="text.gen.enable">{type}</p>
+                      <div class="row order-1">
+                        <p x-text="text.gen.enable">{enable}</p>
                           <label class="toggle" for="coverc_calib_present">
                             <input class="toggle__input" name="" type="checkbox" id="coverc_calib_present" x-model="coverC.calibrator.present">
                             <div class="toggle__fill"></div>
                           </label>
                       </div>
-                      <div class="row">
+                      <div class="row order-2">
                         <p x-text="text.gen.pin">{GPIO}</p>
                         <div class="input_with_unit">
                           <span class="unit">n</span>
@@ -331,38 +331,38 @@
                     <div class="st_title">
                       <p x-text="text.setting.coverC.cover.cover">{cover}</p>
                     </div>
-                    <div class="row">
+                    <div class="row order 1">
                       <p x-text="text.gen.enable">{enable}</p>
                       <label class="toggle" for="coverc_cover_present">
                         <input class="toggle__input" name="" type="checkbox" id="coverc_cover_present" x-model="coverC.cover.present">
                         <div class="toggle__fill"></div>
                       </label>
                     </div>
-                    <div class="row">
+                    <div class="row order-2 lg:order-3">
                       <p x-text="text.gen.pin">{GPIO}</p>
                       <div class="input_with_unit">
                         <span class="unit">n</span><input id="coverc_cover_out" class="with_unit" type="number" x-model="coverC.cover.pin" min=0 max=39/>
                       </div>
                     </div>
-                    <div class="row">
-                      <p x-text="text.setting.coverC.cover.maxDeg">{maxDeg}</p>
-                      <div class="input_with_unit">
-                        <span class="unit">deg</span><input id="coverc_cover_max_deg" class="with_unit" type="number" x-model="coverC.cover.maxDeg" min=0 max=360/>
-                      </div>
-                    </div>
-                    <div class="row">
+                    <div class="row order-3 lg:order-5">
                       <p x-text="text.setting.coverC.cover.movingTime">{movingtime}</p>
                       <div class="input_with_unit">
                         <span class="unit">ms</span><input id="coverc_cover_mov_time" class="with_unit" type="number" x-model="coverC.cover.movTime" min=0/>
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row order-4 lg:order-2">
+                      <p x-text="text.setting.coverC.cover.maxDeg">{maxDeg}</p>
+                      <div class="input_with_unit">
+                        <span class="unit">deg</span><input id="coverc_cover_max_deg" class="with_unit" type="number" x-model="coverC.cover.maxDeg" min=0 max=360/>
+                      </div>
+                    </div>
+                    <div class="row order-5 lg:order-4">
                       <p x-text="text.setting.coverC.cover.openDeg">{openDeg}</p>
                       <div class="input_with_unit">
                         <span class="unit">deg</span><input id="coverc_cover_open_deg" class="with_unit" type="number" x-model="coverC.cover.openDeg" min=0 max=39/>
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row order-6">
                       <p x-text="text.setting.coverC.cover.closeDeg">{closeDeg}</p>
                       <div class="input_with_unit">
                         <span class="unit">deg</span><input id="coverc_cover_close_deg" class="with_unit" type="number" x-model="coverC.cover.closeDeg" min=0 max=39/>

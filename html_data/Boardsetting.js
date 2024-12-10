@@ -77,8 +77,6 @@ export default function BoardSetting() {
 
     },
 
-
-
     /* used to store loaded configuration*/
     copy(object){
         return JSON.parse(JSON.stringify(object));

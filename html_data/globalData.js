@@ -1,6 +1,13 @@
-export default function GlobalData(text,toast) {
+import { toast } from './utils/toast.js'
+import { validation } from './utils/validation.js'
+import { translations } from './utils/translations.js'
+import { dome } from './utils/dome.js'
+import { coverc } from './utils/coverc.js'
+import { switches } from './utils/swtiches.js'
+
+export default function GlobalData() {
     return {
-        text: text,
+        textLoaded:false,
         exist: {},
         dome:{},
         coverC:{},
@@ -20,6 +27,7 @@ export default function GlobalData(text,toast) {
         fetch(ip+'/api/cfg')
         .then(response => response.json())
         .then(data => {
+            this.fetchTexts(data.locale);
             this.exist = data.define;
             this.updateData()
             this.updateBoard()
@@ -64,170 +72,14 @@ export default function GlobalData(text,toast) {
         .catch(error => console.error('Error fetching board data:', error));
     },
 
-    getCoverCStatus(){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip+'/api/coverc/status')
-        .then(response => response.json())
-        .then(data => {
-            this.coverC = data;
-        })
-        .catch(error => console.error('Error fetching board data:', error));
-    },
-
-    coverClose(){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip + '/api/coverc/close', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-            },
-          }).then(res => res.json())
-            .then(res => {
-                if(res.execute){
-                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
-                    this.coverC.cover.status = 2;
-                }
-            })
-            .catch(err => {
-                try {
-                    const errorData = JSON.parse(err.message);
-                    console.log("Errors:", errorData.errors);
-                    this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                } catch (parseError) {
-                    console.log("Errore sconosciuto:", err);
-                    this.addToast({ type: "error", text: "Errore sconosciuto." });
-                }
-            });
-    },
-    coverOpen(){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip + '/api/coverc/open', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-            },
-          }).then(res => res.json())
-            .then(res => {
-                if(res.execute){
-                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
-                    this.coverC.cover.status = 2;
-                }
-
-            })
-            .catch(err => {
-                try {
-                    const errorData = JSON.parse(err.message);
-                    console.log("Errors:", errorData.errors);
-                    this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                } catch (parseError) {
-                    console.log("Errore sconosciuto:", err);
-                    this.addToast({ type: "error", text: "Errore sconosciuto." });
-                }
-            });
-    },
 
 
-    calibratorBrightness(value){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip + '/api/coverc/brightness', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body:"brightness="+value
-          }).then(res => res.json())
-            .then(res => {
-                if(res.execute){
-                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
-                }
-            })
-            .catch(err => {
-                try {
-                    const errorData = JSON.parse(err.message);
-                    console.log("Errors:", errorData.errors);
-                    this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                } catch (parseError) {
-                    console.log("Errore sconosciuto:", err);
-                    this.addToast({ type: "error", text: "Errore sconosciuto." });
-                }
-            });
-    },
-
-    calibratorOff(){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip + '/api/coverc/off', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-            },
-          }).then(res => res.json())
-            .then(res => {
-                if (res.execute){
-                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
-                    this.coverC.calibrator.brightness = 0;
-                }
-            })
-            .catch(err => {
-                try {
-                    const errorData = JSON.parse(err.message);
-                    console.log("Errors:", errorData.errors);
-                    this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                } catch (parseError) {
-                    console.log("Errore sconosciuto:", err);
-                    this.addToast({ type: "error", text: "Errore sconosciuto." });
-                }
-            });
-    },
-
-    calibratorOn(){
-        const ip = import.meta.env.VITE_BOARD_IP
-        fetch(ip + '/api/coverc/on', {
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-            },
-          }).then(res => res.json())
-            .then(res => {
-                if (res.execute){
-                    this.addToast({ type:"success", text: this.text.gen.cmdAck })
-                    this.coverC.calibrator.brightness = 4096;
-                }
-            })
-            .catch(err => {
-                try {
-                    const errorData = JSON.parse(err.message);
-                    console.log("Errors:", errorData.errors);
-                    this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                } catch (parseError) {
-                    console.log("Errore sconosciuto:", err);
-                    this.addToast({ type: "error", text: "Errore sconosciuto." });
-                }
-            });
-    },
-
-    gna(){
-        this.addToast({type:"error", text:"PIN "})
-    },
-
-    addToast(notice) {
-        notice.id = Date.now()
-        this.notices.push(notice)
-        this.fireToast(notice.id)
-      },
-    fireToast(id) {
-        this.visible.push(this.notices.find(notice => notice.id == id))
-        const timeShown = 3000 * this.visible.length
-        setTimeout(() => {
-          this.removeToast(id)
-        }, timeShown)
-      },
-    removeToast(id) {
-        const notice = this.visible.find(notice => notice.id == id)
-        const index = this.visible.indexOf(notice)
-        this.visible.splice(index, 1)
-      }
-
+    ...translations(),
+    ...validation(),
+    ...toast(),
+    ...dome(),
+    ...coverc(),
+    ...switches()
 
     };
 }

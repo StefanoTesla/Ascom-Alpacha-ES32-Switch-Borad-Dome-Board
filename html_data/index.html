@@ -8,8 +8,8 @@
   <title>TeslaBoard - HOME</title>
 </head>
 
-<body x-data="Translations()">
-  <template x-if="loaded">
+<body x-data="GlobalData()">
+
     <header>
       <div class="logo"></div>
       <div class="menu">
@@ -24,11 +24,9 @@
       
       </div>
     </header>
-  </template>
-  <template x-if="loaded">
 
-    
-  <template x-data="GlobalData(text)" x-if="dataLoaded">
+  <template x-if="textLoaded">
+
     <div class="main_grid">
       <!-- SWITCH AREA -->
       <template x-if="exist.switch">
@@ -320,9 +318,6 @@
       </div>
     </template>
     </div>
-
-  </template>
-
 
   <script type="module" src="/main.js"></script>
 </body>
