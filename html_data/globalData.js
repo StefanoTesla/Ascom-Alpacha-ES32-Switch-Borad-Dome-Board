@@ -58,11 +58,19 @@ export default function GlobalData() {
         .then(response => response.json())
         .then(data => {
             this.board = data;
+            this.board.memory.freeHeapPerc =  parseFloat(((this.board.memory.freeHeap / this.board.memory.heapSize) * 100).toFixed(2));
+            this.board.memory.minHeapPerc =  parseFloat(((this.board.memory.minHeap / this.board.memory.heapSize) * 100).toFixed(2));
+            this.board.board.days = Math.floor(this.board.board.uptime / (24 * 60));
+            this.board.board.hours = Math.floor((this.board.board.uptime % (24 * 60)) / 60);
+            this.board.board.minutes = this.board.board.uptime % 60;
+            this.board.wifi.days = Math.floor(this.board.wifi.uptime / (24 * 60));
+            this.board.wifi.hours = Math.floor((this.board.wifi.uptime % (24 * 60)) / 60);
+            this.board.wifi.minutes = this.board.wifi.uptime % 60;  
             
         })
         .catch(error => console.error('Error fetching board data:', error));
 
-        setTimeout(() => {this.updateBoard()}, 30000)
+        setTimeout(() => {this.updateBoard()}, 60000)
     },
 
 

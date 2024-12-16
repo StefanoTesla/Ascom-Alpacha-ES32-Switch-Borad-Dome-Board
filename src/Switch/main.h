@@ -88,8 +88,12 @@ void SwitchLoop(){
 
 
 #include "webserver.h"
+#include "alpacaManage.h"
+#include "alpacaDevice.h"
 
 void switchRequestHandler(){
   switchWebServer();
+  switchAlpacaManage();
+  switchAlpacaDevice();
 }
 #endif

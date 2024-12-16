@@ -283,39 +283,95 @@
                 <div class="card">
                   <p class="text-center font-bold mb-4">WiFi</p>
                   <div class="setting_table">
-                    <p>SSID:</p>
-                    <p x-text="board.wifi.ssid"></p>
-                    <p>db:</p>
-                    <p x-text="board.wifi.db"></p>
-                    <p>IP:</p>
-                    <p x-text="board.wifi.ip"></p>
-                    <p>Uptime:</p>
-                    <p x-text="board.wifi.uptime"></p>
+                    <div class="row">                    
+                      <p>SSID:</p>
+                      <p x-text="board.wifi.ssid"></p>
+                    </div>
+                    <div class="row">                    
+                      <p>db:</p>
+                      <p x-text="board.wifi.db"></p>
+                    </div>
+                    <div class="row">
+                      <p>IP:</p>
+                      <p x-text="board.wifi.ip"></p>
+                    </div>
+                    <div class="row">
+                      <p>MAC Address:</p>
+                      <p x-text="board.wifi.mac"></p>
+                    </div>
+                    <div class="row">
+                      <p>Uptime:</p>
+                      <p>
+                        <span x-show="board.wifi.days > 0">
+                          <span x-text="board.wifi.days"></span>
+                          <span> Giorni,</span>
+                        </span>
+                        <span x-show="board.wifi.days > 0 || board.wifi.hours > 0">
+                          <span x-text="board.wifi.hours"></span>
+                          <span> Ore,</span>
+                        </span>
+                        <span>
+                          <span x-text="board.wifi.minutes"></span>
+                          <span> Minuti</span>
+                        </span>
+                      </p>
+                    </div>
+
                   </div>
                 </div>
                 <div class="card">
                   <p class="text-center font-bold mb-4">CPU</p>
                   <div class="setting_table">
-                    <p>CPU:</p>
-                    <p>
+                    <div class="row">
+                      <p>CPU:</p>
                       <span x-text="board.board.cpu"></span>
                       <span> REV:</span>
                       <span x-text="board.board.rev"></span>
-                    </p>
-                    <p>cores:</p>
-                    <p x-text="board.board.cores"></p>
-                    <p>Speed:</p>
-                    <p>
-                      <span x-text="board.board.freq"></span>
-                      <span> MHz</span>
-                    </p>
-                    <p>Heap size:</p>
-                    <p x-text="board.memory.heapSize"></p>
-                    <p>Free Heap:</p>
-                    <p x-text="board.memory.freeHeap"></p>
-                    <p>Min Free Heap:</p>
-                    <p x-text="board.memory.minHeap"></p>
+                    </div>
+                    <div class="row">
+                      <p>Cores:</p>
+                      <p x-text="board.board.cores"></p>
+                    </div>
+                    <div class="row">
+                      <p>Speed:</p>
+                      <p>
+                        <span x-text="board.board.freq"></span>
+                        <span> MHz</span>
+                      </p>
+                    </div>
+                    <div class="row">
+                      <p>Uptime:</p>
+                      <p>
+                        <span x-show="board.board.days > 0">
+                          <span x-text="board.board.days"></span>
+                          <span> Giorni,</span>
+                        </span>
+                        <span x-show="board.board.days > 0 || board.board.hours > 0">
+                          <span x-text="board.board.hours"></span>
+                          <span> Ore,</span>
+                        </span>
+                        <span>
+                          <span x-text="board.board.minutes"></span>
+                          <span> Minuti</span>
+                        </span>
+                      </p>
 
+                    </div>
+                    <div class="row">
+                      <p>Heap size:</p>
+                      <p x-text="board.memory.heapSize"></p>
+                    </div>
+                    <div class="row">
+                      <p>Free Heap:</p>
+                        <p x-text="board.memory.freeHeap"></p>
+                        <p>(<span x-text="board.memory.freeHeapPerc"></span> %)</p>
+
+                    </div>
+                    <div class="row">
+                      <p>Min Free Heap:</p>
+                        <p x-text="board.memory.minHeap"></p>
+                        <p>(<span x-text="board.memory.minHeapPerc"></span> %)</p>
+                    </div>
                   </div>
                 </div>
                 <div class="card">

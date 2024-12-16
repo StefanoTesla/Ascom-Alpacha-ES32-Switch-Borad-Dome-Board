@@ -123,6 +123,8 @@ void initSwitchConfig(){
 
     }
 
+    Switch.config.configuredSwitch = count;
+
 }
 
 #endif

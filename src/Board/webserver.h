@@ -73,6 +73,7 @@ void boardWebServer(){
         wifi["db"] = WiFi.RSSI();
         wifi["ip"] = WiFi.localIP();
         wifi["sub"] = WiFi.subnetMask();
+        wifi["mac"] = WiFi.macAddress();
 
         JsonObject memo = doc["memory"].to<JsonObject>();
         memo["heapSize"] = ESP.getHeapSize();
