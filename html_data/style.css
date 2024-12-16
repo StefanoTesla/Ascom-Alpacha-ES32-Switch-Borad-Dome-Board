@@ -24,7 +24,11 @@ input[type=number] {
 
 *{
   color: #FDFDFD;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+span{
+  @apply mx-1
 }
 body{
   background: #212121;
@@ -320,4 +324,27 @@ input[type="range"] {
 
 .full_row{
   @apply flex lg:col-span-2 items-center
+}
+
+
+.sw_grid{
+  @apply grid grid-flow-row grid-cols-1 lg:grid-cols-2 gap-4 mx-4 mb-4
+}
+
+.sw_grid > .card{
+  @apply mx-0 my-0;
+}
+
+.sw_title{
+  @apply font-bold text-lg
+}
+.sw_desc{
+  @apply italic
+}
+
+.sw_analog {
+  @apply w-full py-2
+}
+.sw_value {
+  @apply flex py-2 justify-center
 }

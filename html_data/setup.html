@@ -54,11 +54,11 @@
                         <div class="setting_table">
                           <div class="row">
                             <p x-text="text.switch.name">{name}</p>
-                            <input :id="'sw_'+ index + '_name'" class="in_text" type="text" x-model="sw.name" maxlength=15/>
+                            <input :id="'sw_'+ index + '_name'" class="in_text" type="text" x-model="sw.name" maxlength=20/>
                           </div>
                           <div class="row">
                             <p x-text="text.switch.description">{description}</p>
-                            <input :id="'sw_'+ index + '_desc'" class="in_text" type="text" x-model="sw.desc" maxlength=15/>
+                            <input :id="'sw_'+ index + '_desc'" class="in_text" type="text" x-model="sw.desc" maxlength=20/>
                           </div>
                           <div class="row">
                             <p x-text="text.gen.type">{Type}</p>
@@ -105,7 +105,7 @@
 
                 <div class="config_buttons">
                   <button class="green" x-text="text.gen.loadFromBoard" @click="getOriginalSwitchesConfig()">{loadFromBoard}</button>
-                  <a href="./cover/ccconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
+                  <a href="./switch/switchconfig.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
                   <button class="red" x-text="text.gen.save" @click="saveSwitchesSetting()">{save}</button>
                 </div>
               </div>

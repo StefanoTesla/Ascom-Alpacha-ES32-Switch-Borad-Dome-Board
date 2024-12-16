@@ -108,6 +108,66 @@ struct globalVariable{
 globalVariable Global;
 /* END OF GLOBAL */
 
+
+bool pinExist(unsigned int pin){
+  if(pin > 39 or pin == 20 or pin == 24 or pin==38){
+    return false;
+  }
+
+  if(pin >=6 and pin <= 11){
+    return false;
+  }
+
+
+  if(pin >=28 and pin <= 31){
+    return false;
+  }
+
+  return true;
+}
+bool pinUsableAsInput(unsigned int pin){
+  if(!pinExist(pin)){
+    return false;
+  }
+
+  if(pin==1){
+    return false;
+  }
+
+  return true;
+
+}
+bool pinUsableAsOutput(unsigned int pin){
+
+  if(!pinExist(pin)){
+    return false;
+  }
+
+  if(pin == 3){
+    return false;
+  }
+
+  if(pin > 33){
+    return false;
+  }
+
+  return true;
+
+}
+bool pinUsableAsAnalogInput(unsigned int pin){
+  if(pin <32){
+    return false;
+  }
+  return true;
+}
+bool pinUsableAsAnalogOutput(unsigned int pin){
+  if(pin < 25 or pin > 25){
+    return false;
+  }
+  return true;
+}
+
+
 bool usableLedChannel(unsigned int channel,ledcType type){
 
   if(type == notAssigned){
@@ -202,7 +262,6 @@ unsigned int checkForFreeLedChannel(ledcType type){
 
 unsigned int assignLedChannel(ledcType type){
   unsigned int channel = checkForFreeLedChannel(type);
-  Serial.println(channel);
   if (channel < 0 ){
     Serial.println("[ERR] LEDC: error during the search of a free channel.");
     return -1;
@@ -219,7 +278,7 @@ unsigned int assignLedChannel(ledcType type){
 
 void printLEDChannelStatus(){
 
-
+  Serial.println("");
   Serial.println("ch | type       |");
   Serial.println("------------------");
   for (int i = 0; i < 16; i++)

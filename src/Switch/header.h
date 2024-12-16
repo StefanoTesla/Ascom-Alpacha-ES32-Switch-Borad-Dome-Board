@@ -30,13 +30,6 @@ struct switchLoadConfigStruct{
 };
 
 
-struct SwitchConfiStruct{
-  unsigned int configuredSwitch;
-  switchSaveConfigStruct save;
-  switchLoadConfigStruct load;
-};
-
-
 /* SINGLE SWITCH */
 
 enum SwitchType{
@@ -57,6 +50,8 @@ struct SwitchCommandStruct {
 
 struct SwitchProperty{
   SwitchType type;
+  char Name[21];
+  char Description[21];
   int minValue = 0;
   int maxValue = 1;
   int pwmch;
@@ -70,11 +65,16 @@ struct SwitchActualValue{
 
 struct SwitchArrayStruct
 {
-  String Name;
-  String Description;
   SwitchProperty property;
   SwitchCommandStruct command; 
   SwitchActualValue actualValue;
+};
+
+struct SwitchConfiStruct{
+  unsigned int configuredSwitch;
+  SwitchArrayStruct tmp[_MAX_SWITCH_ID_];
+  switchSaveConfigStruct save;
+  switchLoadConfigStruct load;
 };
 
 
@@ -83,6 +83,7 @@ struct SwitchStruct{
   switchAlpacaParameters alpaca;
   SwitchConfiStruct config;
   SwitchArrayStruct data[_MAX_SWITCH_ID_];
+  
 } Switch;
 
 

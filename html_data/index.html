@@ -45,26 +45,60 @@
             </div>
           </div>
           <template x-if="open.switch">
-          <ol class="switches">
-            <li class="switch">
-              <span>
-                Ciao
-              </span>
-              <span>
+          <div class="sw_grid">
+            <template x-for="(sw,index) in swi.Switches">
+              <div class="card">
+                <div><p class="sw_title" x-text="sw.name"></p></div>
+                <div><p class="sw_desc" x-text="sw.desc"></p></div>
+                <!-- digital input -->
+                <div x-show="sw.type==1">
+                  
+                  <label class="toggle" :for="'sw_t1_'+index+'_status'">
+                    <input class="toggle__input" name="'sw_t1_'+index+'_status'" type="checkbox" :id="'sw_t1_'+index+'_status'" x-model="sw.boValue" disabled>
+                    <div class="toggle__fill cursor-not-allowed"></div>
+                  </label>
+                </div>
+           
+                <!-- digital output -->
+                <div x-show="sw.type==3">
+                  <label class="toggle" :for="'sw_t3_'+index+'_status'">
+                    <input class="toggle__input" name="'sw_t3_'+index+'_status'" type="checkbox" :id="'sw_t3_'+index+'_status'" x-model="sw.boValue" @change="switchChangeDigital(index)">
+                    <div class="toggle__fill"></div>
+                  </label>
+                </div>
+                <!-- pwm servo ao-->
+                <div class="sw_analog" x-show="sw.type==4 || sw.type==5 || sw.type==6">
+                  <div class="range sw_analog">
+                    <input type="range" :id="'sw_t45_'+index+'_slider'" :min='sw.min' :max='sw.max' step='1' x-model="sw.intValue" @change="switchChangeValue(index)"/>
+                  </div>
+                  <div class="sw_value">
+                    <p x-text="text.gen.actualValue">{Valore Attuale:}</p> <span x-text="sw.intValue"></span> / <span x-text="sw.max"></span>
+                  </div>
+                  
+                </div>
+                <!-- ai-->
+                <div x-show="sw.type==2">
+                  <div class="range sw_analog">
+                    <input type="range" :id="'sw_t45_'+index+'_slider'" :min='sw.min' :max='sw.max' step='1' x-model="sw.intValue" disabled/>
+                  </div>
+                  <div class="sw_value">
+                    <p x-text="text.gen.actualValue">{Valore Attuale:}</p>
+                    <div>
+                      <span x-text="sw.intValue"></span><span>&nbsp;/&nbsp;</span><span x-text="sw.max"></span>
+                    </div>
+                  </div>
+                  
+                </div>
 
-              </span>
-              <label class="toggle" for="myToggle">
-                <input class="toggle__input" name="" type="checkbox" id="myToggle">
-                <div class="toggle__fill"></div>
-              </label>
-            </li>
-            <li>gni</li>
-            <li>gno</li>
-            <li>gnu</li>
-            <li></li>
-            <li></li>
-            <li></li>
-          </ol>
+
+
+              </div>
+
+
+
+            </template>
+            
+          </div>
           </template>  
         </div>
       </template>

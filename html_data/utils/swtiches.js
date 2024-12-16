@@ -1,6 +1,67 @@
 export function switches(){
     return{
+    
+    /* home page */
+    getSwitchStatus(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip +'/api/switch/status')
+        .then(response => response.json())
+        .then(data => {
+                this.swi = data;
+            this.load.switch = true;
+        })
+        .catch(error => console.error('Error fetching board data:', error));
+    },
 
+    switchChangeDigital(index){
+        if(this.swi.Switches[index].boValue){
+            this.swi.Switches[index].intValue = 1
+        } else {
+            this.swi.Switches[index].intValue = 0
+        }
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/switch/set-value', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body:"id="+index+"&value="+this.swi.Switches[index].intValue
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.execute){
+                this.addToast({ type:"success", text: this.text.gen.cmdAck })
+            } else {
+                console.error(data.error)
+                this.addToast({type:"error",text:data.error})
+            }
+        })
+        .catch(error => console.error('Error change switch value:', error));
+
+    },
+    switchChangeValue(index){
+        this.swi.Switches[index].intValue = parseInt(this.swi.Switches[index].intValue)
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/switch/set-value', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body:"id="+index+"&value="+this.swi.Switches[index].intValue
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.execute){
+                this.addToast({ type:"success", text: this.text.gen.cmdAck })
+            } else {
+                console.error(data.error)
+                this.addToast({type:"error",text:data.error})
+            }
+        })
+        .catch(error => console.error('Error change switch value:', error));
+    },
     
     /* switch config */
     getSwitchConfig(){

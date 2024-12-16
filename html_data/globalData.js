@@ -39,6 +39,10 @@ export default function GlobalData() {
 
     updateData(){
         if (this.exist.dome){
+            this.getSwitchStatus()
+        }
+
+        if (this.exist.dome){
             this.getDomeStatus()
         }
         if (this.exist.coverc){
