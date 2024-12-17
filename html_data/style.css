@@ -348,3 +348,29 @@ input[type="range"] {
 .sw_value {
   @apply flex py-2 justify-center
 }
+
+.modal{
+  @apply fixed top-0 left-0 h-screen w-screen z-40 flex justify-center items-center;
+}
+
+.modal_box{
+  @apply bg-white opacity-100 w-11/12 z-50 justify-center items-center content-center
+}
+
+.modal_box > p{
+  @apply text-black text-center
+}
+
+
+
+.modal_box > .error{
+  @apply text-red-600 font-bold
+}
+
+.modal_selection{
+  @apply flex flex-col lg:flex-row justify-around py-4
+}
+
+.blur{
+  filter: blur(5px);
+}

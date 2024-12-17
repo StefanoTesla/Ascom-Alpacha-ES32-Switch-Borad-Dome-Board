@@ -292,8 +292,7 @@ void domeLoop() {
     }
   }
 
-  if (Dome.Shutter.command == ShCommandIdle and Dome.config.Save.execute){
-    Serial.println("DOME: Saving setting...");
+  if (Dome.config.Save.execute){
     saveDomeConfig();
   }
 

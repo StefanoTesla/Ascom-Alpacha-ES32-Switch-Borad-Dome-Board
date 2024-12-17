@@ -19,14 +19,14 @@ void saveSwitchConfig(){
         jsonSwitch["type"] = Switch.config.tmp[i].property.type;
 
         switch(Switch.config.tmp[i].property.type){
-
-            case SwTypePWM:
             case SwTypeServo:
-            case SwTypeAInput:
-            case SwTypeAOutput:
+
                 jsonSwitch["min"] = Switch.config.tmp[i].property.minValue;
                 jsonSwitch["max"] = Switch.config.tmp[i].property.maxValue;
 
+            case SwTypePWM:
+            case SwTypeAInput:
+            case SwTypeAOutput:
             case SwTypeDInput:
             case SwTypeDOutput:
                 jsonSwitch["pin"] = Switch.config.tmp[i].property.pin;
@@ -97,12 +97,12 @@ void initSwitchConfig(){
             Serial.println("pwm");
             Switch.data[count].property.pwmch = assignLedChannel(pwm);
             if(Switch.data[count].property.pwmch < 16){
-                Serial.println("vado ad assegnare");
                 ledcAttachPin(Switch.data[count].property.pin, Switch.data[count].property.pwmch);
-                Serial.println("assegnato");
+            } else {
+                Serial.println("[ERR] Init: Unable to get a free timer");
             }
-            Switch.data[count].property.minValue = Switche["min"].is<int>() ? Switche["min"] : 0;
-            Switch.data[count].property.maxValue = Switche["max"].is<int>() ? Switche["max"] : 4096;
+            Switch.data[count].property.minValue = 0;
+            Switch.data[count].property.maxValue = 4096;
             break;
         case SwTypeServo:
             Switch.data[count].property.pwmch = assignLedChannel(servo);

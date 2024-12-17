@@ -7,35 +7,36 @@ void saveDomeConfig(){
     File file = LittleFS.open("/cfg/domeconfig.txt", FILE_WRITE);
     if (!file) {
         Serial.println("Error during open Dome config file");
+        Dome.config.Save.execute = false;
         return;
     }
     JsonDocument doc;
 
     JsonObject pinOpen = doc["pinOpen"].to<JsonObject>();
-    pinOpen["pin"] = Dome.config.data.inOpen.pin;
-    pinOpen["dOn"] = Dome.config.data.inOpen.delayON;
-    pinOpen["dOff"] = Dome.config.data.inOpen.delayOFF;
-    pinOpen["type"] = Dome.config.data.inOpen.type;
+    pinOpen["pin"] = Dome.config.tmpCfg.inOpen.pin;
+    pinOpen["dOn"] = Dome.config.tmpCfg.inOpen.delayON;
+    pinOpen["dOff"] = Dome.config.tmpCfg.inOpen.delayOFF;
+    pinOpen["type"] = Dome.config.tmpCfg.inOpen.type;
 
     JsonObject pinClose = doc["pinClose"].to<JsonObject>();
-    pinClose["pin"] = Dome.config.data.inClose.pin;
-    pinClose["dOn"] = Dome.config.data.inClose.delayON;
-    pinClose["dOff"] = Dome.config.data.inClose.delayOFF;
-    pinClose["type"] = Dome.config.data.inClose.type;
+    pinClose["pin"] = Dome.config.tmpCfg.inClose.pin;
+    pinClose["dOn"] = Dome.config.tmpCfg.inClose.delayON;
+    pinClose["dOff"] = Dome.config.tmpCfg.inClose.delayOFF;
+    pinClose["type"] = Dome.config.tmpCfg.inClose.type;
 
     JsonObject autoclose = doc["autoclose"].to<JsonObject>();
-    autoclose["enable"] = Dome.config.data.enAutoClose;
-    autoclose["minutes"] = Dome.config.data.autoCloseTimeOut;
+    autoclose["enable"] = Dome.config.tmpCfg.enAutoClose;
+    autoclose["minutes"] = Dome.config.tmpCfg.autoCloseTimeOut;
 
-    doc["pinStart"] = Dome.config.data.outStart_Open;
-    doc["pinHalt"] = Dome.config.data.outHalt_Close;
-    doc["movTimeOut"] = Dome.config.data.movingTimeOut;
+    doc["pinStart"] = Dome.config.tmpCfg.outStart_Open;
+    doc["pinHalt"] = Dome.config.tmpCfg.outHalt_Close;
+    doc["movTimeOut"] = Dome.config.tmpCfg.movingTimeOut;
 
     serializeJson(doc, file);
 
-    Dome.config.Save.execute = false;
-    file.close();
     
+    file.close();
+    Dome.config.Save.execute = false;
 }
 
 

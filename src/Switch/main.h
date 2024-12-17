@@ -62,6 +62,8 @@ void setSwitchValue(){
         //        Switch.data[i].actualValue.intValue = value;
         //       break;
             case SwTypePWM:
+                ledcWrite(Switch.data[i].property.pwmch,Switch.data[i].command.intValue);
+                break;
             case SwTypeServo:
                 value = map(Switch.data[i].command.intValue,Switch.data[i].property.minValue,Switch.data[i].property.maxValue,0,4096);
                 ledcWrite(Switch.data[i].property.pwmch,value);

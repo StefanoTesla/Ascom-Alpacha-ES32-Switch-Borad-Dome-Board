@@ -75,6 +75,19 @@ void boardLoop(){
         }
 
     }
+
+    if (Global.config.reboot.rebootRequest){
+        if(Global.config.reboot.lastMillis == 0){
+            Global.config.reboot.lastMillis = Global.actualMillis;
+        } else {
+            if((Global.actualMillis - Global.config.reboot.lastMillis) > 1000){
+                ESP.restart();
+            }
+        }
+        
+
+        
+    }
 }
 
 #endif

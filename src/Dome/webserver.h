@@ -32,6 +32,7 @@ void domeWebServer(){
         #else
             doc["driverType"] = 1;
         #endif
+        doc["reboot"] = Dome.config.Save.restartNeeded;
         response->setLength();
         request->send(response);
     });
@@ -153,28 +154,32 @@ void domeWebServer(){
 
         if(!error){
             /* input */
-            Dome.config.data.inOpen.pin = pinOpen["pin"].as<unsigned int>();
-            Dome.config.data.inOpen.delayON = pinOpen["dOn"].as<unsigned long>();
-            Dome.config.data.inOpen.delayOFF = pinOpen["dOff"].as<unsigned long>();
-            Dome.config.data.inOpen.type = pinOpen["type"].as<bool>();
-            Dome.config.data.inClose.pin = pinClose["pin"].as<unsigned int>();
-            Dome.config.data.inClose.delayON = pinClose["dOn"].as<unsigned long>();
-            Dome.config.data.inClose.delayOFF = pinClose["dOff"].as<unsigned long>();
-            Dome.config.data.inClose.type = pinClose["type"].as<bool>();
+            Dome.config.tmpCfg.inOpen.pin = pinOpen["pin"].as<unsigned int>();
+            Dome.config.tmpCfg.inOpen.delayON = pinOpen["dOn"].as<unsigned long>();
+            Dome.config.tmpCfg.inOpen.delayOFF = pinOpen["dOff"].as<unsigned long>();
+            Dome.config.tmpCfg.inOpen.type = pinOpen["type"].as<bool>();
+            Dome.config.tmpCfg.inClose.pin = pinClose["pin"].as<unsigned int>();
+            Dome.config.tmpCfg.inClose.delayON = pinClose["dOn"].as<unsigned long>();
+            Dome.config.tmpCfg.inClose.delayOFF = pinClose["dOff"].as<unsigned long>();
+            Dome.config.tmpCfg.inClose.type = pinClose["type"].as<bool>();
             /* output */
-            Dome.config.data.outStart_Open = json["pinStart"].as<unsigned int>();
-            Dome.config.data.outHalt_Close = json["pinHalt"].as<unsigned int>();
+            Dome.config.tmpCfg.outStart_Open = json["pinStart"].as<unsigned int>();
+            Dome.config.tmpCfg.outHalt_Close = json["pinHalt"].as<unsigned int>();
             /* timeout */
-             Dome.config.data.movingTimeOut = json["movTimeOut"].as<unsigned int>() * 1000;
+             Dome.config.tmpCfg.movingTimeOut = json["movTimeOut"].as<unsigned int>() * 1000;
             /* autoclose */
-            Dome.config.data.enAutoClose = autoClose["enable"].as<bool>();
-            Dome.config.data.autoCloseTimeOut = autoClose["minutes"].as<unsigned int>();
+            Dome.config.tmpCfg.enAutoClose = autoClose["enable"].as<bool>();
+            Dome.config.tmpCfg.autoCloseTimeOut = autoClose["minutes"].as<unsigned int>();
             Dome.config.Save.execute = true;
         } else {
             response->setCode(500);
         }
         doc["reboot"] = reboot;
-
+        Dome.config.Save.restartNeeded = reboot;
+        Serial.println(reboot);
+        if(!reboot){
+             Dome.config.data = Dome.config.tmpCfg;
+        }
         response->setLength();
         request->send(response);
     });

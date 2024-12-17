@@ -1,6 +1,6 @@
 #ifndef BOARD_WEBSERVER
 #define BOARD_WEBSERVER
-
+#include "libraries.h"
 
 void boardWebServer(){
 
@@ -195,6 +195,38 @@ void boardWebServer(){
     server.addHandler(boardConfigHandler);
 
     server.serveStatic("/board/boarcfg.txt", LittleFS, "/cfg/boarcfg.txt");
+
+
+    server.on("/api/board/reboot", HTTP_GET, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+
+        doc["execute"] = "See you next time...";
+        
+        response->setLength();
+        request->send(response);
+        Global.config.reboot.rebootRequest =true;
+    });
+
+    server.on("/api/board/wifi-reset", HTTP_GET, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+
+        doc["execute"] = "See you next time...";
+        
+        response->setLength();
+        request->send(response);
+
+        WiFi.mode(WIFI_AP_STA); // cannot erase if not in STA mode !
+        WiFi.persistent(true);
+        WiFi.disconnect(true, true);
+        WiFi.persistent(false);
+        Global.config.reboot.rebootRequest =true;
+    });
+
+
+
+
 }
 
 #endif

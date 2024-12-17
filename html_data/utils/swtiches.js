@@ -119,9 +119,9 @@ export function switches(){
                 if(this.invalidInputPin(this.swi.Switches[index].pin,'sw_'+ index +'_pin')){ return false }
                 return true
                 break;
-            case 4://pwm
+
             case 5://servo
-            case 6://ao
+
                 if(this.swi.Switches[index].max <= this.swi.Switches[index].min){
                     this.addValidationErrorClass('sw_'+ index +'_max')
                     return false
@@ -134,6 +134,8 @@ export function switches(){
                 } else {
                     this.removeValidationErrorClass('sw_'+ index +'_min')
                 }
+            case 6://ao
+            case 4://pwm
             case 3://do
                 if(this.invalidOutputPin(this.swi.Switches[index].pin,'sw_'+ index +'_pin')){ return false }
                 return true
@@ -179,14 +181,14 @@ export function switches(){
         return res.json();
     })
     .then(res => {
-        this.addToast({ type: "success", text: this.text.setting.coverC.configSaved });
+        this.addToast({ type: "success", text: this.text.gen.configSaved, time:3 });
     })
     .catch(err => {
         if (err.errors) {
             err.errors.forEach((error, index) => {
                 setTimeout(() => {
                     console.log(`Errore ${index + 1}: ${error}`);
-                    this.addToast({ type: "error", text: `Errore: ${error}` });
+                    this.addToast({ type: "error", text: `Errore: ${error}`, time:3});
                 }, 1 * index);  // put a delay to avoid toat crash
             });
         } else {

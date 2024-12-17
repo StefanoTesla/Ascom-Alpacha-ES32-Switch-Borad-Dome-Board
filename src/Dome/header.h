@@ -23,6 +23,7 @@ enum ShCommands {
   ShCommandHalt
 };
 
+
 struct ShutterStruct {
   ShInputState input;
   ShStatus status;
@@ -60,6 +61,7 @@ struct DomeConfig {
   domeHeader data;
   domeSaveConfigStruct Save;
   domeLoadConfigStruct Load;
+  domeHeader tmpCfg;
 };
 
 struct DomeStruct{

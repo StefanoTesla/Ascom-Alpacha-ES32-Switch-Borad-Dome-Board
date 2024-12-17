@@ -75,7 +75,11 @@
 		"subnet": "Sotto Rete:",
 		"staticIp": "Indirizzo Ip statico:",
 		"waitToReconnect": "Attesa per riconnessione:",
-		"warningIP": "Attenzione, viene effettuata una validazione semplice, in caso di errore sarà impossibile raggiungere la scheda."
+		"warningIP": "Attenzione, viene effettuata una validazione semplice, in caso di errore sarà impossibile raggiungere la scheda.",
+		"configSaved": "Configurazione Salvata",
+		"utility":"Utility",
+		"reboot": "RIAVVIA SCHEDA",
+		"wifireset": "RIMUOVI IMPOSTAZIONI WIFI"
 	},
 
 	"setting":{
@@ -97,8 +101,7 @@
 			"autoclosewarning4": "In caso di manutenzione al tetto, sarà necessario mantenere il browser aperto sulla pagina principale, per evitare la chiusura automatica, o ancora meglio disattivare questa funzione.",
 			"autoclosewarning5": "Attivando questa funzione confermi di aver letto e compreso i rischi che questa funzione può avere per te e la tua attrezzatura.",
 			"autoCloseEn": "Abilitazione Chiusura Automatica:",
-			"autoCloseMin": "Chiudi dopo:",
-			"configSaved": "configurazione Cupola Salvata"
+			"autoCloseMin": "Chiudi dopo:"
 		},
 		"coverC":{
 			"calibrator":{

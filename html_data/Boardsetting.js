@@ -19,8 +19,10 @@ export default function BoardSetting() {
         board:{},
         open:{switch:false,dome:false,cover:false,statistics:false},
         load:{switch:false,dome:false,cover:false,board:false},
+        reboot:{switch:false,dome:false,cover:false,board:false},
         notices: [],
         visible: [],
+        modal: false,
 
     init(){
         const ip = import.meta.env.VITE_BOARD_IP
@@ -46,11 +48,27 @@ export default function BoardSetting() {
         .catch(error => console.error('Error fetching board data:', error));
     },
 
-
-
     /* used to store loaded configuration*/
     copy(object){
         return JSON.parse(JSON.stringify(object));
+    },
+
+    closeModal(){
+        this.modal = false
+    },
+    rebootTheBoard(){
+        this.modal = false
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip+'/api/board/reboot')
+        .then(response => response.json())
+        .catch(error => console.error('Error fetching board data:', error));
+    },
+    wifiReset(){
+        this.modal = false
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip+'/api/board/wifi-reset')
+        .then(response => response.json())
+        .catch(error => console.error('Error fetching board data:', error));
     },
 
 

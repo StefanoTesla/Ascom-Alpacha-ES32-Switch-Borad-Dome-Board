@@ -62,8 +62,6 @@ void setup() {
   
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("TeslaBoard");
-
-
   //start alpaca discovery
   alpacaDiscovery(udp);
   
@@ -80,7 +78,6 @@ void setup() {
   #endif
   
   boardWebServer();
-
 
   server.serveStatic("/", LittleFS, "/www/").setDefaultFile("index.html");
   server.serveStatic("/assets/", LittleFS, "/www/assets/").setCacheControl("max-age=604800");

@@ -4,19 +4,6 @@
 
 #define _MAX_SWITCH_ID_ 16
 
-/* ALPACA AREA */
-
-struct switchAlpacaParameters{
-  bool idExist;
-  int id;               /* used for switch ID */
-  bool stateExist;
-  bool state;               /* used for setswitch */
-  bool intValueExist;
-  int intValue;            /* used for setswitchvalue */
-  bool nameExist;
-  String name;              /* used for set switch name */
-};
-
 /* CONFIGURATION AREA */
 
 struct switchSaveConfigStruct{
@@ -80,7 +67,6 @@ struct SwitchConfiStruct{
 
 /* SWITCH STRUCT */
 struct SwitchStruct{
-  //switchAlpacaParameters alpaca;
   SwitchConfiStruct config;
   SwitchArrayStruct data[_MAX_SWITCH_ID_];
   

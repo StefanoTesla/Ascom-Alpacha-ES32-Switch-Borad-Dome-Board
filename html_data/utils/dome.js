@@ -32,16 +32,18 @@ export function dome(){
                 body: JSON.stringify(this.dome)
               }).then(res => res.json())
                 .then(res => {
-                    this.addToast({ type:"success", text: this.text.setting.dome.configSaved })
+                    this.addToast({ type:"success", text: this.text.gen.configSaved, time:3 })
+                    this.reboot.dome = res.reboot ? true : false
+
                 })
                 .catch(err => {
                     try {
                         const errorData = JSON.parse(err.message);
                         console.log("Errors:", errorData.errors);
-                        this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
+                        this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", "), time:3 });
                     } catch (parseError) {
                         console.log("Errore sconosciuto:", err);
-                        this.addToast({ type: "error", text: "Errore sconosciuto." });
+                        this.addToast({ type: "error", text: "Errore sconosciuto.", time:3 });
                     }
                 });
         }
@@ -62,8 +64,8 @@ export function dome(){
         if(this.invalidOutputPin( this.dome.pinStart,"dome_out_start")){ valid = false }
         if(this.invalidOutputPin( this.dome.pinHalt,"dome_out_halt")){ valid = false }
         //timers
-        if(this.negativeValue( this.dome.movTimeOut,"dome_timeout")){ this.addValidationErrorClass();  valid = false }
-        if(this.negativeValue( this.dome.autoclose.minutes,"dome_autoclose_time")){ this.addValidationErrorClass();  valid = false }
+        if(this.negativeValue( this.dome.movTimeOut,"dome_timeout")){ valid = false }
+        if(this.negativeValue( this.dome.autoclose.minutes,"dome_autoclose_time")){ valid = false }
         return valid
     },
 

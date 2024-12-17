@@ -26,13 +26,29 @@
     </div>
   </header>
   <template x-if="textLoaded">
-    <div class="main_grid">
+  <div>
+    
+    <template x-if="modal">
+      <div class="modal">
+        <div class="modal_box">
+          <p class="error">ATTENZIONE</p>
+          <p>La configurazione è stata salvata, ma verrà applicata solamente al prossimo riavvio.</p>
+          <p>Puoi riavviare adesso, o successivamente (il tasto per eseguire il reset è nella scheda Tesla Board)</p>
+          <div class="modal_selection">
+            <button class="green" @click="closeModal()">RIAVVIA PIU TARDI</button>
+            <button class="red"  @click="rebootTheBoard()">RIAVVIA ADESSO</button>
+          </div>
+        </div>
+      </div>
+    </template>
+    <div class="main_grid" :class="modal ? 'blur' : ''">
       <!-- SWITCH AREA -->
         <template x-if="exist.switch && load.switch">
           <div class="single_grid">
             <div class="single_header" x-on:click="open.switch = ! open.switch">
               <div class="title"><p>Switches</p></div>
               <div class="status">
+                <div class="led" :class="{'orange' :reboot.switch}"></div>
               </div>
               <div class="coll_icon" :class="open.switch ? 'open' : ''">
                 <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -79,16 +95,16 @@
                               <span class="unit">n</span><input :id="'sw_'+ index + '_pin'" class="with_unit" type="number" x-model="sw.pin" min=1 max=39/>
                             </div>
                           </div>
-                          <div class="row" x-show="sw.type == 2 || sw.type > 3">
+                          <div class="row" x-show="sw.type == 5">
                             <p>Min:</p>
                             <div class="input_with_unit">
-                              <span class="unit">n</span><input :id="'sw_'+ index + '_min'" class="with_unit" type="number" x-model="sw.min"/>
+                              <span class="unit">°</span><input :id="'sw_'+ index + '_min'" class="with_unit" type="number" x-model="sw.min"/>
                             </div>
                           </div>
-                          <div class="row" x-show="sw.type == 2 || sw.type > 3">
+                          <div class="row" x-show="sw.type == 5">
                             <p>Max:</p>
                             <div class="input_with_unit">
-                              <span class="unit">n</span><input :id="'sw_'+ index + '_max'" class="with_unit" type="number" x-model="sw.max"/>
+                              <span class="unit">°</span><input :id="'sw_'+ index + '_max'" class="with_unit" type="number" x-model="sw.max"/>
                             </div>
                           </div>
                         </div>
@@ -121,6 +137,7 @@
                 <p x-text="text.dome.title">Dome</p>
               </div>
               <div class="status">
+                <div class="led" :class="{'orange' :reboot.dome}"></div>
               </div>
               <div class="coll_icon" :class="open.dome ? 'open' : ''">
                 <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -294,6 +311,7 @@
             <div class="single_header" x-on:click="open.cover = ! open.cover">
               <div class="title"><p>CoverCalibrator</p></div>
               <div class="status">
+                <div class="led" :class="{'orange' :reboot.cover}"></div>
               </div>
               <div class="coll_icon" :class="open.cover ? 'open' : ''">
                 <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -386,6 +404,7 @@
           <div class="single_header" x-on:click="open.statistics = ! open.statistics">
             <div class="title"><p>TeslaBoard</p></div>
             <div class="status">
+              <div class="led" :class="{'orange' :reboot.board}"></div>
             </div>
             <div class="coll_icon" :class="open.statistics ? 'open' : ''">
               <svg fill="currentcolor" width="40px" height="40px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -425,12 +444,17 @@
                     </div>
                   </div>
                   <div class="full_row">
+                    <button class="red" x-text="text.gen.wifireset" @click="wifiReset()"></button>
+                  </div>
+                  
+                  <div class="full_row">
                     <p x-text="text.gen.staticIp">{enStaticIP}</p>
                     <label class="toggle" for="board_wifi_staticip">
                       <input class="toggle__input" name="" type="checkbox" id="board_wifi_staticip" x-model="board.address.enStaticIP">
                       <div class="toggle__fill"></div>
                     </label>
                   </div>
+
                   <p x-text="text.gen.warningIP" x-show="board.address.enStaticIP"></p>
                   <div class="full_row" x-show="board.address.enStaticIP">
                     <p x-text="text.gen.ipAddress">{ipAddress}</p>
@@ -456,10 +480,16 @@
                       <input id="board_wifi_staticSub_3" class="input_address" type="number" x-model="board.address.staticSubnet[3]" min="0" max="999" />
                     </div>
                   </div>
-                  
-
                 </div>
 
+              </div>
+              <div class="card">
+                <div class="st_title">
+                  <p x-text="text.gen.utility">{wifi}</p>
+                </div>
+                <div class="row">
+                  <button class="red" x-text="text.gen.reboot" @click="rebootTheBoard()">RIAVVIA</button>
+                </div>
               </div>
               <div class="config_buttons">
                 <a href="./board/boarcfg.txt" download><button class="orange" x-text="text.gen.downloadFile" >{downloadSetting}</button></a>
@@ -497,6 +527,7 @@
         </template>
       </div>
     </div>
+  </div>
   </template>
 
   <script type="module" src="/main.js"></script>

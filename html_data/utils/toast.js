@@ -4,16 +4,20 @@ export function toast() {
               setTimeout(() => {
                 notice.id = Date.now()
                 this.notices.push(notice)
-                this.fireToast(notice.id)
+                this.fireToast(notice.id,notice.time)
             }, 1 );  // put a delay to avoid toat crash
             /*notice.id = Date.now()
             this.notices.push(notice)
             
             this.fireToast(notice.id)
           */},
-        fireToast(id) {
+        fireToast(id,time = 0) {
             this.visible.push(this.notices.find(notice => notice.id == id))
-            const timeShown = 3000 * this.visible.length
+            let timeShown = 500
+            if (time != 0){
+              timeShown = 1000 * time
+            }
+            
             setTimeout(() => {
               this.removeToast(id)
             }, timeShown)

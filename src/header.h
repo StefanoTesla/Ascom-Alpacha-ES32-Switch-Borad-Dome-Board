@@ -63,8 +63,13 @@ struct localeStruct{
   String locale = "en";
 };
 
+struct RebootRequest{
+  unsigned long lastMillis = 0;
+  bool rebootRequest;
+};
 
 struct boarcConfigStruct{
+  RebootRequest reboot;
   wifiStruct wifi;
   esp32Struct esp32;
   localeStruct language;
