@@ -197,7 +197,7 @@ AsyncMiddlewareFunction getValue([](AsyncWebServerRequest* request, ArMiddleware
       }
       missingValueErrorMessage(request);
 });
-
+/* used where value is provided */
 AsyncMiddlewareFunction isValueable([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
       int id = request->getAttribute("id").toInt();
       int value = request->getAttribute("value").toInt();
@@ -208,8 +208,7 @@ AsyncMiddlewareFunction isValueable([](AsyncWebServerRequest* request, ArMiddlew
       valueOutOfRangeErrorMessage(request);
       
 });
-
-
+/* used where state is provided */
 AsyncMiddlewareFunction isStatable([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
       int id = request->getAttribute("id").toInt();
       if(canBeWritten(id)){
@@ -492,9 +491,10 @@ void switchAlpacaDevice(){
 
 
     /* Methods not implemented:*/
-    alpaca.on("/api/v1/covercalibrator/0/commandblind",     HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
-    alpaca.on("/api/v1/covercalibrator/0/commandbool",      HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
-    alpaca.on("/api/v1/covercalibrator/0/commandstring",    HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
+    alpaca.on("/api/v1/switch/0/commandblind",     HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
+    alpaca.on("/api/v1/switch/0/commandbool",      HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
+    alpaca.on("/api/v1/switch/0/commandstring",    HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
+    alpaca.on("/api/v1/switch/0/setswitchname",    HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
 
    /* I don't care about connection but we need to declare it*/
     alpaca.on("/api/v1/switch/0/connect", HTTP_PUT, [](AsyncWebServerRequest *request) {
