@@ -465,7 +465,7 @@ void switchAlpacaDevice(){
             doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
             response->setLength();
             request->send(response);
-      }).addMiddlewares({&getAlpacaID,&getID,&getState,&isValueable});
+      }).addMiddlewares({&getAlpacaID,&getID,&getValue,&isValueable});
 
       alpaca.on("/api/v1/switch/0/setasyncvalue", HTTP_PUT, [](AsyncWebServerRequest *request) {
             AsyncJsonResponse* response = new AsyncJsonResponse();
@@ -487,7 +487,7 @@ void switchAlpacaDevice(){
             doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
             response->setLength();
             request->send(response);
-      }).addMiddlewares({&getAlpacaID,&getID,&getState,&isValueable});
+      }).addMiddlewares({&getAlpacaID,&getID,&getValue,&isValueable});
 
 
     /* Methods not implemented:*/
@@ -520,7 +520,7 @@ void switchAlpacaDevice(){
 
     }).addMiddleware(&getAlpacaID);
 
-    alpaca.on("/api/v1/covercalibrator/0/connecting", HTTP_GET, [](AsyncWebServerRequest *request) {
+    alpaca.on("/api/v1/switch/0/connecting", HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
         doc["Value"] = false;
@@ -532,7 +532,7 @@ void switchAlpacaDevice(){
         request->send(response);
     }).addMiddleware(&getAlpacaID);
 
-    alpaca.on("/api/v1/covercalibrator/0/connected", HTTP_GET, [](AsyncWebServerRequest *request) {
+    alpaca.on("/api/v1/switch/0/connected", HTTP_GET, [](AsyncWebServerRequest *request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
         doc["Value"] = true;
@@ -544,7 +544,7 @@ void switchAlpacaDevice(){
         request->send(response);
     }).addMiddleware(&getAlpacaID);
 
-    alpaca.on("/api/v1/covercalibrator/0/connected", HTTP_PUT, [](AsyncWebServerRequest *request) {
+    alpaca.on("/api/v1/switch/0/connected", HTTP_PUT, [](AsyncWebServerRequest *request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
         doc["ErrorNumber"] = 0;
@@ -555,8 +555,8 @@ void switchAlpacaDevice(){
         request->send(response);
     }).addMiddleware(&getAlpacaID);
 
-    alpaca.on("/api/v1/covercalibrator/0/supportedactions",HTTP_GET, alpacaNoActions).addMiddleware(&getAlpacaID);
-    alpaca.on("/api/v1/covercalibrator/0/action",HTTP_PUT, alpacaActionNotImplemented).addMiddleware(&getAlpacaID);
+    alpaca.on("/api/v1/switch/0/supportedactions",HTTP_GET, alpacaNoActions).addMiddleware(&getAlpacaID);
+    alpaca.on("/api/v1/switch/0/action",HTTP_PUT, alpacaActionNotImplemented).addMiddleware(&getAlpacaID);
 }
 
 #endif
