@@ -1,0 +1,1 @@
+{"Switches":[{"name":"bellaa","desc":"vivalagnagna","type":1,"pin":5},{"name":"Uscita","desc":"ciaoneeeeeee","type":3,"pin":15},{"name":"gnaaaa","desc":"","type":4,"min":0,"max":1000,"pin":4}]}
