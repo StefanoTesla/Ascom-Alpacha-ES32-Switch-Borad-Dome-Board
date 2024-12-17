@@ -20,6 +20,7 @@ void coverWebServer(){
         cover["openDeg"] = CoverC.config.cover.openDeg;
         cover["maxDeg"] = CoverC.config.cover.maxDeg;
         cover["movTime"] = CoverC.config.cover.movingTime;
+        cover["reboot"] = CoverC.config.save.restartNeeded;
 
         response->setLength();
         request->send(response);
@@ -145,7 +146,11 @@ void coverWebServer(){
             
             /* calibrator */
             JsonObject calibrator = json.as<JsonObject>()["calibrator"];
-            if( !calibrator["present"].is<bool>()){
+            if( calibrator["present"].is<bool>()){
+                if(calibrator["present"] != CoverC.config.calibrator.present){
+                    reboot = true;
+                }
+            } else {
                 error=true;
                 err.add("Calibrator present");
             }
@@ -160,7 +165,11 @@ void coverWebServer(){
 
             /* cover */
             JsonObject cover = json.as<JsonObject>()["cover"];
-            if( !cover["present"].is<bool>()){
+            if( cover["present"].is<bool>()){
+                if(cover["present"] != CoverC.config.cover.present){
+                    reboot = true;
+                }
+            } else {
                 error=true;
                 err.add("Cover enable");
             }
@@ -192,20 +201,26 @@ void coverWebServer(){
 
             if(!error){
                 /* input */
-                CoverC.config.calibrator.present = calibrator["present"];
-                CoverC.config.calibrator.outPWM = calibrator["pin"];
-                CoverC.config.cover.present = cover["present"];
-                CoverC.config.cover.outServoPin = cover["pin"];
-                CoverC.config.cover.maxDeg = cover["maxDeg"];
-                CoverC.config.cover.closeDeg = cover["closeDeg"];
-                CoverC.config.cover.openDeg = cover["openDeg"];
-                CoverC.config.cover.movingTime = cover["movTime"];
+                CoverC.config.tmpCfg.calibrator.present = calibrator["present"];
+                CoverC.config.tmpCfg.calibrator.outPWM = calibrator["pin"];
+                CoverC.config.tmpCfg.cover.present = cover["present"];
+                CoverC.config.tmpCfg.cover.outServoPin = cover["pin"];
+                CoverC.config.tmpCfg.cover.maxDeg = cover["maxDeg"];
+                CoverC.config.tmpCfg.cover.closeDeg = cover["closeDeg"];
+                CoverC.config.tmpCfg.cover.openDeg = cover["openDeg"];
+                CoverC.config.tmpCfg.cover.movingTime = cover["movTime"];
 
                 CoverC.config.save.execute = true;
+
+                if(!reboot ){
+                    CoverC.config.calibrator = CoverC.config.tmpCfg.calibrator;
+                    CoverC.config.cover = CoverC.config.tmpCfg.cover;
+                }
             } else {
                 response->setCode(500);
             }
             doc["reboot"] = reboot;
+            CoverC.config.save.restartNeeded = reboot;
 
             response->setLength();
             request->send(response);

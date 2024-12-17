@@ -12,16 +12,16 @@ void saveCoverCConfig(){
     JsonDocument doc;
     
     JsonObject cover = doc["Cover"].to<JsonObject>();
-    cover["present"] = CoverC.config.cover.present;
-    cover["pin"] = CoverC.config.cover.outServoPin;
-    cover["movingTime"] = CoverC.config.cover.movingTime;
-    cover["openDeg"] = CoverC.config.cover.openDeg;
-    cover["closeDeg"] = CoverC.config.cover.closeDeg;
-    cover["maxDeg"] = CoverC.config.cover.maxDeg;
+    cover["present"] = CoverC.config.tmpCfg.cover.present;
+    cover["pin"] = CoverC.config.tmpCfg.cover.outServoPin;
+    cover["movingTime"] = CoverC.config.tmpCfg.cover.movingTime;
+    cover["openDeg"] = CoverC.config.tmpCfg.cover.openDeg;
+    cover["closeDeg"] = CoverC.config.tmpCfg.cover.closeDeg;
+    cover["maxDeg"] = CoverC.config.tmpCfg.cover.maxDeg;
 
     JsonObject calibrator = doc["Calibrator"].to<JsonObject>();
-    calibrator["present"] = CoverC.config.calibrator.present;
-    calibrator["pin"] = CoverC.config.calibrator.outPWM;
+    calibrator["present"] = CoverC.config.tmpCfg.calibrator.present;
+    calibrator["pin"] = CoverC.config.tmpCfg.calibrator.outPWM;
 
     serializeJson(doc, file);
     file.close();

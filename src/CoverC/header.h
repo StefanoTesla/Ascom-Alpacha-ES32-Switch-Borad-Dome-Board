@@ -28,10 +28,15 @@ struct coverConfig{
   unsigned int movingTime = 2000;
   int pwmChannel;
 };
+struct structTmpCoverCalibratorConfig{
+  calibratorConfig calibrator;
+  coverConfig cover;
+};
 
 struct structCoverCalibratorConfig{
   calibratorConfig calibrator;
   coverConfig cover;
+  structTmpCoverCalibratorConfig tmpCfg;
   coverCSaveConfigStruct save;
   coverCLoadConfigStruct load;
 };

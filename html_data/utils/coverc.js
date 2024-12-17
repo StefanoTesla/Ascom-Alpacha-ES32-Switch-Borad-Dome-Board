@@ -64,7 +64,6 @@ export function coverc(){
                 });
         },
     
-    
         calibratorBrightness(value){
             const ip = import.meta.env.VITE_BOARD_IP
             fetch(ip + '/api/coverc/brightness', {
@@ -211,7 +210,14 @@ export function coverc(){
                     return res.json();
                 })
                 .then(res => {
-                    this.addToast({ type: "success", text: this.text.setting.coverC.configSaved });
+                    if(res.reboot){
+                        this.reboot.cover = res.reboot
+                        this.modal = true
+                    } else {
+                        this.reboot.cover = false
+                    }
+                    
+                    this.addToast({ type: "success", text: this.text.gen.configSaved, time:3 });
                 })
                 .catch(err => {
                     if (err.errors) {
