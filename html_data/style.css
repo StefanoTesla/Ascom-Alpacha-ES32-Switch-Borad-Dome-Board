@@ -28,7 +28,7 @@ input[type=number] {
 }
 
 span{
-  @apply mx-1
+  @apply ml-1
 }
 body{
   background: #212121;

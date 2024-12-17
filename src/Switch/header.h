@@ -59,7 +59,7 @@ struct SwitchProperty{
 };
 
 struct SwitchActualValue{
-  int boValue;  //must be true also if is an int value value > minValue, otherwise false
+  bool boValue;  //must be true also if is an int value value > minValue, otherwise false
   int intValue; //must return the integer value of the switch, 1 is return if bool is true
 };
 
@@ -80,7 +80,7 @@ struct SwitchConfiStruct{
 
 /* SWITCH STRUCT */
 struct SwitchStruct{
-  switchAlpacaParameters alpaca;
+  //switchAlpacaParameters alpaca;
   SwitchConfiStruct config;
   SwitchArrayStruct data[_MAX_SWITCH_ID_];
   

@@ -51,6 +51,7 @@ void setSwitchValue(){
             case SwTypeNull:
                 Switch.data[i].command.execute =false;
                 Switch.data[i].actualValue.intValue = 0;
+                Switch.data[i].actualValue.boValue = false;
                 break;
             case SwTypeDOutput:
                 digitalWrite(Switch.data[i].property.pin,Switch.data[i].command.boValue);

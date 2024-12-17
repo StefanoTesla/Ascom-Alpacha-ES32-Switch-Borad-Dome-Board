@@ -3,10 +3,82 @@
 #include "libraries.h"
 #include "header.h"
 
+
+bool canBeWritten(unsigned int id){
+      if(
+      Switch.data[id].property.type == SwTypeAOutput ||
+      Switch.data[id].property.type == SwTypeDOutput ||
+      Switch.data[id].property.type == SwTypePWM ||
+      Switch.data[id].property.type == SwTypeServo
+      ){ 
+            return true; 
+      }
+      return false;
+}
+
+/* Not writable error related */
+void unWritableIdErrorMessage(AsyncWebServerRequest *request) {
+      AsyncJsonResponse* response = new AsyncJsonResponse();
+      JsonObject doc = response->getRoot().to<JsonObject>();
+      char message[100];
+      int tmp = Switch.config.configuredSwitch - 1;
+      int id = request->getAttribute("id").toInt();
+      if (Global.config.language.locale == "it"){
+            sprintf(message, "Lo switch n: %d, non può essere scritto.", id);
+      } else {
+            sprintf(message, "Switch n: %d, cannot be written", id);
+      }
+      doc["ErrorNumber"] = 1025;
+      doc["ErrorMessage"] = message;
+      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+      response->setLength();
+      response->setCode(400);
+      request->send(response);
+}
+
+/* ID error realted */
+void missingIdErrorMessage(AsyncWebServerRequest *request) {
+      AsyncJsonResponse* response = new AsyncJsonResponse();
+      JsonObject doc = response->getRoot().to<JsonObject>();
+      
+      doc["ErrorNumber"] = 1025;
+      if (Global.config.language.locale == "it"){
+            doc["ErrorMessage"] = "ID non fornito";
+      } else {
+            doc["ErrorMessage"] = "ID not provided";
+      }
+      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+      response->setLength();
+      response->setCode(400);
+      request->send(response);
+}
+
+void IdOutOfRangeErrorMessage(AsyncWebServerRequest *request) {
+      AsyncJsonResponse* response = new AsyncJsonResponse();
+      JsonObject doc = response->getRoot().to<JsonObject>();
+      char message[100];
+      int tmp = Switch.config.configuredSwitch - 1;
+      int id = request->getAttribute("id").toInt();
+      if (Global.config.language.locale == "it"){
+            sprintf(message, "L'ID fornito: %d, è fuori range, il massimo è: %d", id, tmp);
+      } else {
+            sprintf(message, "ID provided: %d, outside range, maximum is: %d", id, tmp);
+      }
+      doc["ErrorNumber"] = 1025;
+      doc["ErrorMessage"] = message;
+      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+      response->setLength();
+      response->setCode(400);
+      request->send(response);
+}
+
 AsyncMiddlewareFunction getID([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
       int paramsNr = request->params();
+      bool exist;
       String parameter;
-      Switch.alpaca.idExist = false;
       int id = -1;
       for (int i = 0; i < paramsNr; i++) {
             const AsyncWebParameter* p = request->getParam(i);
@@ -14,32 +86,138 @@ AsyncMiddlewareFunction getID([](AsyncWebServerRequest* request, ArMiddlewareNex
             parameter.toLowerCase();
             if (parameter == "id") {
                   id = p->value().toInt();
-                  if( id >= 0 && id < _MAX_SWITCH_ID_){
-                        Switch.alpaca.idExist = true;
-                        Switch.alpaca.id = p->value().toInt();
+                  if( id >= 0 && id < Switch.config.configuredSwitch){
+                        request->setAttribute("id", static_cast<long>(id));
+                        next();
+                        return;
+                  } else {
+                       IdOutOfRangeErrorMessage(request); 
+                       return;
                   }
-                  next();
             }
       }
-      next();
+      missingIdErrorMessage(request);    
 });
 
-AsyncMiddlewareFunction getValue([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
+/* State error realted */
+void missingStateErrorMessage(AsyncWebServerRequest *request) {
+      AsyncJsonResponse* response = new AsyncJsonResponse();
+      JsonObject doc = response->getRoot().to<JsonObject>();
+      char message[100];
+      int tmp = Switch.config.configuredSwitch - 1;
+      if (Global.config.language.locale == "it"){
+            sprintf(message,"Parametro \"State\" non fornito");
+      } else {
+            sprintf(message,"\"State\" parameter not provided");
+      }
+      doc["ErrorNumber"] = 1025;
+      doc["ErrorMessage"] = message;
+      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+      response->setLength();
+      response->setCode(400);
+      request->send(response);
+}
+
+AsyncMiddlewareFunction getState([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
       int paramsNr = request->params();
       String parameter;
-      Switch.alpaca.intValueExist = false;
 
       for (int i = 0; i < paramsNr; i++) {
             const AsyncWebParameter* p = request->getParam(i);
             parameter = p->name();
             parameter.toLowerCase();
-            if (parameter == "value") {
-                  Switch.alpaca.intValueExist = true;
-                  Switch.alpaca.intValue = p->value().toInt();
+            if (parameter == "state") {
+                  request->setAttribute("state",  static_cast<long>(0));
+                  String value = p->value();
+                  value.toLowerCase();
+                  if(value == "true"){
+                        request->setAttribute("state",  static_cast<long>(1));
+                  }
                   next();
+                  return;
             }
       }
-      next();
+      missingStateErrorMessage(request);
+      
+});
+
+/* Value error realted */
+void missingValueErrorMessage(AsyncWebServerRequest *request) {
+      AsyncJsonResponse* response = new AsyncJsonResponse();
+      JsonObject doc = response->getRoot().to<JsonObject>();
+      char message[100];
+      int tmp = Switch.config.configuredSwitch - 1;
+      if (Global.config.language.locale == "it"){
+            sprintf(message, "Parametro \"Value\" non fornito");
+      } else {
+            sprintf(message, "\"Value\" parameter not provided");
+      }
+      doc["ErrorNumber"] = 1025;
+      doc["ErrorMessage"] = message;
+      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+      response->setLength();
+      response->setCode(400);
+      request->send(response);
+}
+
+void valueOutOfRangeErrorMessage(AsyncWebServerRequest *request) {
+      AsyncJsonResponse* response = new AsyncJsonResponse();
+      JsonObject doc = response->getRoot().to<JsonObject>();
+      char message[100];
+      int id = request->getAttribute("id").toInt();
+      int value = request->getAttribute("value").toInt();
+      if (Global.config.language.locale == "it"){
+            sprintf(message, "L'ID fornito: %d, è fuori range, il massimo è: %d", id, value);
+      } else {
+            sprintf(message, "ID provided: %d, outside range, maximum is: %d", id, value);
+      }
+      doc["ErrorNumber"] = 1025;
+      doc["ErrorMessage"] = message;
+      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+      response->setLength();
+      response->setCode(400);
+      request->send(response);
+}
+
+AsyncMiddlewareFunction getValue([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
+      int paramsNr = request->params();
+      String parameter;
+      for (int i = 0; i < paramsNr; i++) {
+            const AsyncWebParameter* p = request->getParam(i);
+            parameter = p->name();
+            parameter.toLowerCase();
+            if (parameter == "value") {
+                  request->setAttribute("value", static_cast<long>(p->value().toInt()));
+                  next();
+                  return;
+            }
+      }
+      missingValueErrorMessage(request);
+});
+
+AsyncMiddlewareFunction isValueable([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
+      int id = request->getAttribute("id").toInt();
+      int value = request->getAttribute("value").toInt();
+      if(canBeWritten(id) && (value >= Switch.data[id].property.minValue && value <= Switch.data[id].property.maxValue) ){
+            next();
+            return;
+      }
+      valueOutOfRangeErrorMessage(request);
+      
+});
+
+
+AsyncMiddlewareFunction isStatable([](AsyncWebServerRequest* request, ArMiddlewareNext next) {
+      int id = request->getAttribute("id").toInt();
+      if(canBeWritten(id)){
+            next();
+            return;
+      }
+      unWritableIdErrorMessage(request);
+      
 });
 
 void switchAlpacaDevice(){
@@ -56,199 +234,261 @@ void switchAlpacaDevice(){
             request->send(response);
       }).addMiddleware(&getAlpacaID);
 
-      alpaca.on("/api/v1/switch/0/canwrite", HTTP_GET, [](AsyncWebServerRequest *request){
+      alpaca.on("/api/v1/switch/0/canasync", HTTP_GET, [](AsyncWebServerRequest *request){
             AsyncJsonResponse* response = new AsyncJsonResponse();
             JsonObject doc = response->getRoot().to<JsonObject>();
-
-            if(Switch.alpaca.idExist){
-                  bool canwrite = false;
-                  if(
-                        Switch.data[Switch.alpaca.id].property.type == SwTypeAOutput ||
-                        Switch.data[Switch.alpaca.id].property.type == SwTypeDOutput ||
-                        Switch.data[Switch.alpaca.id].property.type == SwTypePWM ||
-                        Switch.data[Switch.alpaca.id].property.type == SwTypeServo
-                  ){ canwrite = true; }
-
-                  doc["Value"] = canwrite;
-                  doc["ErrorNumber"] = 0;
-                  doc["ErrorMessage"] = "";
-            } else {
-                  doc["ErrorNumber"] = 1025;
-                  doc["ErrorMessage"] = "ID not provided or outside range.";
-            }
-
+            doc["Value"] = true;
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
             doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
             doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
             response->setLength();
             request->send(response);
-  }).addMiddlewares({&getAlpacaID,&getID});
+      }).addMiddlewares({&getAlpacaID,&getID});
 
-  alpaca.on("/api/v1/switch/0/getswitch", HTTP_GET, [](AsyncWebServerRequest *request){
-        AsyncJsonResponse* response = new AsyncJsonResponse();
-        JsonObject doc = response->getRoot().to<JsonObject>();
-        doc["Value"] = CoverC.status.calibrator.status;
-        doc["ErrorNumber"] = 0;
-        doc["ErrorMessage"] = "";
-        doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-        doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-        response->setLength();
-        request->send(response);
-  }).addMiddleware(&getAlpacaID);
-
-  alpaca.on("/api/v1/covercalibrator/0/covermoving", HTTP_GET, [](AsyncWebServerRequest *request){
-        AsyncJsonResponse* response = new AsyncJsonResponse();
-        JsonObject doc = response->getRoot().to<JsonObject>();
-        doc["Value"] = CoverC.status.cover.status == CoverStatusMoving ? true : false;
-        doc["ErrorNumber"] = 0;
-        doc["ErrorMessage"] = "";
-        doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-        doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-        response->setLength();
-        request->send(response);
-  }).addMiddleware(&getAlpacaID);
-
-  alpaca.on("/api/v1/covercalibrator/0/coverstate", HTTP_GET, [](AsyncWebServerRequest *request){
-        AsyncJsonResponse* response = new AsyncJsonResponse();
-        JsonObject doc = response->getRoot().to<JsonObject>();
-        doc["Value"] = CoverC.status.cover.status;
-        doc["ErrorNumber"] = 0;
-        doc["ErrorMessage"] = "";
-        doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-        doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-        response->setLength();
-        request->send(response);
-  }).addMiddleware(&getAlpacaID);
-
-  alpaca.on("/api/v1/covercalibrator/0/maxbrightness", HTTP_GET, [](AsyncWebServerRequest *request){
-        AsyncJsonResponse* response = new AsyncJsonResponse();
-        JsonObject doc = response->getRoot().to<JsonObject>();
-        doc["Value"] = 4096;
-        doc["ErrorNumber"] = 0;
-        doc["ErrorMessage"] = "";
-        doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-        doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-        response->setLength();
-        request->send(response);
-  }).addMiddleware(&getAlpacaID);
-
-  alpaca.on("/api/v1/covercalibrator/0/devicestate", HTTP_GET, [](AsyncWebServerRequest *request) {
-    AsyncJsonResponse* response = new AsyncJsonResponse();
-    JsonObject doc = response->getRoot().to<JsonObject>();
-    JsonArray Value = doc["Value"].to<JsonArray>();
-    JsonObject calibStatus = Value.add<JsonObject>();
-    calibStatus["Name"] = "CalibratorState";
-    calibStatus["Value"] = CoverC.status.calibrator.status;
-    JsonObject calibChanging = Value.add<JsonObject>();
-    calibChanging["Name"] = "CalibratorChanging";
-    calibChanging["Value"] = false;
-    JsonObject coverState = Value.add<JsonObject>();
-    coverState["Name"] = "CoverState";
-    coverState["Value"] = CoverC.status.cover.status;
-    JsonObject coverMoving = Value.add<JsonObject>();
-    coverMoving["Name"] = "CoverMoving";
-    coverMoving["Value"] = false;
-    doc["ErrorNumber"] = 0;
-    doc["ErrorMessage"] = "";
-    doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-    doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-    response->setLength();
-    request->send(response);
-}).addMiddleware(&getAlpacaID);
-
-  alpaca.on("/api/v1/covercalibrator/0/calibratoroff", HTTP_PUT, [](AsyncWebServerRequest *request){
-      AsyncJsonResponse* response = new AsyncJsonResponse();
-      JsonObject doc = response->getRoot().to<JsonObject>();
-      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-      if(!CoverC.config.calibrator.present){
-            doc["ErrorNumber"] = 1024;
-            doc["ErrorMessage"] = "Method not implemented";
-      } else if(!CoverC.alpaca.exist){
-            doc["ErrorNumber"] = 1025;
-            doc["ErrorMessage"] = "Brightness parameter not found";
-      } else{
-            CoverC.command.calibrator.change = true;
-            CoverC.command.calibrator.brightness = 0;
+      alpaca.on("/api/v1/switch/0/canwrite", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = canBeWritten(id);
             doc["ErrorNumber"] = 0;
             doc["ErrorMessage"] = "";
-      }
-      
-      response->setLength();
-      request->send(response); 
-  }).addMiddleware(&getAlpacaID);
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
 
-  alpaca.on("/api/v1/covercalibrator/0/closecover", HTTP_PUT, [](AsyncWebServerRequest *request){
-      AsyncJsonResponse* response = new AsyncJsonResponse();
-      JsonObject doc = response->getRoot().to<JsonObject>();
-      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-      if(!CoverC.config.cover.present){
-            doc["ErrorNumber"] = 1024;
-            doc["ErrorMessage"] = "Method not implemented";
-      } else if(CoverC.status.cover.status == 2){
-            doc["ErrorNumber"] = 1035;
-            doc["ErrorMessage"] = "Cover is moving";
-      } else{
-            Serial.println("ascom is goin to close");
-            CoverC.command.cover.move = true;
-            CoverC.command.cover.angle = CoverC.config.cover.closeDeg;
+      alpaca.on("/api/v1/switch/0/getswitch", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = Switch.data[id].actualValue.boValue;
             doc["ErrorNumber"] = 0;
             doc["ErrorMessage"] = "";
-      }
-      
-      response->setLength();
-      request->send(response); 
-  }).addMiddleware(&getAlpacaID);
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
 
-  alpaca.on("/api/v1/covercalibrator/0/opencover", HTTP_PUT, [](AsyncWebServerRequest *request){
-      AsyncJsonResponse* response = new AsyncJsonResponse();
-      JsonObject doc = response->getRoot().to<JsonObject>();
-      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-      if(!CoverC.config.cover.present){
-            doc["ErrorNumber"] = 1024;
-            doc["ErrorMessage"] = "Method not implemented";
-      } else if(CoverC.status.cover.status == 2){
-            doc["ErrorNumber"] = 1035;
-            doc["ErrorMessage"] = "Cover is moving";
-      } else{
-            Serial.println("ascom is goin to close");
-            CoverC.command.cover.move = true;
-            CoverC.command.cover.angle = CoverC.config.cover.openDeg;
+      alpaca.on("/api/v1/switch/0/getswitchdescription", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = Switch.data[id].property.Description;
             doc["ErrorNumber"] = 0;
             doc["ErrorMessage"] = "";
-      }
-      
-      response->setLength();
-      request->send(response); 
-  }).addMiddleware(&getAlpacaID);
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
 
-  alpaca.on("/api/v1/covercalibrator/0/calibratoron", HTTP_PUT, [](AsyncWebServerRequest *request){
-      AsyncJsonResponse* response = new AsyncJsonResponse();
-      JsonObject doc = response->getRoot().to<JsonObject>();
-      doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
-      doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
-      if(!CoverC.config.calibrator.present){
-            doc["ErrorNumber"] = 1024;
-            doc["ErrorMessage"] = "Method not implemented";
-      } else if(!CoverC.alpaca.exist){
-            doc["ErrorNumber"] = 1025;
-            doc["ErrorMessage"] = "Brightness parameter not found";
-      } else if(!CoverC.alpaca.brightness < 0 or !CoverC.alpaca.brightness > 100){
-            doc["ErrorNumber"] = 1025;
-            doc["ErrorMessage"] = "Value outside MIN and MAX";
-      } else {
-            CoverC.command.calibrator.change = true;
-            CoverC.command.calibrator.brightness = CoverC.alpaca.brightness;
+      alpaca.on("/api/v1/switch/0/getswitchname", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = Switch.data[id].property.Name;
             doc["ErrorNumber"] = 0;
             doc["ErrorMessage"] = "";
-      }
-      response->setLength();
-      request->send(response);
-  }).addMiddlewares({&getAlpacaID,&getBrightness});
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
 
-    /* Property not implemented:*/
-    alpaca.on("/api/v1/covercalibrator/0/haltcover",        HTTP_PUT, alpacaPropertyNotImplemented).addMiddleware(&getAlpacaID);
+      alpaca.on("/api/v1/switch/0/getswitchvalue", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = Switch.data[id].actualValue.intValue;
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
+
+      alpaca.on("/api/v1/switch/0/minswitchvalue", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = Switch.data[id].property.minValue;
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
+
+      alpaca.on("/api/v1/switch/0/maxswitchvalue", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = Switch.data[id].property.maxValue;
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
+
+      alpaca.on("/api/v1/switch/0/switchstep", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            doc["Value"] = 1;
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
+
+      alpaca.on("/api/v1/switch/0/statechangecomplete", HTTP_GET, [](AsyncWebServerRequest *request){
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            int id = request->getAttribute("id").toInt();
+            doc["Value"] = !Switch.data[id].command.execute;
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID});
+
+      alpaca.on("/api/v1/switch/0/devicestate", HTTP_GET, [](AsyncWebServerRequest *request) {
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+            JsonArray Value = doc["Value"].to<JsonArray>();
+
+            
+            for (int i = 0; i < Switch.config.configuredSwitch; i++)
+            {
+                  JsonObject getSwitch = Value.add<JsonObject>();
+                  char message[15];
+                  sprintf(message, "GetSwitch%d", i);
+                  getSwitch["Name"] = message;
+                  getSwitch["Value"] = Switch.data[i].actualValue.boValue;
+            }
+            //getSwitchValue
+            for (int i = 0; i < Switch.config.configuredSwitch; i++)
+            {
+                  JsonObject getSwitchValue = Value.add<JsonObject>();
+                  char message[20];
+                  sprintf(message, "GetSwitchValue%d", i);
+                  getSwitchValue["Name"] = message;
+                  getSwitchValue["Value"] = Switch.data[i].actualValue.intValue;
+            }
+            //StateChangeComplete
+            for (int i = 0; i < Switch.config.configuredSwitch; i++)
+            {
+                  JsonObject StateChangeComplete = Value.add<JsonObject>();
+                  char message[25];
+                  sprintf(message, "StateChangeComplete%d", i);
+                  StateChangeComplete["Name"] = message;
+                  StateChangeComplete["Value"] = !Switch.data[i].command.execute;
+            }
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddleware(&getAlpacaID);
+
+      alpaca.on("/api/v1/switch/0/setswitch", HTTP_PUT, [](AsyncWebServerRequest *request) {
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+
+            int state = request->getAttribute("state").toInt();
+            int id = request->getAttribute("id").toInt();
+
+            if(Switch.data[id].property.type == SwTypeDOutput){
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.boValue = state ? true : false;  
+            } else {
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.intValue = state ? Switch.data[id].property.maxValue : Switch.data[id].property.minValue;
+            }
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID,&getState,&isStatable});
+
+      alpaca.on("/api/v1/switch/0/setasync", HTTP_PUT, [](AsyncWebServerRequest *request) {
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+
+            int state = request->getAttribute("state").toInt();
+            int id = request->getAttribute("id").toInt();
+
+            if(Switch.data[id].property.type == SwTypeDOutput){
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.boValue = state ? true : false;  
+            } else {
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.intValue = state ? Switch.data[id].property.maxValue : Switch.data[id].property.minValue;
+            }
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID,&getState,&isStatable});
+
+      alpaca.on("/api/v1/switch/0/setswitchvalue", HTTP_PUT, [](AsyncWebServerRequest *request) {
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+
+            int value = request->getAttribute("value").toInt();
+            int id = request->getAttribute("id").toInt();
+
+            if(Switch.data[id].property.type == SwTypeDOutput){
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.boValue = value ? true : false;  
+            } else {
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.intValue = value;
+            }
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID,&getState,&isValueable});
+
+      alpaca.on("/api/v1/switch/0/setasyncvalue", HTTP_PUT, [](AsyncWebServerRequest *request) {
+            AsyncJsonResponse* response = new AsyncJsonResponse();
+            JsonObject doc = response->getRoot().to<JsonObject>();
+
+            int value = request->getAttribute("value").toInt();
+            int id = request->getAttribute("id").toInt();
+
+            if(Switch.data[id].property.type == SwTypeDOutput){
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.boValue = value ? true : false;  
+            } else {
+                  Switch.data[id].command.execute = true;
+                  Switch.data[id].command.intValue = value;
+            }
+            doc["ErrorNumber"] = 0;
+            doc["ErrorMessage"] = "";
+            doc["ClientTransactionID"] = AlpacaData.clientTransactionID;
+            doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
+            response->setLength();
+            request->send(response);
+      }).addMiddlewares({&getAlpacaID,&getID,&getState,&isValueable});
 
 
     /* Methods not implemented:*/
@@ -257,7 +497,7 @@ void switchAlpacaDevice(){
     alpaca.on("/api/v1/covercalibrator/0/commandstring",    HTTP_PUT, alpacaMethodNotImplemented).addMiddleware(&getAlpacaID);
 
    /* I don't care about connection but we need to declare it*/
-    alpaca.on("/api/v1/covercalibrator/0/connect", HTTP_PUT, [](AsyncWebServerRequest *request) {
+    alpaca.on("/api/v1/switch/0/connect", HTTP_PUT, [](AsyncWebServerRequest *request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
         doc["ErrorNumber"] = 0;
@@ -266,10 +506,9 @@ void switchAlpacaDevice(){
         doc["ServerTransactionID"] = AlpacaData.serverTransactionID;
         response->setLength();
         request->send(response);
-
     }).addMiddleware(&getAlpacaID);
 
-    alpaca.on("/api/v1/covercalibrator/0/disconnect", HTTP_PUT, [](AsyncWebServerRequest *request) {
+    alpaca.on("/api/v1/switch/0/disconnect", HTTP_PUT, [](AsyncWebServerRequest *request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
         doc["ErrorNumber"] = 0;
