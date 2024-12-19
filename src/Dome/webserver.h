@@ -54,7 +54,47 @@ void domeWebServer(){
         request->send(response);
     });
 
+    server.on("/api/dome/open", HTTP_POST, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
 
+        doc["execute"] = false;
+
+        if(Dome.Shutter.command == ShCommandIdle && Dome.Shutter.status != ShStatusOpen){
+            doc["execute"] = true;
+            Dome.Shutter.command = ShCommandOpen;
+        }
+        
+        response->setLength();
+        request->send(response);
+    });
+
+        server.on("/api/dome/close", HTTP_POST, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+
+        doc["execute"] = false;
+
+        if(Dome.Shutter.command == ShCommandIdle && Dome.Shutter.status != ShStatusClose){
+            doc["execute"] = true;
+            Dome.Shutter.command = ShCommandClose;
+
+        }
+
+        response->setLength();
+        request->send(response);
+    });
+
+        server.on("/api/dome/halt", HTTP_POST, [](AsyncWebServerRequest * request) {
+        AsyncJsonResponse* response = new AsyncJsonResponse();
+        JsonObject doc = response->getRoot().to<JsonObject>();
+
+        doc["execute"] = true;
+
+        Dome.Shutter.command = ShCommandHalt;
+        response->setLength();
+        request->send(response);
+    });
 
     AsyncCallbackJsonWebHandler* domeConfigHandler = new AsyncCallbackJsonWebHandler("/api/dome/cfg");
 

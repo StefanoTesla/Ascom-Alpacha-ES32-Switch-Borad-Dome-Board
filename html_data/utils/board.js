@@ -30,6 +30,8 @@ export function board(){
                 body: JSON.stringify(this.board)
             }).then(res => res.json())
             .then(res => {
+                this.reboot.board = res.reboot
+                this.modal = true
                 if(res.ok){
                     this.addToast({ type:"success", text: this.text.setting.board.configSaved })
                 }

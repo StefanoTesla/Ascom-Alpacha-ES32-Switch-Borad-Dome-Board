@@ -114,6 +114,19 @@ globalVariable Global;
 /* END OF GLOBAL */
 
 
+enum LogMachine{
+  board,
+  dome,
+  coverc,
+  Switches
+};
+
+enum LogType{
+  lErr,
+  lInfo,
+  lDebug
+};
+
 bool pinExist(unsigned int pin){
   if(pin > 39 or pin == 20 or pin == 24 or pin==38){
     return false;
@@ -334,7 +347,18 @@ void printLEDChannelStatus(){
   
 }
 
-void logMessage(const String& message, int machine, int type) {
-  // Invia il messaggio a tutti i client connessi
-  ws.textAll(String(type)+"#"+String(machine)+"#"+message);
+void logMessage(LogMachine machine, LogType type, const char* message) {
+    char buffer[200];
+    snprintf(buffer, sizeof(buffer), "%d#%d#%s", type, machine, message);
+    ws.textAll(buffer);
+}
+
+void logMessageFormatted(LogMachine machine, LogType type, const char* format, ...) {
+    char message[256]; // Buffer per il messaggio finale
+    va_list args;
+    va_start(args, format);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+
+    logMessage(machine, type, message); // Chiama la tua funzione logMessage
 }

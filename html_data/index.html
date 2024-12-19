@@ -143,14 +143,14 @@
                   'disactivated' : dome.status.actualCommand != 0 || dome.status.roofState == 0,
                   'green' :  dome.status.actualCommand == 0 && dome.status.roofState != 0
                  }"
-                  x-text="text.gen.open">{open}</button>
+                  x-text="text.gen.open" @click="openDome()">{open}</button>
                 <button :class="{
                   'disactivated' : dome.status.actualCommand != 0 || dome.status.roofState == 1,
                   'green' :  dome.status.actualCommand == 0 && dome.status.roofState != 1
                  }"
-                  x-text="text.gen.close">{close}</button>
+                  x-text="text.gen.close" @click="closeDome()">{close}</button>
 
-                <button class="red" x-text="text.gen.halt">{stop}</button>
+                <button class="red" x-text="text.gen.halt" @click="haltDome()">{stop}</button>
               </div>
               
               <div>

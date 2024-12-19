@@ -34,6 +34,7 @@ export function dome(){
                 .then(res => {
                     this.addToast({ type:"success", text: this.text.gen.configSaved, time:3 })
                     this.reboot.dome = res.reboot ? true : false
+                    this.modal = res.reboot
 
                 })
                 .catch(err => {
@@ -81,7 +82,64 @@ export function dome(){
         .catch(error => console.error('Error fetching board data:', error));
     },
 
+    openDome(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/dome/open', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.execute){
+                this.addToast({ type:"success", text: this.text.gen.cmdAck})
+            } else {
+                this.addToast({ type:"error", text: this.text.gen.cmdRefused})
+            }
+        })
+        .catch(error => console.error('Error opening dome: ', error));
+    },
 
+    closeDome(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/dome/close', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.execute){
+                this.addToast({ type:"success", text: this.text.gen.cmdAck})
+            } else {
+                this.addToast({ type:"error", text: this.text.gen.cmdRefused})
+            }
+        })
+        .catch(error => console.error('Error opening dome: ', error));
+    },
 
+    haltDome(){
+        const ip = import.meta.env.VITE_BOARD_IP
+        fetch(ip + '/api/dome/halt', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.execute){
+                this.addToast({ type:"success", text: this.text.gen.cmdAck})
+            } else {
+                this.addToast({ type:"error", text: this.text.gen.cmdRefused})
+            }
+        })
+        .catch(error => console.error('Error opening dome: ', error));
+    }
     }
 }

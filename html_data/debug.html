@@ -97,7 +97,10 @@
               break;
           }
 
-          message = "[" + machine +"] " + message
+          let d = new Date(); // Crea un'istanza di Date
+          let timeString = d.toLocaleTimeString(); // Ora puoi usare toLocaleTimeString
+
+          message =  timeString + " [" + machine +"] " + message
           this.logs.push({ id: this.nextId++, message, type });
 
           // Mantieni visibile l'ultimo messaggio
@@ -107,10 +110,14 @@
           });
         },
 
+        connect(){
+          this.socket = new WebSocket(`ws://192.168.123.235/ws`);
+        },
+
         // Inizializza il WebSocket
         init() {
           //this.socket = new WebSocket(`ws://${window.location.hostname}/ws`);
-          this.socket = new WebSocket(`ws://192.168.123.235/ws`);
+          this.connect()
           this.socket.onopen = () => {
             this.addLog('Connesso al WebSocket.', 0,5);
           };
@@ -122,6 +129,7 @@
 
           this.socket.onclose = () => {
             this.addLog('Disconnesso dal WebSocket.', 'error');
+            setTimeout(this.connect(),1000)
           };
 
           this.socket.onerror = (error) => {

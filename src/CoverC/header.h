@@ -49,7 +49,8 @@ struct calibratorCommand{
 
 struct coverCommand{
   bool move;
-  unsigned int angle;
+  int angle;
+  int goToAngle;
   unsigned long ackMillis; 
 };
 

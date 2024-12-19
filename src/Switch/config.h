@@ -3,8 +3,9 @@
 
 
 void saveSwitchConfig(){
-    File file = LittleFS.open("/cfg/switchconfig.txt", FILE_WRITE);
+    File file = LittleFS.open("/cfg/switchcfg.txt", FILE_WRITE);
     Serial.println("Switch save in progress..");
+    logMessage(Switches,lInfo,"Saving config file");
     JsonDocument doc;
     JsonArray array = doc["Switches"].to<JsonArray>();
 
@@ -38,13 +39,25 @@ void saveSwitchConfig(){
 
     serializeJson(doc, file);
     file.close();
-    Serial.println("Switch saved..");
+    logMessage(Switches,lInfo,"Config saved");
+
+    //reset temporary configuration
+    for (int i = 0; i < _MAX_SWITCH_ID_; i++)
+    {
+        memset(Switch.config.tmp[i].property.Name, 0, sizeof(Switch.config.tmp[i].property.Name));
+        memset(Switch.config.tmp[i].property.Description, 0, sizeof(Switch.config.tmp[i].property.Description));
+        Switch.config.tmp[i].property.type = SwTypeNull;
+        Switch.config.tmp[i].property.minValue =0;
+        Switch.config.tmp[i].property.maxValue =0;
+
+    }
+    
 }
 
 
 void initSwitchConfig(){
     Serial.println("INIT: switch config reading..");
-    if (!LittleFS.exists("/cfg/switchconfig.txt")) {
+    if (!LittleFS.exists("/cfg/switchcfg.txt")) {
         Serial.println("[ERR] Switch: unable to find switchconfig file, I'm creating a new one..");
         File file = LittleFS.open("/cfg/switchconfig.txt", FILE_WRITE);
         file.close();
@@ -52,11 +65,11 @@ void initSwitchConfig(){
         return;
     }
 
-    File file = LittleFS.open("/cfg/switchconfig.txt", FILE_READ);
+    File file = LittleFS.open("/cfg/switchcfg.txt", FILE_READ);
     JsonDocument doc;
 
     DeserializationError error = deserializeJson(doc, file);
-    
+
     if(error){
         Serial.print(F("deserializeJson() failed: "));
         Serial.println(error.c_str());

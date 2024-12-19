@@ -12,7 +12,7 @@ void alpacaDiscovery(AsyncUDP &udp) {  // Passa l'oggetto `udp` come riferimento
             if (strncmp("alpacadiscovery1", (char *)packet.data(), 16) != 0) {
                 return;
             }
-            logMessage("Alpaca Broadcast message recived",0,0);
+            logMessage(board,lInfo,"Alpaca Broadcast message recived");
             packet.printf("{\"alpacaport\": %d}", ALPACA_PORT);
         });
     } else {

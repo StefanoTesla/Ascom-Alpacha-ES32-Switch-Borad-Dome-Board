@@ -84,20 +84,23 @@ void switchWebServer(){
             } 
         }
         if(id < 0 || id >= _MAX_SWITCH_ID_){
-            doc["error"] = "ID out of range";
+            logMessageFormatted(Switches,lErr,"cmd. not exec, ID out of range",id);
             err= true;
         }
         if(exist){
             if(value < Switch.data[id].property.minValue){
                 doc["error"] = "value excede the minimum";
+                logMessageFormatted(Switches,lErr,"cmd. not exec on ID %d with val: %d below min",id,value);
                 err= true;
             }
             if(value > Switch.data[id].property.maxValue){
                 doc["error"] = "value excede the maximum";
+                logMessageFormatted(Switches,lErr,"cmd. not exec on ID %d with val: %d exceeded max",id,value);
                 err= true;
             }
         } else {
             doc["error"] = "value not provided";
+            logMessageFormatted(Switches,lErr,"cmd. not exec on ID %d value not provided",id);
             err= true;
         }
 
@@ -129,19 +132,21 @@ void switchWebServer(){
             bool reboot = false;
             int count = 0;
             unsigned int type = 0;
-
+            logMessageFormatted(Switches,lInfo,"New incoming config");
             for (JsonObject Switche : json["Switches"].as<JsonArray>()) {
                 SwitchProperty propertyStruct;
 
                 if(!Switche["name"].is<String>() || !Switche["type"].is<unsigned int>() || !Switche["pin"].is<unsigned int>()){
-                    err.add("Name or type or pin not defined");
+                    err.add("Name, type or pin not defined");
+                    logMessageFormatted(Switches,lErr,"Name, type or pin not defined");
                     continue;
                 }
 
                 type = Switche["type"].as<unsigned int>();
 
-                if(type == 0 and type > 6){
+                if(type == 0 || type > 6){
                     err.add("Switch of type 0 skipped");
+                    logMessage(Switches,lErr,"Switch of type 0, skipped");
                     continue;
                 }
                 propertyStruct.type = static_cast<SwitchType>(type);
@@ -151,45 +156,52 @@ void switchWebServer(){
                     propertyStruct.pin = Switche["pin"].as<unsigned int>();
                     if(!pinUsableAsInput(propertyStruct.pin)){
                         err.add("pin not usable as input");
+                        logMessage(Switches,lErr,"pin not usable as input");
                         continue;
                     }
+                    propertyStruct.minValue = 0;
+                    propertyStruct.maxValue = 1;   
                 } else if ( propertyStruct.type == SwTypeDOutput ) {
                     Serial.println("New Output");
                     propertyStruct.pin = Switche["pin"].as<unsigned int>();
                     if(!pinUsableAsOutput(propertyStruct.pin)){
                         err.add("pin not usable as output");
+                        logMessage(Switches,lErr,"pin not usable as output");
                         continue;
                     }
+                    propertyStruct.minValue = 0;
+                    propertyStruct.maxValue = 1; 
                 } else if ( propertyStruct.type == SwTypePWM ) {
                     Serial.println("New PWM");
                     propertyStruct.pin = Switche["pin"].as<unsigned int>();
                     if(!pinUsableAsOutput(propertyStruct.pin)){
                         err.add("pin not usable as pwm output");
-                        continue;
-                    }    
-                    if(!Switche["min"].is<unsigned int>() || !Switche["max"].is<unsigned int>()){
-                        err.add("Min or Max value not defined");
+                        logMessage(Switches,lErr,"pin not usable as pwm");
                         continue;
                     }
-                    propertyStruct.minValue = Switche["min"];
-                    propertyStruct.maxValue = Switche["max"];
-
+                    propertyStruct.minValue = 0;
+                    propertyStruct.maxValue = 4096;   
                 } else if ( propertyStruct.type == SwTypeServo ) {
                     Serial.println("New Servo");
                     propertyStruct.pin = Switche["pin"].as<unsigned int>();
                     if(!pinUsableAsOutput(propertyStruct.pin)){
                         err.add("pin not usable as servo output");
+                        logMessage(Switches,lErr,"pin not usable as servo");
                         continue;
                     }    
                     if(!Switche["min"].is<unsigned int>() || !Switche["max"].is<unsigned int>()){
                         err.add("Min or Max value not defined");
+                        logMessage(Switches,lErr,"Min or Max value not defined");
                         continue;
                     }
                     propertyStruct.minValue = Switche["min"];
                     propertyStruct.maxValue = Switche["max"];
 
                 } else {
+                    
                     Serial.println("not implemented");
+                    logMessage(Switches,lErr,"Type not implemented");
+                    continue;
                 }
 
                 const char* jsonName = Switche["name"].as<const char*>();
@@ -199,27 +211,42 @@ void switchWebServer(){
                 const char* jsonDesc = Switche["desc"].as<const char*>();
                 strncpy(propertyStruct.Description, jsonDesc, sizeof(propertyStruct.Description) - 1);
                 propertyStruct.Description[sizeof(propertyStruct.Description) - 1] = '\0';
-                
-                Serial.println(count);
-                Serial.print("Nome: ");
-                Serial.println(propertyStruct.Name);
-                Serial.print("Descrizione: ");
-                Serial.println(propertyStruct.Description);
-                Serial.print("Tipo: ");
-                Serial.println(propertyStruct.type);
-                Serial.print("Pin: ");
-                Serial.println(propertyStruct.pin);
                 Switch.config.tmp[count].property = propertyStruct;
                 count +=1;
             }
 
+            //do I need to reboot?
+            for (int i = 0; i < _MAX_SWITCH_ID_; i++)
+            {
+                if(Switch.data[i].property.type != Switch.config.tmp[i].property.type ||
+                    Switch.data[i].property.pin != Switch.config.tmp[i].property.pin)
+                {
+                    reboot = true;
+                }
+            }
+            
+            doc["reboot"] = reboot;
+
+            if(!reboot){
+                for (int i = 0; i < _MAX_SWITCH_ID_; i++)
+                {
+                    /*just name, desc, min and max*/
+                    strncpy(Switch.data[i].property.Name, Switch.config.tmp[i].property.Name, sizeof(Switch.data[i].property.Name) - 1);
+                    Switch.data[i].property.Name[sizeof(Switch.data[i].property.Name) - 1] = '\0';
+                    strncpy(Switch.data[i].property.Description, Switch.config.tmp[i].property.Description, sizeof(Switch.data[i].property.Description) - 1);
+                    Switch.data[i].property.Description[sizeof(Switch.data[i].property.Description) - 1] = '\0';
+                    Switch.data[i].property.minValue = Switch.config.tmp[i].property.minValue;
+                    Switch.data[i].property.maxValue = Switch.config.tmp[i].property.maxValue;
+                }
+            }
 
             if(!error){
+                logMessage(Switches,lInfo,"Config don't have any errors, I'm going to store it");
                 Switch.config.save.execute = true;
             } else {
+                logMessage(Switches,lErr,"Config got errors, I'm NOT going to store it");
                 response->setCode(500);
             }
-            doc["reboot"] = reboot;
 
             response->setLength();
             request->send(response);
@@ -227,7 +254,7 @@ void switchWebServer(){
 
     server.addHandler(switchConfigHandler);
 
-    server.serveStatic("/switch/switchconfig.txt", LittleFS, "/cfg/switchconfig.txt");
+    server.serveStatic("/switch/switchconfig.txt", LittleFS, "/cfg/switchcfg.txt");
 }
 
 #endif

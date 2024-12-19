@@ -55,6 +55,7 @@ void setSwitchValue(){
                 break;
             case SwTypeDOutput:
                 digitalWrite(Switch.data[i].property.pin,Switch.data[i].command.boValue);
+                logMessageFormatted(Switches,lInfo,"DO Switch Command Executed on ID %d",i);
                 break;
         //    case SwTypeAOutput:
         //        value = map(analogRead(Switch.data[i].property.pin),0,4095,Switch.data[i].property.minValue,Switch.data[i].property.maxValue);
@@ -63,16 +64,18 @@ void setSwitchValue(){
         //       break;
             case SwTypePWM:
                 ledcWrite(Switch.data[i].property.pwmch,Switch.data[i].command.intValue);
+                logMessageFormatted(Switches,lInfo,"PWM Switch Command Executed on ID %d with val: %d",i,Switch.data[i].command.intValue);
                 break;
             case SwTypeServo:
+                logMessageFormatted(Switches,lInfo,"Servo Switch Command Executed on ID %d with val: %d",i,Switch.data[i].command.intValue);
                 value = map(Switch.data[i].command.intValue,Switch.data[i].property.minValue,Switch.data[i].property.maxValue,0,4096);
                 ledcWrite(Switch.data[i].property.pwmch,value);
                 break;
             default:
-                logMessage("Trying to command a non writable Switch",3,0);
+                logMessage(Switches,lErr,"Trying to command a non writable Switch");
                 break;
         }
-        logMessage("Switch Command Executed",3,2);
+        
         Switch.data[i].command.execute = false;
 
     }

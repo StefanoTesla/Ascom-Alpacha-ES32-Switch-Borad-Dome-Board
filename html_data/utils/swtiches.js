@@ -172,6 +172,7 @@ export function switches(){
         body: JSON.stringify(this.swi)
       }).then(res => {
         // Controllo dello stato HTTP
+
         if (!res.ok) {
             // Analizzo la risposta JSON anche per errori 500
             return res.json().then(errorResponse => {
@@ -181,6 +182,8 @@ export function switches(){
         return res.json();
     })
     .then(res => {
+        this.reboot.switch = res.reboot
+        this.modal = res.reboot 
         this.addToast({ type: "success", text: this.text.gen.configSaved, time:3 });
     })
     .catch(err => {

@@ -4,7 +4,7 @@
 
 void saveDomeConfig(){
 
-    File file = LittleFS.open("/cfg/domeconfig.txt", FILE_WRITE);
+    File file = LittleFS.open("/cfg/domecfg.txt", FILE_WRITE);
     if (!file) {
         Serial.println("Error during open Dome config file");
         Dome.config.Save.execute = false;
@@ -43,7 +43,7 @@ void saveDomeConfig(){
 void initDomeConfig(){
     Serial.println("INIT: Reading Dome config...");
     JsonDocument doc;
-    File file = LittleFS.open("/cfg/domeconfig.txt", FILE_READ);
+    File file = LittleFS.open("/cfg/domecfg.txt", FILE_READ);
 
     if (!file) {
         Serial.println("[ERR] Init: Reading Dome config error");

@@ -106,7 +106,6 @@ bool commonValidateInputPin(unsigned int pin){
     for(i=0;i<7;i++){
 
         if(pin == unusable[i]){
-            Serial.println(unusable[i]);
             return false;
         }
     }
@@ -128,7 +127,6 @@ bool commonValidateOutputPin(unsigned int pin){
     for(i=0;i<7;i++){
 
         if(pin == unusable[i]){
-            Serial.println(unusable[i]);
             return false;
         }
     }

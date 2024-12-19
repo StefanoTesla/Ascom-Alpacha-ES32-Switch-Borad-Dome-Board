@@ -70,6 +70,7 @@
 		"actualValue": "Valore Attuale:",
 		"locale": "Lingua",
 		"cmdAck": "Comando ricevuto",
+		"cmdRefused": "Comando Rifiutato",
 		"wifi": "WiFi",
 		"ipAddress": "Indirizzo IP:",
 		"subnet": "Sotto Rete:",

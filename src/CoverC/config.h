@@ -3,7 +3,7 @@
 
 void saveCoverCConfig(){
 
-    File file = LittleFS.open("/cfg/ccconfig.txt", FILE_WRITE);
+    File file = LittleFS.open("/cfg/cccfg.txt", FILE_WRITE);
 
     if (!file) {
         Serial.println("Error during open CoverCalibration config file");
@@ -31,7 +31,7 @@ void saveCoverCConfig(){
 void initCoverCConfig(){
     Serial.println("INIT: Reading cover calibrator config...");
     JsonDocument doc;
-    File file = LittleFS.open("/cfg/ccconfig.txt", FILE_READ);
+    File file = LittleFS.open("/cfg/cccfg.txt", FILE_READ);
     if (!file) {
         Serial.println("[ERR] INIT: Reading Cover Calibrator config error");
         return;
