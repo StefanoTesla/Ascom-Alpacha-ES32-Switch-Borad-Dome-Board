@@ -8,55 +8,81 @@
 //
 void domeInputRead(){
     int status = 0;
+    bool open;
+    bool close;
 
+
+    open = Dome.config.data.inOpen.type ? !digitalRead(Dome.config.data.inOpen.pin) : digitalRead(Dome.config.data.inOpen.pin);
+    close = Dome.config.data.inOpen.type ? !digitalRead(Dome.config.data.inClose.pin) : digitalRead(Dome.config.data.inClose.pin);
+  
     //debounce open signal
-    if (digitalRead(Dome.config.data.inOpen.pin)){
-      if(!Dome.config.data.inOpen.reInput){
-        Dome.config.data.inOpen._ackOn = Global.actualMillis;
-        Dome.config.data.inOpen.reInput = true;
-        Dome.config.data.inOpen.feInput = false;
-      } else {
-        if(Global.actualMillis - Dome.config.data.inOpen._ackOn > Dome.config.data.inOpen.delayON){
-          Dome.Shutter.inOpen = true;
-        } 
+    if (open){
+      /* reset the off debounce data */
+      Dome.config.data.inOpen.feInput = false;
+      Dome.config.data.inOpen._ackOff=0;
+      if(!Dome.Shutter.inOpen){
+        if(!Dome.config.data.inOpen.reInput){
+          Dome.config.data.inOpen._ackOn = Global.actualMillis;
+          Dome.config.data.inOpen.reInput = true;
+          Dome.config.data.inOpen.feInput = false;
+        } else {
+          if(Global.actualMillis - Dome.config.data.inOpen._ackOn > Dome.config.data.inOpen.delayON){
+            Dome.Shutter.inOpen = true;
+            logMessage("Got Open input signal",1,2);
+          }
+        }
       }
     } else {
-      if(!Dome.config.data.inOpen.feInput){
-        Dome.config.data.inOpen._ackOff = Global.actualMillis;
-        Dome.config.data.inOpen.feInput = true;
-        Dome.config.data.inOpen.reInput = false;
-      } else {
-        if(Global.actualMillis- Dome.config.data.inOpen._ackOff > Dome.config.data.inOpen.delayOFF){
-          Dome.Shutter.inOpen = false;
-        } 
+      if(Dome.Shutter.inOpen){
+        if(!Dome.config.data.inOpen.feInput){
+          Dome.config.data.inOpen._ackOff = Global.actualMillis;
+          Dome.config.data.inOpen.feInput = true;
+          /* reset the on debounce data */
+          Dome.config.data.inOpen._ackOn = 0;
+          Dome.config.data.inOpen.reInput = false;
+        } else {
+          if(Global.actualMillis- Dome.config.data.inOpen._ackOff > Dome.config.data.inOpen.delayOFF){
+            Dome.Shutter.inOpen = false;
+            logMessage("Lost Open input signal",1,2);
+          } 
+        }
       }
     }
+
 
     //debounce close signal
-    if (digitalRead(Dome.config.data.inClose.pin)){
-      if(!Dome.config.data.inClose.reInput){
-        Dome.config.data.inClose._ackOn = Global.actualMillis;
-        Dome.config.data.inClose.reInput = true;
-        Dome.config.data.inClose.feInput = false;
-      } else {
-        if(Global.actualMillis - Dome.config.data.inClose._ackOn > Dome.config.data.inClose.delayON){
-          Dome.Shutter.inClose = true;
-        } 
+    if (close){
+      /* reset the off debounce data */
+      Dome.config.data.inClose.feInput = false;
+      Dome.config.data.inClose._ackOff=0;
+      if(!Dome.Shutter.inClose){
+        if(!Dome.config.data.inClose.reInput){
+          Dome.config.data.inClose._ackOn = Global.actualMillis;
+          Dome.config.data.inClose.reInput = true;
+          Dome.config.data.inClose.feInput = false;
+        } else {
+          if(Global.actualMillis - Dome.config.data.inClose._ackOn > Dome.config.data.inClose.delayON){
+            Dome.Shutter.inClose = true;
+            logMessage("Got Close input signal",1,2);
+          }
+        }
       }
     } else {
-      if(!Dome.config.data.inClose.feInput){
-        Dome.config.data.inClose._ackOff = Global.actualMillis;
-        Dome.config.data.inClose.feInput = true;
-        Dome.config.data.inClose.reInput = false;
-      } else {
-        if(Global.actualMillis- Dome.config.data.inClose._ackOff > Dome.config.data.inClose.delayOFF){
-          Dome.Shutter.inClose = false;
-        } 
+      if(Dome.Shutter.inClose){
+        if(!Dome.config.data.inClose.feInput){
+          Dome.config.data.inClose._ackOff = Global.actualMillis;
+          Dome.config.data.inClose.feInput = true;
+          /* reset the on debounce data */
+          Dome.config.data.inClose._ackOn = 0;
+          Dome.config.data.inClose.reInput = false;
+        } else {
+          if(Global.actualMillis- Dome.config.data.inClose._ackOff > Dome.config.data.inClose.delayOFF){
+            Dome.Shutter.inClose = false;
+            logMessage("Lost Close input signal",1,2);
+          } 
+        }
       }
     }
-
-    if(Dome.config.data.inOpen.type){ Dome.Shutter.inOpen = !Dome.Shutter.inOpen; }
-    if(Dome.config.data.inClose.type){ Dome.Shutter.inClose = !Dome.Shutter.inClose; }
 
     status = (Dome.Shutter.inClose ? 1 : 0) + (Dome.Shutter.inOpen ? 2 : 0);
 
@@ -94,6 +120,7 @@ void domeAutoClose(){
 
   if (Dome.Shutter.input == ShInputOnlyOpen && Dome.config.data.enAutoClose){
     if ((Global.actualMillis - (Dome.Shutter.lastCommunicationMillis)) > (Dome.config.data.autoCloseTimeOut * 1000 * 60)) {
+          logMessage("Autoclosing command",1,0);
           Dome.Shutter.command = ShCommandClose;
         }
 
@@ -112,6 +139,7 @@ void shutterCycle(){
   }
 
   if (Dome.Shutter.command == ShCommandHalt and Dome.Shutter.Cycle < 100) {
+    logMessage("HALT request",1,0);
     Dome.Shutter.Cycle = 100;
   }
 
@@ -120,9 +148,11 @@ void shutterCycle(){
             Dome.Shutter.MoveRetry = false;
 
           if (Dome.Shutter.command == ShCommandOpen && Dome.Shutter.input != ShInputOnlyOpen) {
+            logMessage("Opening request",1,2);
             Dome.Shutter.status = ShStatusOpening;
             Dome.Shutter.Cycle = 10;
           } else if(Dome.Shutter.command == ShCommandClose && Dome.Shutter.input != ShInputOnlyClose){
+            logMessage("Closing request",1,2);
             Dome.Shutter.status = ShStatusClosing;
             Dome.Shutter.Cycle = 10;
           } else {
@@ -136,7 +166,7 @@ void shutterCycle(){
             //Open and close cycle are identical, I just hope to reach the right
             //Pulse to start to the motor, ack millis for time out and
             Dome.Shutter.timeOutAck = Global.actualMillis;
-
+            logMessage("Cycle:10",1,3);
             #ifdef GATE_BOARD
               shutterOutput(true,false);
             #else
@@ -150,6 +180,7 @@ void shutterCycle(){
     case 11:  //Take signal end to loose signal, for two relay I send the command until the end
             if ((Global.actualMillis - Dome.Shutter.timeOutAck) > 1000) { //Wait 1second anyway
               if (Dome.Shutter.input == ShInputAll || Dome.Shutter.input == ShInputNoOne) {
+                logMessage("Cycle:11",1,3);
                 #ifdef GATE_BOARD
                   shutterOutput(false,false);
                 #endif
@@ -162,6 +193,7 @@ void shutterCycle(){
             // Check Open Cycle
             if (Dome.Shutter.command == ShCommandOpen) {
               if (Dome.Shutter.input == ShInputOnlyOpen) { //As aspected direction!
+                logMessage("Cycle:12, Shutter is open",1,3);
                 shutterOutput(false,false);
                 Dome.Shutter.status = ShStatusOpen;
                 Dome.Shutter.Cycle++;
@@ -171,6 +203,7 @@ void shutterCycle(){
               #ifdef GATE_BOARD
               if (Dome.Shutter.input == ShInputOnlyClose) { //OMG wrong direction!
                 if (Dome.Shutter.MoveRetry == false) {
+                  logMessage("Cycle:12, Shutter eas axpected open, close signal recived",1,0);
                   Dome.Shutter.MoveRetry = true; // just one retry
                   Dome.Shutter.Cycle = 20;
                 } else {
@@ -183,6 +216,7 @@ void shutterCycle(){
             // Check Close Cycle
             if (Dome.Shutter.command == ShCommandClose) { //OMG wrong direction!
               if (Dome.Shutter.input == ShInputOnlyClose) { //As aspected direction!
+                logMessage("Cycle:12, Shutter is close",1,3);
                 shutterOutput(false,false);
                 Dome.Shutter.status = ShStatusClose;
                 Dome.Shutter.Cycle++;
@@ -190,6 +224,7 @@ void shutterCycle(){
               #ifdef GATE_BOARD
               if (Dome.Shutter.input == ShInputOnlyClose) {
                 if (Dome.Shutter.MoveRetry == false) {
+                  logMessage("Cycle:12, Shutter was axpected close, open signal recived",1,0);
                   Dome.Shutter.MoveRetry = true; // just one retry
                   Dome.Shutter.Cycle = 20;
                 } else {
@@ -206,11 +241,13 @@ void shutterCycle(){
             Dome.Shutter.MoveRetry = false;
             Dome.Shutter.command = ShCommandIdle;
             Dome.Shutter.Cycle = 0;
+            logMessage("Cycle:13, Shutter cycle reset",1,3);
             break;
 
 
 //PING PONG - HALT ASPETTO E RIBADISCO LO START
     case 20: 
+            logMessage("Cycle:20, Shutter ping pong cycle, HALT Signal send...",1,0);
             Dome.Shutter.timeOutAck = Global.actualMillis;
             #ifdef GATE_BOARD
               shutterOutput(false,true);
@@ -222,6 +259,7 @@ void shutterCycle(){
 
     case 21:
             if ((Global.actualMillis - Dome.Shutter.timeOutAck ) > 1000) { //Wait a second
+              logMessage("Cycle:21, Reset Halt signal and wait for 5 sec",1,0);
               shutterOutput(false,false); 
               Dome.Shutter.timeOutAck = Global.actualMillis;
               Dome.Shutter.Cycle++;
@@ -230,6 +268,7 @@ void shutterCycle(){
 
     case 22:
             if ((Global.actualMillis - Dome.Shutter.timeOutAck) > 5000) { //Wait 5 seconds and restart movement
+              logMessage("Cycle:22, Retry the moviment",1,0);
               Dome.Shutter.Cycle = 10;
             }        
             break;
@@ -239,7 +278,7 @@ void shutterCycle(){
     case 100: //halt command for 1sec
             Dome.Shutter.timeOutAck = Global.actualMillis;
             Dome.Shutter.status = ShStatusError;
-
+            logMessage("Cycle:100, HALT",1,0);
             #ifdef GATE_BOARD
               shutterOutput(false,true);
             #else
@@ -249,22 +288,21 @@ void shutterCycle(){
             break;
 
     case 101: //halt command for 1sec
-            
             if ((Global.actualMillis - Dome.Shutter.timeOutAck) > 1000) { //Setting Output for 1sec
               shutterOutput(false,false);
-              Serial.println("DOME: HALT CYCLE 101");
               Dome.Shutter.Cycle++;
             }
             break;
 
     case 102:
+            logMessage("Cycle:102, Reset cycle",1,0);
             Dome.Shutter.command = ShCommandIdle;
             Dome.Shutter.Cycle = 0;
             Dome.Shutter.MoveRetry = false;
             break;
 
     default:
-        Serial.println("DOME: CYCLE OVERFLOW");
+            logMessage("Cycle:xxx, Switch Overflow",1,0);
             break;
   }
 }
@@ -288,6 +326,7 @@ void domeLoop() {
   if (Dome.Shutter.Cycle >= 11 && Dome.Shutter.Cycle <= 12) {
     if ((Global.actualMillis - Dome.Shutter.timeOutAck) > Dome.config.data.movingTimeOut) { //input error I wait 10 sec. before done command
       Serial.println("DOME: SHUTTER TIMEOUT");
+      logMessage("HALT COMMAND, Shutter timeout",1,0);
       Dome.Shutter.command = ShCommandHalt;  //Timeout, HALT
     }
   }

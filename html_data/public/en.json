@@ -1,108 +1,131 @@
 {
-	"menu":{
-		"home": "HOME",
-		"setting": "SETTING"
+	"menu": {
+	  "home": "HOME",
+	  "setting": "SETTING"
 	},
-	"switch":{
-		"title":"switch"
+	"switch": {
+	  "title": "switch",
+	  "name": "Name:",
+	  "description": "Description:",
+	  "typeEnum": {
+		"0": "Not used",
+		"1": "Digital Input",
+		"2": "Analog Input",
+		"3": "Digital Output",
+		"4": "PWM Output",
+		"5": "Servo Output",
+		"6": "Analog Output"
+	  }
 	},
-	"dome":{
-		"title":"Dome",
-		"input":"Inputs status",
-		"roofState": "Roof status: ",
-		"actualCommand": "Actual Command:",
-		"lastCommand":"Last command:",
-		"shutterState":{
-			"open": "Open",
-			"closed": "Close",
-			"opening": "Opening",
-			"closing": "Closing",
-			"error": "Error"
+	"dome": {
+	  "title": "Dome",
+	  "input": "Inputs status",
+	  "roofState": "Roof status: ",
+	  "actualCommand": "Actual Command:",
+	  "lastCommand": "Last command:",
+	  "shutterState": {
+		"open": "Open",
+		"closed": "Close",
+		"opening": "Opening",
+		"closing": "Closing",
+		"error": "Error"
+	  },
+	  "shutterCommand": {
+		"idle": "No Command",
+		"open": "Opening",
+		"close": "Closing",
+		"halt": "HALT"
+	  }
+	},
+	"coverC": {
+	  "calibrator": "Flat Panel",
+	  "cover": "Cover",
+	  "coverState": "Cover Status: ",
+	  "coverEnum": {
+		"notPresent": "Not present",
+		"close": "Close",
+		"moving": "Moving",
+		"open": "Open",
+		"unknow": "Unknown",
+		"error": "Error"
+	  }
+	},
+	"gen": {
+	  "opened": "open",
+	  "closed": "close",
+	  "open": "open",
+	  "close": "close",
+	  "halt": "stop",
+	  "pin": "GPIO:",
+	  "type": "Type:",
+	  "outputs": "Outputs",
+	  "loadFromBoard": "RESTORE",
+	  "downloadFile": "DOWNLOAD FILE",
+	  "save": "SAVE",
+	  "enable": "Enable:",
+	  "powerOn": "power on",
+	  "powerOff": "power off",
+	  "actualPos": "Actual position:",
+	  "actualValue": "Actual value:",
+	  "locale": "Language",
+	  "cmdAck": "Command received",
+	  "wifi": "WiFi",
+	  "ipAddress": "IP Address:",
+	  "subnet": "Subnet:",
+	  "staticIp": "Static IP address:",
+	  "waitToReconnect": "Waiting to reconnect:",
+	  "warningIP": "Warning, simple validation is being performed; in case of error, it will be impossible to reach the board.",
+	  "configSaved": "Configuration Saved",
+	  "utility": "Utility",
+	  "reboot": "REBOOT BOARD",
+	  "wifireset": "REMOVE WIFI SETTINGS"
+	},
+	"setting": {
+	  "dome": {
+		"inOpen": "Open Input",
+		"inClose": "Close Input",
+		"onDelay": "Activation Delay:",
+		"offDelay": "Deactivation Delay:",
+		"outStart": "GPIO Start:",
+		"outHalt": "GPIO HALT:",
+		"outOpen": "GPIO Opening:",
+		"outClose": "GPIO Closing:",
+		"timeout": "Timeout",
+		"autoClose": "Automatic Closing",
+		"timeOutMoviment": "Movement Timeout:",
+		"autoclosewarning1": "Warning, read carefully before enabling.",
+		"autoclosewarning2": "This option automatically closes the roof if the roof is open AND WiFi is connected AND there is no communication with the board (concerning the DOME).",
+		"autoclosewarning3": "For example, in the case of a temporary power outage, once the power is restored and possibly the PC is turned off or software doesn't restart, it will wait for the set minutes, after which the roof will be closed, REGARDLESS of the equipment (telescope) state.",
+		"autoclosewarning4": "In case of roof maintenance, you must keep the browser open on the main page to prevent automatic closing, or better yet, disable this function.",
+		"autoclosewarning5": "By enabling this feature, you confirm that you have read and understood the risks that this function may pose to you and your equipment.",
+		"autoCloseEn": "Enable Automatic Closing:",
+		"autoCloseMin": "Close After:"
+	  },
+	  "coverC": {
+		"calibrator": {
+		  "calibrator": "Flat Panel"
 		},
-		"shutterCommand":{
-			"idle": "No Command",
-			"open": "Opening",
-			"close": "Closing",
-			"halt": "HALT"
-		}
-	},
-	"coverC":{
-		"calibrator" :"Flat Panel",
-		"cover": "Cover",
-		"coverState": "Cover Status: ",
-		"coverEnum":{
-			"notPresent": "Not present",
-			"close": "Close",
-			"moving": "Moving",
-			"open": "Open",
-			"unknow": "Unknow",
-			"error" : "Error"
-		}
-	},
-	"gen":{
-		"opened":"open",
-		"closed":"close",
-		"open" : "open",
-		"close" : "close",
-		"halt" : "stop",
-		"pin" : "GPIO:",
-		"type": "Tipo:",
-		"outputs": "Outputs",
-		"loadFromBoard": "RIPRISTINA",
-		"downloadFile": "DOWNLOAD FILE",
-		"save":"SAVE",
-		"enable": "Enable:",
-		"powerOn": "power on",
-		"powerOff": "power off",
-		"actualPos": "Actual position:",
-		"actualValue": "Actual value:",
-		"locale": "Language",
-		"cmdAck": "Command recived"
-	},
-
-	"setting":{
-		"dome":{
-			"inOpen": "Open Input",
-			"inClose": "Close Input",
-			"onDelay": "Activation Delay:",
-			"offDelay": "Disactivation Delay:",
-			"outStart": "GPIO Start:",
-			"outHalt": "GPIO HALT:",
-			"outOpen": "GPIO Opening:",
-			"outClose": "GPIO Closing:",
-			"timeout": "Timeout",
-			"autoClose": "Automatic Closing",
-			"timeOutMoviment" : "Moving Timeout:",
-			"autoclosewarning1": "Attenzione, leggere attentamente prima di attivarla.",
-			"autoclosewarning2": "Questa opzione chiude il tetto in automatico se il tetto è aperto E il wifi è connesso E non c'è nessuna comunicazione con la scheda (riguardante la CUPOLA)",
-			"autoclosewarning3": "Ad esempio, nel caso di blackout temporaneo, una volta che ritorna la corrente, e probabilmente il PC rimane spento o non si riavviano i software per gestire la sequenza, aspetterà i minuti impostati, dopo di che, il tetto verrà chiuso, INDIPENDENTEMENTE dallo stato dell'attrezzatura (telescopio).",
-			"autoclosewarning4": "In caso di manutenzione al tetto, sarà necessario mantenere il browser aperto sulla pagina principale, per evitare la chiusura automatica, o ancora meglio disattivare questa funzione.",
-			"autoclosewarning5": "Attivando questa funzione confermi di aver letto e compreso i rischi che questa funzione può avere per te e la tua attrezzatura.",
-			"autoCloseEn": "Abilitazione Chiusura Automatica:",
-			"autoCloseMin": "Close After:",
-			"configSaved": "Dome configuration saved"
+		"cover": {
+		  "cover": "Cover",
+		  "openDeg": "Open at degrees:",
+		  "closeDeg": "Close at degrees:",
+		  "maxDeg": "Maximum Rotation:",
+		  "movingTime": "Movement Time:"
 		},
-		"coverC":{
-			"calibrator":{
-				"calibrator": "Flat Panel"
-			},
-			"cover":{
-				"cover": "Cover",
-				"openDeg": "Open at degrees:",
-				"closeDeg": "Close at degrees:",
-				"maxDeg": "Maximum Rotation:",
-				"movingTime": "Moving Time:"
-			},
-			"configSaved": "Cover Calibrator configuration saved"
-		}
+		"configSaved": "Cover Calibrator configuration saved"
+	  },
+	  "board": {
+		"configSaved": "Board configuration saved"
+	  }
 	},
-	"errors":{
-		"noUsableAsInput" : "not usable as input",
-		"noUsableAsOutput" : "not usable as output"
+	"errors": {
+	  "noUsableAsInput": "not usable as input",
+	  "noUsableAsOutput": "not usable as output"
 	},
-	"pwm":{
-		"0": "Not initialized",
-		"1": "PWM",
-		"2": "Servo"
-	}	
-}
+	"pwm": {
+	  "0": "Not initialized",
+	  "1": "PWM",
+	  "2": "Servo"
+	}
+  }
+  

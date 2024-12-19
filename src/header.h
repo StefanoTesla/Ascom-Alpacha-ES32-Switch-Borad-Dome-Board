@@ -333,3 +333,8 @@ void printLEDChannelStatus(){
   }
   
 }
+
+void logMessage(const String& message, int machine, int type) {
+  // Invia il messaggio a tutti i client connessi
+  ws.textAll(String(type)+"#"+String(machine)+"#"+message);
+}

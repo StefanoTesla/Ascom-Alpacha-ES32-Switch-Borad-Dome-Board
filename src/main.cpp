@@ -9,6 +9,7 @@
 
 #include "libraries.h"
 
+AsyncWebSocket ws("/ws");
 AsyncWebServer server(80);
 AsyncWebServer alpaca(ALPACA_PORT);
 
@@ -24,13 +25,9 @@ AsyncWebServer alpaca(ALPACA_PORT);
 #include "Switch/header.h"
 #endif
 
-
-
 #include "Alpaca/middleware.h"
 #include "Alpaca/common.h"
 #include "Alpaca/apiManage.h"
-
-
 
 #ifdef DOME
 #include "Dome/main.h"
@@ -50,6 +47,7 @@ AsyncUDP udp;
 
 #include "Alpaca/discovery.h"
 
+
 void setup() {
   Serial.begin(115200);
   
@@ -62,10 +60,9 @@ void setup() {
   
   AsyncWiFiManager wifiManager(&server,&dns);
   wifiManager.autoConnect("TeslaBoard");
+  server.addHandler(&ws);
   //start alpaca discovery
   alpacaDiscovery(udp);
-  
-
   AlpacaManager();
   #ifdef DOME
     domeRequestHandler();
@@ -74,7 +71,7 @@ void setup() {
     coverCalibratorRequestHandler();
   #endif
   #ifdef SWITCH
-  switchRequestHandler();
+    switchRequestHandler();
   #endif
   
   boardWebServer();

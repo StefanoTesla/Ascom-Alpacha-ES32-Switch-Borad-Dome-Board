@@ -69,8 +69,10 @@ void setSwitchValue(){
                 ledcWrite(Switch.data[i].property.pwmch,value);
                 break;
             default:
+                logMessage("Trying to command a non writable Switch",3,0);
                 break;
         }
+        logMessage("Switch Command Executed",3,2);
         Switch.data[i].command.execute = false;
 
     }

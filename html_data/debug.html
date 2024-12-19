@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 Log Viewer</title>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      color: #333;
+    }
+    #log {
+      width: 90%;
+      height: 70%;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #log p {
+      margin: 0;
+      padding: 5px;
+      font-size: 14px;
+      color: #555;
+    }
+    #log p.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP32 Log Viewer</h1>
+  <div x-data="logViewer()" id="log">
+    <!-- Ciclo sui log -->
+    <template x-for="log in logs" :key="log.id">
+      <p :class="log.type" x-text="log.message"></p>
+    </template>
+  </div>
+
+  <script>
+    function logViewer() {
+      return {
+        logs: [],
+        socket: null,
+        nextId: 0,
+
+        // Metodo per aggiungere un log
+        addLog(message, type = 'info', machine = '0') {
+          switch (parseInt(type)) {
+            case 0:
+              type = 'error'
+              break;
+
+            case 1:
+              type = 'warning'
+              break;
+            case 2:
+              type = 'info'
+              break;
+            case 3:
+              type = 'debug'
+              break;
+
+            default:
+              type = 'info'
+              break;
+          }
+
+          switch (parseInt(machine)) {
+            case 0:
+              machine = 'Board'
+              break;
+            case 1:
+              machine = 'Dome'
+              break;
+            case 2:
+              machine = 'CoverC'
+              break;
+            case 3:
+              machine = 'Switch'
+              break;
+            
+            default:
+              machine = ''
+              break;
+          }
+
+          message = "[" + machine +"] " + message
+          this.logs.push({ id: this.nextId++, message, type });
+
+          // Mantieni visibile l'ultimo messaggio
+          this.$nextTick(() => {
+            const logDiv = document.getElementById('log');
+            logDiv.scrollTop = logDiv.scrollHeight;
+          });
+        },
+
+        // Inizializza il WebSocket
+        init() {
+          //this.socket = new WebSocket(`ws://${window.location.hostname}/ws`);
+          this.socket = new WebSocket(`ws://192.168.123.235/ws`);
+          this.socket.onopen = () => {
+            this.addLog('Connesso al WebSocket.', 0,5);
+          };
+
+          this.socket.onmessage = (event) => {
+            const parts = event.data.split('#');
+            this.addLog(parts[2], parts[0], parts[1]);
+          };
+
+          this.socket.onclose = () => {
+            this.addLog('Disconnesso dal WebSocket.', 'error');
+          };
+
+          this.socket.onerror = (error) => {
+            this.addLog('Errore WebSocket.', 'error');
+          };
+        }
+      };
+    }
+  </script>
+</body>
+</html>

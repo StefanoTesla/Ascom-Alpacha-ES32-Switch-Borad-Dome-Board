@@ -17,6 +17,7 @@ void calibratorhandlerloop() {
     }
 
     if(CoverC.command.calibrator.change){
+        logMessage("Calibrator brightness change request",2,2);
         CoverC.command.calibrator.change = false;
         Serial.println(CoverC.command.calibrator.brightness);
         ledcWrite(CoverC.config.calibrator.pwmChannel,CoverC.command.calibrator.brightness);
@@ -24,6 +25,7 @@ void calibratorhandlerloop() {
 }
 
 void setServoAngle(int angle) {
+  logMessage("Cover movement request",2,2);
   int dutyMicros = map(angle, 0, CoverC.config.cover.maxDeg, 544, 2500);
   int dutyValue = map(dutyMicros, 0, 20000, 0, 4095); 
   ledcWrite(CoverC.config.cover.pwmChannel, dutyValue);

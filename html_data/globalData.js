@@ -7,6 +7,7 @@ import { switches } from './utils/swtiches.js'
 
 export default function GlobalData() {
     return {
+        locale:"",
         textLoaded:false,
         exist: {},
         dome:{},
@@ -28,6 +29,7 @@ export default function GlobalData() {
         fetch(ip+'/api/cfg')
         .then(response => response.json())
         .then(data => {
+            this.locale = data.locale
             this.fetchTexts(data.locale);
             this.exist = data.define;
             this.updateData()
