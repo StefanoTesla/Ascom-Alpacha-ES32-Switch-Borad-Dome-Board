@@ -234,14 +234,15 @@ unsigned int setupLedcChannel(unsigned int channel, ledcType type){
       Serial.println("[ERR] INIT: Error during pwm cahnnel setup");
     }
     break;
-  case servo:
+  case servo: 
     if(ledcSetup(channel, 50, 12) > 0){
       return channel;
     } else {
       Serial.println("[ERR] INIT: Error during pwm cahnnel setup");
-    }
+    } 
+    return channel;
     break;
-  
+    
   default:
       return -1;
     break;

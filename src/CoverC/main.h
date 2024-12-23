@@ -3,6 +3,7 @@
 
 #include "config.h"
 
+
 void calibratorhandlerloop() {
 
     if(!CoverC.config.calibrator.present){
@@ -24,11 +25,19 @@ void calibratorhandlerloop() {
     }
 }
 
-void setServoAngle(int angle) {
+void setServoAngle(int angle,unsigned int time) {
   //logMessageFormatted(coverc,lInfo,"Cover moved to: %d", angle);
   int dutyMicros = map(angle, 0, CoverC.config.cover.maxDeg, 544, 2500);
-  int dutyValue = map(dutyMicros, 0, 20000, 0, 4095); 
-  ledcWrite(CoverC.config.cover.pwmChannel, dutyValue);
+  int dutyValue = map(dutyMicros, 0, 20000, 0, 4095);
+  ledc_channel_t ledcChannel = static_cast<ledc_channel_t>(0);
+  esp_err_t fade_in_status = ledc_set_fade_with_time(LEDC_LOW_SPEED_MODE, ledcChannel, dutyValue, time);
+  if (fade_in_status == ESP_OK){
+    ledc_fade_start(LEDC_LOW_SPEED_MODE, ledcChannel, LEDC_FADE_NO_WAIT);
+  } else {
+    Serial.println("ERRORE");
+  }
+  
+  //ledcWrite(CoverC.config.cover.pwmChannel, dutyValue);
 }
 
 
@@ -39,10 +48,16 @@ int dutyToAngle(int duty) {
 
 void coverCycle(){
   int increment;
-  CoverC.status.cover.angle = dutyToAngle(ledcRead(CoverC.config.cover.pwmChannel));
+  CoverC.status.cover.angle = dutyToAngle(ledc_get_duty(LEDC_LOW_SPEED_MODE, static_cast<ledc_channel_t>(0)));
+      if(Global.pulse.second.pulse){
     
+  logMessageFormatted(coverc,lInfo,"Servo is at: %d the status is: %d", CoverC.status.cover.angle, CoverC.status.cover.cycle);
+      }
+
   switch (CoverC.status.cover.cycle){
     case 0:
+
+    
       if (CoverC.status.cover.angle == CoverC.config.cover.closeDeg){
         CoverC.status.cover.status = CoverStatusClose;
       } else if (CoverC.status.cover.angle == CoverC.config.cover.openDeg){
@@ -72,7 +87,7 @@ void coverCycle(){
     case 10:
       logMessage(coverc,lInfo,"Cy:10 Moving from undefined position");
       CoverC.command.cover.move = false;
-      setServoAngle(CoverC.command.cover.angle);
+      setServoAngle(CoverC.command.cover.angle,100);
       CoverC.status.cover.cycle = 11;
       break;
     
@@ -85,91 +100,18 @@ void coverCycle(){
 
     //inc or dec angle?
     case 20:
-      if(CoverC.command.cover.angle > CoverC.status.cover.angle){
-        logMessage(coverc,lInfo,"Cy:20 Moving to an higher position");
-        CoverC.status.cover.cycle = 30;
-      } else if(CoverC.command.cover.angle < CoverC.status.cover.angle ){
-        CoverC.status.cover.cycle = 40;
-        logMessage(coverc,lInfo,"Cy:20 Moving to a lower position");
-      } else {
-        logMessage(coverc,lInfo,"Cy:20 Moviment finish");
-        CoverC.status.cover.cycle = 0;
-      }
+      logMessageFormatted(coverc,lInfo,"Servo is going to: %d with time: %d", CoverC.command.cover.angle, CoverC.config.cover.movingTime);
+      setServoAngle(CoverC.command.cover.angle,CoverC.config.cover.movingTime);
+      CoverC.status.cover.cycle = 21;
       break;
 
-    case 30:
-      increment = (CoverC.config.cover.movingTime / (CoverC.command.cover.angle - CoverC.status.cover.angle)) * 5;
-      if(increment == 0){ increment = 1;}
-
-      CoverC.command.cover.goToAngle = CoverC.status.cover.angle; 
-      Serial.print("30- devo inc ongi: ");
-      Serial.println(increment);
-      CoverC.status.cover.cycle = 31;
-      break;
-
-    case 31:
-      Serial.println(Global.actualMillis);
-      CoverC.command.cover.ackMillis = Global.actualMillis;
-      CoverC.status.cover.cycle = 32;
-      break;
-    case 32:
-      Serial.println("wait");
-      if((Global.actualMillis - CoverC.command.cover.ackMillis) >= increment){
-        CoverC.command.cover.goToAngle = CoverC.command.cover.goToAngle + 5;
-        CoverC.status.cover.cycle = 33;
-      }
-      break;
-
-    case 33:
-      Serial.print("sono a: ");
-      Serial.print(CoverC.status.cover.angle);    
-      Serial.print(" vado a: ");
-      Serial.print(CoverC.command.cover.goToAngle);
-      Serial.print(" dv arr a:");
-      Serial.println(CoverC.command.cover.angle);
-
-    if(CoverC.command.cover.goToAngle < CoverC.command.cover.angle ){
-
-      setServoAngle(CoverC.command.cover.goToAngle);
-      CoverC.status.cover.cycle = 31;
-      Serial.println("increment");
-    } else {
-      Serial.println("arrivato");
-      setServoAngle(CoverC.command.cover.angle);
-      CoverC.status.cover.cycle = 0;
-      CoverC.command.cover.move = false;
-      logMessage(coverc,lInfo,"Cy:33 Moviment finish");
-    }
-      break;
-
-    case 40:
-      increment = (CoverC.config.cover.movingTime / (CoverC.status.cover.angle - CoverC.command.cover.angle));
-      CoverC.status.cover.cycle = 41;
-      break;
-
-    case 41:
-      CoverC.command.cover.ackMillis = Global.actualMillis;
-      CoverC.status.cover.cycle = 42;
-      break;
-
-    case 42:
-      if((Global.actualMillis - CoverC.command.cover.ackMillis) >= increment){
-        CoverC.status.cover.cycle = 43;
-      }
-      break;
-
-    case 43:
-      if((CoverC.status.cover.angle -1) > CoverC.command.cover.angle ){
-          setServoAngle(CoverC.status.cover.angle - 1);
-          CoverC.status.cover.cycle = 41;
-      } else {
-        setServoAngle(CoverC.command.cover.angle);
-        CoverC.status.cover.cycle = 0;
+    case 21:
+      if((Global.actualMillis - CoverC.command.cover.ackMillis) > CoverC.config.cover.movingTime){
+        logMessage(coverc,lInfo,"Cy:11 Moviment finish");
         CoverC.command.cover.move = false;
-        logMessage(coverc,lInfo,"Cy:43 Moviment finish");
+        CoverC.status.cover.cycle = 0;
       }
       break;
-
 
 
     default:

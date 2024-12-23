@@ -8,3 +8,4 @@
 #include <AsyncJson.h>
 #include <ArduinoJson.h>
 #include "LittleFS.h"
+#include "driver/ledc.h"

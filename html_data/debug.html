@@ -106,12 +106,12 @@
           // Mantieni visibile l'ultimo messaggio
           this.$nextTick(() => {
             const logDiv = document.getElementById('log');
-            logDiv.scrollTop = logDiv.scrollHeight;
+           // logDiv.scrollTop = logDiv.scrollHeight;
           });
         },
 
         connect(){
-          this.socket = new WebSocket(`ws://192.168.123.235/ws`);
+          this.socket = new WebSocket(`ws://192.168.1.158/ws`);
         },
 
         // Inizializza il WebSocket
