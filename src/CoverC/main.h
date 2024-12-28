@@ -54,15 +54,13 @@ void coverCycle(){
       
       if(CoverC.status.cover.status != CoverStatusMoving){
         if (CoverC.command.cover.move){
-          CoverC.command.cover.ackMillis = Global.actualMillis;
-
+          CoverC.command.cover.handler.ackMillis = Global.actualMillis;
           if(CoverC.status.cover.status == CoverStatusUnknow){
             CoverC.status.cover.cycle = 10;
-            CoverC.status.cover.status = CoverStatusMoving;
           } else {
             CoverC.status.cover.cycle = 20;
-            CoverC.status.cover.status = CoverStatusMoving;
           }
+          CoverC.status.cover.status = CoverStatusMoving;
         }
       }
 
@@ -71,103 +69,83 @@ void coverCycle(){
     //from unknow angle
     case 10:
       logMessage(coverc,lInfo,"Cy:10 Moving from undefined position");
-      CoverC.command.cover.move = false;
+      
       setServoAngle(CoverC.command.cover.angle);
       CoverC.status.cover.cycle = 11;
       break;
     
     case 11:
-      if((Global.actualMillis - CoverC.command.cover.ackMillis) > CoverC.config.cover.movingTime){
+      if((Global.actualMillis - CoverC.command.cover.handler.ackMillis) > CoverC.config.cover.movingTime){
         logMessage(coverc,lInfo,"Cy:11 Moviment finish");
+        CoverC.command.cover.move = false;
         CoverC.status.cover.cycle = 0;
       }
       break;
 
     //inc or dec angle?
     case 20:
+    if(CoverC.command.cover.angle == CoverC.status.cover.angle){
+      CoverC.status.cover.cycle = 0;
+      CoverC.command.cover.move = false;
+    } else {
+      // get in how many ms I need to do a degree
+      CoverC.command.cover.handler.stepTime = CoverC.config.cover.movingTime / CoverC.config.cover.maxDeg;
+      if( CoverC.command.cover.handler.stepTime == 0) {
+        CoverC.command.cover.handler.stepTime = 1;
+      }
+      logMessageFormatted(coverc,lInfo,"Cy:20 Step time: %d", CoverC.command.cover.handler.stepTime);
+
+      // check if I need to encrease or decrease
       if(CoverC.command.cover.angle > CoverC.status.cover.angle){
         logMessage(coverc,lInfo,"Cy:20 Moving to an higher position");
-        CoverC.status.cover.cycle = 30;
+        CoverC.command.cover.handler.inc = true;
+        
       } else if(CoverC.command.cover.angle < CoverC.status.cover.angle ){
-        CoverC.status.cover.cycle = 40;
         logMessage(coverc,lInfo,"Cy:20 Moving to a lower position");
-      } else {
-        logMessage(coverc,lInfo,"Cy:20 Moviment finish");
-        CoverC.status.cover.cycle = 0;
+        CoverC.command.cover.handler.inc = false;
       }
+
+      // do the magic
+      CoverC.status.cover.cycle = 30;
+
+
+    }
+
       break;
 
     case 30:
-      increment = (CoverC.config.cover.movingTime / (CoverC.command.cover.angle - CoverC.status.cover.angle)) * 5;
-      if(increment == 0){ increment = 1;}
+    if (Global.actualMillis - CoverC.command.cover.handler.ackMillis > CoverC.command.cover.handler.stepTime){
 
-      CoverC.command.cover.goToAngle = CoverC.status.cover.angle; 
-      Serial.print("30- devo inc ongi: ");
-      Serial.println(increment);
-      CoverC.status.cover.cycle = 31;
-      break;
-
-    case 31:
-      Serial.println(Global.actualMillis);
-      CoverC.command.cover.ackMillis = Global.actualMillis;
-      CoverC.status.cover.cycle = 32;
-      break;
-    case 32:
-      Serial.println("wait");
-      if((Global.actualMillis - CoverC.command.cover.ackMillis) >= increment){
-        CoverC.command.cover.goToAngle = CoverC.command.cover.goToAngle + 5;
-        CoverC.status.cover.cycle = 33;
-      }
-      break;
-
-    case 33:
-      Serial.print("sono a: ");
-      Serial.print(CoverC.status.cover.angle);    
-      Serial.print(" vado a: ");
-      Serial.print(CoverC.command.cover.goToAngle);
-      Serial.print(" dv arr a:");
-      Serial.println(CoverC.command.cover.angle);
-
-    if(CoverC.command.cover.goToAngle < CoverC.command.cover.angle ){
-
-      setServoAngle(CoverC.command.cover.goToAngle);
-      CoverC.status.cover.cycle = 31;
-      Serial.println("increment");
-    } else {
-      Serial.println("arrivato");
-      setServoAngle(CoverC.command.cover.angle);
-      CoverC.status.cover.cycle = 0;
-      CoverC.command.cover.move = false;
-      logMessage(coverc,lInfo,"Cy:33 Moviment finish");
-    }
-      break;
-
-    case 40:
-      increment = (CoverC.config.cover.movingTime / (CoverC.status.cover.angle - CoverC.command.cover.angle));
-      CoverC.status.cover.cycle = 41;
-      break;
-
-    case 41:
-      CoverC.command.cover.ackMillis = Global.actualMillis;
-      CoverC.status.cover.cycle = 42;
-      break;
-
-    case 42:
-      if((Global.actualMillis - CoverC.command.cover.ackMillis) >= increment){
-        CoverC.status.cover.cycle = 43;
-      }
-      break;
-
-    case 43:
-      if((CoverC.status.cover.angle -1) > CoverC.command.cover.angle ){
-          setServoAngle(CoverC.status.cover.angle - 1);
-          CoverC.status.cover.cycle = 41;
+      if(CoverC.command.cover.handler.inc){
+        CoverC.command.cover.handler.angle++;
+        CoverC.command.cover.handler.ackMillis = Global.actualMillis;
+        if(CoverC.status.cover.angle >= CoverC.command.cover.angle){
+          setServoAngle(CoverC.command.cover.angle);
+          CoverC.status.cover.cycle = 0;
+          CoverC.command.cover.move = false;
+          logMessage(coverc,lInfo,"Cy:30 finish");
+        } else {
+          setServoAngle(CoverC.command.cover.handler.angle);
+        }
       } else {
-        setServoAngle(CoverC.command.cover.angle);
-        CoverC.status.cover.cycle = 0;
-        CoverC.command.cover.move = false;
-        logMessage(coverc,lInfo,"Cy:43 Moviment finish");
+        CoverC.command.cover.handler.angle--;
+        if(CoverC.command.cover.handler.angle < 0){
+          CoverC.command.cover.handler.angle = 0;
+        }
+        CoverC.command.cover.handler.ackMillis = Global.actualMillis;
+        if(CoverC.status.cover.angle <= CoverC.command.cover.angle ){
+          setServoAngle(CoverC.command.cover.angle);
+          CoverC.status.cover.cycle = 0;
+          CoverC.command.cover.move = false;
+          logMessage(coverc,lInfo,"Cy:30 finish");
+        } else {
+          setServoAngle(CoverC.command.cover.handler.angle);
+        }
       }
+
+      
+    }
+
       break;
 
 

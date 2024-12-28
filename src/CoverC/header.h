@@ -47,11 +47,17 @@ struct calibratorCommand{
   unsigned int brightness; 
 };
 
+struct coverCommandTmp{
+  int angle;
+  unsigned long ackMillis;
+  unsigned long stepTime;
+  bool inc;
+};
+
 struct coverCommand{
   bool move;
   int angle;
-  int goToAngle;
-  unsigned long ackMillis; 
+  coverCommandTmp handler;
 };
 
 struct coverCalibratorsCommand{
