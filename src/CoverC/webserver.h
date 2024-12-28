@@ -198,7 +198,6 @@ void coverWebServer(){
                 err.add("mov time out");
             }
 
-
             if(!error){
                 /* input */
                 CoverC.config.tmpCfg.calibrator.present = calibrator["present"];
@@ -213,8 +212,10 @@ void coverWebServer(){
                 CoverC.config.save.execute = true;
 
                 if(!reboot ){
-                    CoverC.config.calibrator = CoverC.config.tmpCfg.calibrator;
-                    CoverC.config.cover = CoverC.config.tmpCfg.cover;
+                    CoverC.config.cover.maxDeg = CoverC.config.tmpCfg.cover.maxDeg;
+                    CoverC.config.cover.openDeg = CoverC.config.tmpCfg.cover.openDeg;
+                    CoverC.config.cover.closeDeg = CoverC.config.tmpCfg.cover.closeDeg;
+                    CoverC.config.cover.movingTime = CoverC.config.tmpCfg.cover.movingTime;
                 }
             } else {
                 response->setCode(500);
