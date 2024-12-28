@@ -21,8 +21,7 @@ void startupTask(){
     #endif
 
     printLEDChannelStatus();
-    
-    ledc_fade_func_install(0);
+
 }
 
 
