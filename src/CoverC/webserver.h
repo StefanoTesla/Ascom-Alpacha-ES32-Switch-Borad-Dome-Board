@@ -50,9 +50,15 @@ void coverWebServer(){
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
-        doc["execute"] = true;
-        CoverC.command.cover.move = true;
-        CoverC.command.cover.angle = CoverC.config.cover.openDeg;
+        if(CoverC.command.cover.move == false){
+            doc["execute"] = true;
+            CoverC.command.cover.move = true;
+            CoverC.command.cover.angle = CoverC.config.cover.openDeg;
+        } else {
+            doc["execute"] = false;
+            doc["error"] = "Cover is already moving";
+            response->setCode(500);
+        }
 
         response->setLength();
         request->send(response);
@@ -62,9 +68,15 @@ void coverWebServer(){
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
-        doc["execute"] = true;
-        CoverC.command.cover.move = true;
-        CoverC.command.cover.angle = CoverC.config.cover.closeDeg;
+        if(CoverC.command.cover.move == false){
+            doc["execute"] = true;
+            CoverC.command.cover.move = true;
+            CoverC.command.cover.angle = CoverC.config.cover.closeDeg;
+        } else {
+            doc["execute"] = false;
+            doc["error"] = "Cover is already moving";
+            response->setCode(500);
+        }
 
         response->setLength();
         request->send(response);
@@ -99,10 +111,12 @@ void coverWebServer(){
         }
         if(!inRange){
             doc["error"] = "brightness parameter not in range";
+            response->setCode(500);
         }
 
         if(!present){
             doc["error"] = "brightness parameter not found";
+            response->setCode(500);
         }
 
 
