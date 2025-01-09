@@ -63,6 +63,12 @@ void domeWebServer(){
         if(Dome.Shutter.command == ShCommandIdle && Dome.Shutter.status != ShStatusOpen){
             doc["execute"] = true;
             Dome.Shutter.command = ShCommandOpen;
+        } else {
+            if(Dome.Shutter.status == ShStatusOpen){
+                doc["error"] = "ShAlreadyOpen";
+            } else {
+                doc["error"] = "ShAlreadyMoving";
+            }
         }
         
         response->setLength();
@@ -79,6 +85,12 @@ void domeWebServer(){
             doc["execute"] = true;
             Dome.Shutter.command = ShCommandClose;
 
+        } else {
+            if(Dome.Shutter.status == ShStatusClose){
+                doc["error"] = "ShAlreadyClosed";
+            } else {
+                doc["error"] = "ShAlreadyMoving";
+            }
         }
 
         response->setLength();

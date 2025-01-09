@@ -47,6 +47,7 @@ struct wifiIpStruct{
   bool enable = false;
   unsigned int ip[4];
   unsigned int sub[4];
+  unsigned int gw[4];
 };
 
 struct wifiStruct{

@@ -94,6 +94,7 @@ void coverCycle(){
         CoverC.command.cover.handler.stepTime = 1;
       }
       logMessageFormatted(coverc,lInfo,"Cy:20 Step time: %d", CoverC.command.cover.handler.stepTime);
+      logMessageFormatted(coverc,lInfo,"Cy:20 Moving time: %d", CoverC.config.cover.movingTime);
 
       // check if I need to encrease or decrease
       if(CoverC.command.cover.angle > CoverC.status.cover.angle){

@@ -1,7 +1,6 @@
 #ifndef CC_WEBSERVER
 #define CC_WEBSERVER
 
-
 void coverWebServer(){
 
     server.on("/api/coverc/cfg", HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -50,32 +49,39 @@ void coverWebServer(){
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
-        if(CoverC.command.cover.move == false){
+        if(CoverC.command.cover.move == false && CoverC.config.cover.present){
             doc["execute"] = true;
             CoverC.command.cover.move = true;
             CoverC.command.cover.angle = CoverC.config.cover.openDeg;
         } else {
             doc["execute"] = false;
-            doc["error"] = "Cover is already moving";
-            response->setCode(500);
+            if(!CoverC.config.cover.present){
+                doc["error"] = "coverNotPresent";
+            }
+            if(CoverC.command.cover.move == true){
+                doc["error"] = "coverIsMoving";
+            }
         }
 
         response->setLength();
         request->send(response);
     });
-
     server.on("/api/coverc/close", HTTP_POST, [](AsyncWebServerRequest * request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
 
-        if(CoverC.command.cover.move == false){
+        if(CoverC.command.cover.move == false && CoverC.config.cover.present){
             doc["execute"] = true;
             CoverC.command.cover.move = true;
             CoverC.command.cover.angle = CoverC.config.cover.closeDeg;
         } else {
             doc["execute"] = false;
-            doc["error"] = "Cover is already moving";
-            response->setCode(500);
+            if(!CoverC.config.cover.present){
+                doc["error"] = "coverNotPresent";
+            }
+            if(CoverC.command.cover.move == true){
+                doc["error"] = "coverIsMoving";
+            }
         }
 
         response->setLength();
@@ -86,39 +92,44 @@ void coverWebServer(){
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
         String parameter;
-        doc["execute"] = false;
         bool present = false;
         bool inRange = false;
         int value = 0;
+
+        doc["execute"] = false;
+
         int paramsNr = request->params();
-        
-        for (int i = 0; i < paramsNr; i++) {
-            const AsyncWebParameter* p = request->getParam(i);
-            parameter = p->name();
-            if (parameter == "brightness") {
-                present = true;
-                value = p->value().toInt();
-                if(value >=0 || value <=4096){
-                    CoverC.command.calibrator.change = true;
-                    CoverC.command.calibrator.brightness = value;
-                    inRange = true;
-                    doc["execute"] = true;
-                }
-                else{
-                    inRange = false;
-                }
-            }  
-        }
-        if(!inRange){
-            doc["error"] = "brightness parameter not in range";
-            response->setCode(500);
-        }
+        if( CoverC.config.calibrator.present ){
 
-        if(!present){
-            doc["error"] = "brightness parameter not found";
-            response->setCode(500);
+            for (int i = 0; i < paramsNr; i++) {
+                const AsyncWebParameter* p = request->getParam(i);
+                parameter = p->name();
+                if (parameter == "brightness") {
+                    present = true;
+                    value = p->value().toInt();
+                    if(value >=0 && value <=2000){
+                        CoverC.command.calibrator.change = true;
+                        CoverC.command.calibrator.brightness = value;
+                        inRange = true;
+                        doc["execute"] = true;
+                    }
+                    else{
+                        inRange = false;
+                    }
+                }  
+            }
+            if(!present){
+                doc["error"] = "calibBrightnessNotPresent";
+            } else {
+                if(!inRange){
+                    doc["error"] = "calibBrightnessNotInRange";
+                }
+            }
+        } else {
+            if(!present){
+                doc["error"] = "calibratorNotPresent";
+            }
         }
-
 
         response->setLength();
         request->send(response);
@@ -127,10 +138,15 @@ void coverWebServer(){
     server.on("/api/coverc/on", HTTP_POST, [](AsyncWebServerRequest * request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
+        doc["execute"] = false;
 
-        CoverC.command.calibrator.change = true;
-        CoverC.command.calibrator.brightness = 4096;
-        doc["execute"] = true;
+        if( CoverC.config.calibrator.present ){
+            CoverC.command.calibrator.change = true;
+            CoverC.command.calibrator.brightness = 4096;
+            doc["execute"] = true;
+        } else {
+            doc["error"] = "calibratorNotPresent";
+        }
 
         response->setLength();
         request->send(response);
@@ -139,10 +155,15 @@ void coverWebServer(){
     server.on("/api/coverc/off", HTTP_POST, [](AsyncWebServerRequest * request) {
         AsyncJsonResponse* response = new AsyncJsonResponse();
         JsonObject doc = response->getRoot().to<JsonObject>();
-        CoverC.command.calibrator.change = true;
-        CoverC.command.calibrator.brightness = 0;
-        doc["execute"] = true;
-
+        doc["execute"] = false;
+        
+        if( CoverC.config.calibrator.present ){
+            CoverC.command.calibrator.change = true;
+            CoverC.command.calibrator.brightness = 0;
+            doc["execute"] = true;
+        } else {
+            doc["error"] = "calibratorNotPresent";
+        }
         response->setLength();
         request->send(response);
     });
@@ -168,7 +189,7 @@ void coverWebServer(){
                 error=true;
                 err.add("Calibrator present");
             }
-            if( calibrator["pin"].is<unsigned int>() and commonValidateOutputPin(calibrator["pin"])){
+            if( calibrator["pin"].is<unsigned int>() && commonValidateOutputPin(calibrator["pin"])){
                 if (calibrator["pin"] != CoverC.config.calibrator.outPWM){
                     reboot = true;
                 }

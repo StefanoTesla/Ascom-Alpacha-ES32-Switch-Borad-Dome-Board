@@ -73,6 +73,7 @@
 		"cmdRefused": "Comando Rifiutato",
 		"wifi": "WiFi",
 		"ipAddress": "Indirizzo IP:",
+		"gateway": "Indirizzo Gateway:",
 		"subnet": "Sotto Rete:",
 		"staticIp": "Indirizzo Ip statico:",
 		"waitToReconnect": "Attesa per riconnessione:",
@@ -123,7 +124,19 @@
 	},
 	"errors":{
 		"noUsableAsInput" : "non utilizzabile come ingresso",
-		"noUsableAsOutput" : "non utilizzabile come uscita"
+		"noUsableAsOutput" : "non utilizzabile come uscita",
+		"coverIsMoving" : "Il coperchio è già in movimento",
+		"coverNotPresent": "Il coperchio non è presente",
+		"calibNotPresent": "Il flat panel non è presente",
+		"calibBrightnessNotPresent" : "Parametro di luminosità assente",
+		"ShAlreadyMoving" : "Il tetto è già in movimento",
+		"ShAlreadyOpen" : "Il tetto è già aperto",
+		"ShAlreadyClosed" : "Il tetto è già chiuso",
+		"SwIdOutOfRange" : "ID Switch fuori range",
+		"SwValueBehindMin" : "Valore Minimo oltrepassato",
+		"SwValueOverMax" : "Valore Massimo oltrepassato",
+		"SwValueAbsent" : "Valore Non Fornito",
+		"SwNotWritable": "Switch non scrivibile"
 	},
 	"pwm":{
 		"0": "Non inizializzato",

@@ -51,6 +51,13 @@ void boardWebServer(){
         ip["2"]= Global.config.wifi.ip.ip[2];
         ip["3"]= Global.config.wifi.ip.ip[3];
 
+        JsonObject sub = address["staticGateway"].to<JsonObject>();
+        sub["0"]= Global.config.wifi.ip.gw[0];
+        sub["1"]= Global.config.wifi.ip.gw[1];
+        sub["2"]= Global.config.wifi.ip.gw[2];
+        sub["3"]= Global.config.wifi.ip.gw[3];
+
+
         JsonObject sub = address["staticSubnet"].to<JsonObject>();
         sub["0"]= Global.config.wifi.ip.sub[0];
         sub["1"]= Global.config.wifi.ip.sub[1];
@@ -129,6 +136,7 @@ void boardWebServer(){
             }
 
             JsonObject address_staticIp = address["staticIp"];
+            JsonObject address_staticGateway = address["staticGateway"];
             JsonObject address_staticSubnet = address["staticSubnet"];
             if(enable){
                 
@@ -148,6 +156,24 @@ void boardWebServer(){
                     error = true;
                     doc["errors"].add("Wrong IP [3]");
                 }
+
+                if(!address_staticGateway["0"].is<unsigned int>() || address_staticGateway["0"] > 255){
+                    error = true;
+                    doc["errors"].add("Wrong Gateway [0]");
+                }
+                if(!address_staticGateway["1"].is<unsigned int>() || address_staticGateway["1"] > 255){
+                    error = true;
+                    doc["errors"].add("Wrong Gateway [1]");
+                }
+                if(!address_staticGateway["2"].is<unsigned int>() || address_staticGateway["2"] > 255 ){
+                    error = true;
+                    doc["errors"].add("Wrong Gateway [2]");
+                }
+                if(!address_staticGateway["3"].is<unsigned int>() || address_staticGateway["3"] > 255){
+                    error = true;
+                    doc["errors"].add("Wrong Gateway [3]");
+                }
+                
                 
                 if(!address_staticSubnet["0"].is<unsigned int>() || address_staticSubnet["0"] > 255 ){
                     error = true;
@@ -177,6 +203,12 @@ void boardWebServer(){
                     Global.config.wifi.ip.ip[1] = address_staticIp["1"].as<unsigned int>();
                     Global.config.wifi.ip.ip[2] = address_staticIp["2"].as<unsigned int>();
                     Global.config.wifi.ip.ip[3] = address_staticIp["3"].as<unsigned int>();
+
+                    Global.config.wifi.ip.gw[0] = address_staticGateway["0"].as<unsigned int>();
+                    Global.config.wifi.ip.gw[1] = address_staticGateway["1"].as<unsigned int>();
+                    Global.config.wifi.ip.gw[2] = address_staticGateway["2"].as<unsigned int>();
+                    Global.config.wifi.ip.gw[3] = address_staticGateway["3"].as<unsigned int>();
+                    
                     Global.config.wifi.ip.sub[0] = address_staticSubnet["0"].as<unsigned int>();
                     Global.config.wifi.ip.sub[1] = address_staticSubnet["1"].as<unsigned int>();
                     Global.config.wifi.ip.sub[2] = address_staticSubnet["2"].as<unsigned int>();

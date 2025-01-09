@@ -51,7 +51,6 @@ export default function GlobalData() {
             this.getCoverCStatus()
         }
         this.dataLoaded = true;
-        setTimeout(() => {this.updateData()}, 3000)
       },
 
     updateBoard(){
@@ -72,7 +71,7 @@ export default function GlobalData() {
         })
         .catch(error => console.error('Error fetching board data:', error));
 
-        setTimeout(() => {this.updateBoard()}, 60000)
+        setTimeout(() => {this.updateBoard()}, 10000)
     },
 
 

@@ -5,12 +5,8 @@ export function toast() {
                 notice.id = Date.now()
                 this.notices.push(notice)
                 this.fireToast(notice.id,notice.time)
-            }, 1 );  // put a delay to avoid toat crash
-            /*notice.id = Date.now()
-            this.notices.push(notice)
+            }, 1 );},
             
-            this.fireToast(notice.id)
-          */},
         fireToast(id,time = 0) {
             this.visible.push(this.notices.find(notice => notice.id == id))
             let timeShown = 500

@@ -7,10 +7,14 @@ export function switches(){
         fetch(ip +'/api/switch/status')
         .then(response => response.json())
         .then(data => {
-                this.swi = data;
+            this.swi = data;
             this.load.switch = true;
+            setTimeout(() => {this.getSwitchStatus()}, 3000)
         })
-        .catch(error => console.error('Error fetching board data:', error));
+        .catch(error => {
+            console.error('Error fetching board data:', error)
+            setTimeout(() => {this.getSwitchStatus()}, 10000)
+        });
     },
 
     switchChangeDigital(index){
@@ -33,8 +37,12 @@ export function switches(){
             if(data.execute){
                 this.addToast({ type:"success", text: this.text.gen.cmdAck })
             } else {
-                console.error(data.error)
-                this.addToast({type:"error",text:data.error})
+                if(data.error){
+                    this.addToast({ type:"error", text:this.text.errors?.[data.error] || "undefined error", time:3})
+                } else {
+                    this.addToast({ type:"error", text: this.text.gen.cmdRefused,time:3})
+                }
+                
             }
         })
         .catch(error => console.error('Error change switch value:', error));
@@ -56,8 +64,12 @@ export function switches(){
             if(data.execute){
                 this.addToast({ type:"success", text: this.text.gen.cmdAck })
             } else {
-                console.error(data.error)
-                this.addToast({type:"error",text:data.error})
+                if(data.error){
+                    this.addToast({ type:"error", text:this.text.errors?.[data.error] || "undefined error", time:3})
+                } else {
+                    this.addToast({ type:"error", text: this.text.gen.cmdRefused,time:3})
+                }
+                
             }
         })
         .catch(error => console.error('Error change switch value:', error));

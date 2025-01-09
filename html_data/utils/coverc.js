@@ -8,8 +8,12 @@ export function coverc(){
             .then(data => {
                 this.coverC = data;
                 this.load.cover = true
+                setTimeout(() => {this.getCoverCStatus()}, 3000)
             })
-            .catch(error => console.error('Error fetching board data:', error));
+            .catch(error => {
+                console.error('Error fetching board data:', error)
+                setTimeout(() => {this.getCoverCStatus()}, 10000) }
+            );
         },
     
         coverClose(){
@@ -25,16 +29,15 @@ export function coverc(){
                         this.addToast({ type:"success", text: this.text.gen.cmdAck })
                         this.coverC.cover.status = 2;
                     }
+                    if(res.error) {
+                        this.addToast({ type:"error", text:this.text.errors?.[res.error] || "undefined error", time:3})
+                    } else {
+                        this.addToast({ type:"error", text: this.text.gen.cmdRefused,time:3})
+                    }
                 })
                 .catch(err => {
-                    try {
-                        const errorData = JSON.parse(err.message);
-                        console.log("Errors:", errorData.errors);
-                        this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                    } catch (parseError) {
                         console.log("Errore sconosciuto:", err);
                         this.addToast({ type: "error", text: "Errore sconosciuto." });
-                    }
                 });
         },
         coverOpen(){
@@ -50,17 +53,14 @@ export function coverc(){
                         this.addToast({ type:"success", text: this.text.gen.cmdAck })
                         this.coverC.cover.status = 2;
                     }
+                    if(res.error) {
+                        this.addToast({ type:"error", text:this.text.errors?.[res.error] || "undefined error", time:3})
+                    }
     
                 })
                 .catch(err => {
-                    try {
-                        const errorData = JSON.parse(err.message);
-                        console.log("Errors:", errorData.errors);
-                        this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                    } catch (parseError) {
                         console.log("Errore sconosciuto:", err);
                         this.addToast({ type: "error", text: "Errore sconosciuto." });
-                    }
                 });
         },
     
@@ -78,16 +78,12 @@ export function coverc(){
                     if(res.execute){
                         this.addToast({ type:"success", text: this.text.gen.cmdAck })
                     }
+                    if(res.error) {
+                        this.addToast({ type:"error", text:this.text.errors?.[res.error] || "undefined error", time:3})
+                    }
                 })
                 .catch(err => {
-                    try {
-                        const errorData = JSON.parse(err.message);
-                        console.log("Errors:", errorData.errors);
-                        this.addToast({ type: "error", text: "Errore: " + errorData.errors.join(", ") });
-                    } catch (parseError) {
                         console.log("Errore sconosciuto:", err);
-                        this.addToast({ type: "error", text: "Errore sconosciuto." });
-                    }
                 });
         },
     

@@ -462,25 +462,37 @@
                   <div class="full_row" x-show="board.address.enStaticIP">
                     <p x-text="text.gen.ipAddress">{ipAddress}</p>
                     <div @change="checkIPField()">
-                      <input id="board_wifi_staticIP_0" class="input_address" type="number" x-model="board.address.staticIp[0]" min="0" max="999" />
+                      <input id="board_wifi_staticIP_0" class="input_address" type="number" x-model="board.address.staticIp[0]" min="0" max="255" />
                       <span>.</span>
-                      <input id="board_wifi_staticIP_1" class="input_address" type="number" x-model="board.address.staticIp[1]" min="0" max="999" />
+                      <input id="board_wifi_staticIP_1" class="input_address" type="number" x-model="board.address.staticIp[1]" min="0" max="255" />
                       <span>.</span>
-                      <input id="board_wifi_staticIP_2" class="input_address" type="number" x-model="board.address.staticIp[2]" min="0" max="999" />
+                      <input id="board_wifi_staticIP_2" class="input_address" type="number" x-model="board.address.staticIp[2]" min="0" max="255" />
                       <span>.</span>
-                      <input id="board_wifi_staticIP_3" class="input_address" type="number" x-model="board.address.staticIp[3]" min="0" max="999" />
+                      <input id="board_wifi_staticIP_3" class="input_address" type="number" x-model="board.address.staticIp[3]" min="0" max="255" />
+                    </div>
+                  </div>
+                  <div class="full_row" x-show="board.address.enStaticIP">
+                    <p x-text="text.gen.gateway">{subnet}</p>
+                    <div @change="checkIPField()"> 
+                      <input id="board_wifi_staticGat_0" class="input_address" type="number" x-model="board.address.staticGateway[0]" min="0" max="255" />
+                      <span>.</span>
+                      <input id="board_wifi_staticGat_1" class="input_address" type="number" x-model="board.address.staticGateway[1]" min="0" max="255" />
+                      <span>.</span>
+                      <input id="board_wifi_staticGat_2" class="input_address" type="number" x-model="board.address.staticGateway[2]" min="0" max="255" />
+                      <span>.</span>
+                      <input id="board_wifi_staticGat_3" class="input_address" type="number" x-model="board.address.staticGateway[3]" min="0" max="255" />
                     </div>
                   </div>
                   <div class="full_row" x-show="board.address.enStaticIP">
                     <p x-text="text.gen.subnet">{subnet}</p>
                     <div @change="checkIPField()"> 
-                      <input id="board_wifi_staticSub_0" class="input_address" type="number" x-model="board.address.staticSubnet[0]" min="0" max="999" />
+                      <input id="board_wifi_staticSub_0" class="input_address" type="number" x-model="board.address.staticSubnet[0]" min="0" max="255" />
                       <span>.</span>
-                      <input id="board_wifi_staticSub_1" class="input_address" type="number" x-model="board.address.staticSubnet[1]" min="0" max="999" />
+                      <input id="board_wifi_staticSub_1" class="input_address" type="number" x-model="board.address.staticSubnet[1]" min="0" max="255" />
                       <span>.</span>
-                      <input id="board_wifi_staticSub_2" class="input_address" type="number" x-model="board.address.staticSubnet[2]" min="0" max="999" />
+                      <input id="board_wifi_staticSub_2" class="input_address" type="number" x-model="board.address.staticSubnet[2]" min="0" max="255" />
                       <span>.</span>
-                      <input id="board_wifi_staticSub_3" class="input_address" type="number" x-model="board.address.staticSubnet[3]" min="0" max="999" />
+                      <input id="board_wifi_staticSub_3" class="input_address" type="number" x-model="board.address.staticSubnet[3]" min="0" max="255" />
                     </div>
                   </div>
                 </div>

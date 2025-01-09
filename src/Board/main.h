@@ -83,11 +83,10 @@ void boardLoop(){
             if((Global.actualMillis - Global.config.reboot.lastMillis) > 1000){
                 ESP.restart();
             }
-        }
-        
-
-        
+        }  
     }
+
+    ElegantOTA.loop();
 }
 
 #endif

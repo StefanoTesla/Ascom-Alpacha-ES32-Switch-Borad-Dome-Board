@@ -1,7 +1,6 @@
 #ifndef SWITCH_WEBSERVER
 #define SWITCH_WEBSERVER
-#include "libraries.h"
-#include "header.h"
+
 
 void switchWebServer(){
 
@@ -85,23 +84,39 @@ void switchWebServer(){
         }
         if(id < 0 || id >= _MAX_SWITCH_ID_){
             logMessageFormatted(Switches,lErr,"cmd. not exec, ID out of range",id);
+            doc["error"] = "SwIdOutOfRange";
             err= true;
         }
         if(exist){
             if(value < Switch.data[id].property.minValue){
-                doc["error"] = "value excede the minimum";
+                doc["error"] = "SwValueBehindMin";
                 logMessageFormatted(Switches,lErr,"cmd. not exec on ID %d with val: %d below min",id,value);
                 err= true;
             }
             if(value > Switch.data[id].property.maxValue){
-                doc["error"] = "value excede the maximum";
+                doc["error"] = "SwValueOverMax";
                 logMessageFormatted(Switches,lErr,"cmd. not exec on ID %d with val: %d exceeded max",id,value);
                 err= true;
             }
         } else {
-            doc["error"] = "value not provided";
+            doc["error"] = "SwValueAbsent";
             logMessageFormatted(Switches,lErr,"cmd. not exec on ID %d value not provided",id);
             err= true;
+        }
+
+        switch (Switch.data[id].property.type)
+        {
+        case SwTypeAInput:
+        case SwTypeDInput:
+        case SwTypeNull:
+            err = true;
+            doc["error"] = "SwNotWritable";
+            logMessageFormatted(Switches,lErr,"cmd. not exec on ID %d switch cannot be writable",id);
+            err= true;
+            break;
+        
+        default:
+            break;
         }
 
 

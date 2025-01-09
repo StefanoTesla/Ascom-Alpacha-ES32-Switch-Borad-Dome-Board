@@ -15,6 +15,7 @@ export function dome(){
             this.domeOrig = this.copy(data);
             this.dome = data;
             this.load.dome = true;
+            
         })
         .catch(error => console.error('Error fetching board data:', error));
     },
@@ -78,8 +79,13 @@ export function dome(){
         .then(data => {
             this.dome = data;
             this.load.dome = true;
+            setTimeout(() => {this.getDomeStatus()}, 3000)
         })
-        .catch(error => console.error('Error fetching board data:', error));
+        .catch(error => {
+            console.error('Error fetching board data:', error)
+            setTimeout(() => {this.getDomeStatus()}, 10000)
+        }
+        );
     },
 
     openDome(){
@@ -96,7 +102,11 @@ export function dome(){
             if(res.execute){
                 this.addToast({ type:"success", text: this.text.gen.cmdAck})
             } else {
-                this.addToast({ type:"error", text: this.text.gen.cmdRefused})
+                if(res.error){
+                    this.addToast({ type:"error", text:this.text.errors?.[res.error] || "undefined error", time:3})
+                } else {
+                    this.addToast({ type:"error", text: this.text.gen.cmdRefused,time:3})
+                }
             }
         })
         .catch(error => console.error('Error opening dome: ', error));
@@ -139,7 +149,7 @@ export function dome(){
                 this.addToast({ type:"error", text: this.text.gen.cmdRefused})
             }
         })
-        .catch(error => console.error('Error opening dome: ', error));
+        .catch(error => console.error('Error halting dome: ', error));
     }
     }
 }

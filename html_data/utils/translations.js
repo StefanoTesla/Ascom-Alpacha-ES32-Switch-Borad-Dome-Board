@@ -10,7 +10,7 @@ export function translations() {
                     this.textLoaded = true;
                 })
                 .catch(error => {
-                    console.error('Error fetching translations: only en and it is supported at the moment');
+                    console.error('Error fetching translations');
                 });
         },
 
