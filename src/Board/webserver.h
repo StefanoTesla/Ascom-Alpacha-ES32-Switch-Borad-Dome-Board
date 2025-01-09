@@ -51,11 +51,11 @@ void boardWebServer(){
         ip["2"]= Global.config.wifi.ip.ip[2];
         ip["3"]= Global.config.wifi.ip.ip[3];
 
-        JsonObject sub = address["staticGateway"].to<JsonObject>();
-        sub["0"]= Global.config.wifi.ip.gw[0];
-        sub["1"]= Global.config.wifi.ip.gw[1];
-        sub["2"]= Global.config.wifi.ip.gw[2];
-        sub["3"]= Global.config.wifi.ip.gw[3];
+        JsonObject gw = address["staticGateway"].to<JsonObject>();
+        gw["0"]= Global.config.wifi.ip.gw[0];
+        gw["1"]= Global.config.wifi.ip.gw[1];
+        gw["2"]= Global.config.wifi.ip.gw[2];
+        gw["3"]= Global.config.wifi.ip.gw[3];
 
 
         JsonObject sub = address["staticSubnet"].to<JsonObject>();
